@@ -24,7 +24,7 @@ def get_package_data(package):
 
 setup(
     name='django-admin-rangefilter',
-    version='0.1.0',
+    version='0.1.1',
     url='https://github.com/silentsokolov/django-admin-rangefilter',
     license='MIT',
     author='Dmitriy Sokolov',
