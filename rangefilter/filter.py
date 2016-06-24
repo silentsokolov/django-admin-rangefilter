@@ -74,9 +74,9 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         return queryset
 
     def get_template(self):
-        if django.VERSION >= (1, 9):
-            return 'admin/daterange_filter19.html'
-        return 'admin/daterange_filter.html'
+        if django.VERSION <= (1, 8):
+            return 'rangefilter/date_filter_1_8.html'
+        return 'rangefilter/date_filter.html'
 
     template = property(get_template)
 
