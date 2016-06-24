@@ -1,0 +1,5 @@
+include LICENSE CHANGES README.rst
+recursive-include rangefilter/static *.js *.css *.png *.eot *.svg *.ttf *.woff
+recursive-include rangefilter/templates *.html
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
