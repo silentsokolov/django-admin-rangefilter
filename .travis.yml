@@ -10,6 +10,7 @@ python:
 
 install:
     - pip install Django${DJANGO_VERSION}
+    - pip install pytz
 
 env:
   matrix:
