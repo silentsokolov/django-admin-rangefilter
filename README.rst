@@ -49,7 +49,7 @@ In admin
 .. code:: python
 
     from django.contrib import admin
-    from rangefilter.filtres import DateRangeFilter
+    from rangefilter.filter import DateRangeFilter
 
     @admin.register(Post)
     class PostAdmin(admin.ModelAdmin):
