@@ -56,22 +56,34 @@ class DateRangeFilter(admin.filters.FieldListFilter):
 
     def queryset(self, request, queryset):
         if self.form.is_valid():
-            filter_params = dict(filter(lambda f: f[1] is not None, self.form.cleaned_data.items()))
-
+            filter_params = dict(self.form.cleaned_data.items())
             if filter_params:
-                _filter = {
-                    '{0}__range'.format(self.field_path): (
-                        make_dt_aware(datetime.datetime.combine(
-                            filter_params[self.lookup_kwarg_gte], datetime.time.min
-                        )),
-                        make_dt_aware(datetime.datetime.combine(
-                            filter_params[self.lookup_kwarg_lte], datetime.time.max
-                        ))
-                    )
-                }
-
-                return queryset.filter(**_filter)
+                return queryset.filter(
+                    **self._get_query_parameters(filter_params)
+                )
         return queryset
+
+    def _get_query_parameters(self, filter_params):
+        query_params = {}
+        if self.lookup_kwarg_gte in filter_params and filter_params[self.lookup_kwarg_gte]:
+            query_params['{0}__gte'.format(self.field_path)] = self._get_lookup_parameter(
+                filter_params,
+                self.lookup_kwarg_gte
+            )
+        if self.lookup_kwarg_lte in filter_params and filter_params[self.lookup_kwarg_lte]:
+            query_params['{0}__lte'.format(self.field_path)] = self._get_lookup_parameter(
+                filter_params,
+                self.lookup_kwarg_lte
+            )
+        return query_params
+
+    def _get_lookup_parameter(self, filter_params, field_name):
+        if filter_params[field_name]:
+            return make_dt_aware(datetime.datetime.combine(
+                filter_params[field_name], datetime.time.min
+            ))
+        else:
+            return None
 
     def get_template(self):
         if django.VERSION <= (1, 8):
