@@ -65,12 +65,12 @@ class DateRangeFilter(admin.filters.FieldListFilter):
 
     def _get_query_parameters(self, filter_params):
         query_params = {}
-        if self.lookup_kwarg_gte in filter_params and filter_params[self.lookup_kwarg_gte]:
+        if filter_params.get(self.lookup_kwarg_gte, None):
             query_params['{0}__gte'.format(self.field_path)] = self._get_lookup_parameter(
                 filter_params,
                 self.lookup_kwarg_gte
             )
-        if self.lookup_kwarg_lte in filter_params and filter_params[self.lookup_kwarg_lte]:
+        if filter_params.get(self.lookup_kwarg_lte, None):
             query_params['{0}__lte'.format(self.field_path)] = self._get_lookup_parameter(
                 filter_params,
                 self.lookup_kwarg_lte
@@ -78,6 +78,10 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         return query_params
 
     def _get_lookup_parameter(self, filter_params, field_name):
+        if self.lookup_kwarg_gte:
+            time_boundary = datetime.time.min
+        else:
+            time_boundary = datetime.time.max
         if filter_params[field_name]:
             return make_dt_aware(datetime.datetime.combine(
                 filter_params[field_name], datetime.time.min
