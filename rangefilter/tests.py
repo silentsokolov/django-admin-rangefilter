@@ -103,3 +103,20 @@ class DateRangeFilterTestCase(TestCase):
         choice = select_by(filterspec.choices(changelist))
         self.assertEqual(choice['query_string'], '?')
         self.assertEqual(choice['system_name'], 'created-at')
+
+    def test_datefilter_filtered_with_one_params(self):
+        self.request_factory = RequestFactory()
+        modeladmin = MyModelAdmin(MyModel, site)
+
+        request = self.request_factory.get('/', {'created_at__gte': self.today})
+        changelist = self.get_changelist(request, MyModel, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_text(filterspec.title), 'created at')
+
+        choice = select_by(filterspec.choices(changelist))
+        self.assertEqual(choice['query_string'], '?')
+        self.assertEqual(choice['system_name'], 'created-at')

@@ -56,38 +56,27 @@ class DateRangeFilter(admin.filters.FieldListFilter):
 
     def queryset(self, request, queryset):
         if self.form.is_valid():
-            filter_params = dict(self.form.cleaned_data.items())
-            if filter_params:
+            validated_data = dict(self.form.cleaned_data.items())
+            if validated_data:
                 return queryset.filter(
-                    **self._get_query_parameters(filter_params)
+                    **self._make_query_filter(validated_data)
                 )
         return queryset
 
-    def _get_query_parameters(self, filter_params):
+    def _make_query_filter(self, validated_data):
         query_params = {}
-        if filter_params.get(self.lookup_kwarg_gte, None):
-            query_params['{0}__gte'.format(self.field_path)] = self._get_lookup_parameter(
-                filter_params,
-                self.lookup_kwarg_gte
+        date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
+        date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
+
+        if date_value_gte:
+            query_params['{0}__gte'.format(self.field_path)] = make_dt_aware(
+                datetime.datetime.combine(date_value_gte, datetime.time.min)
             )
-        if filter_params.get(self.lookup_kwarg_lte, None):
-            query_params['{0}__lte'.format(self.field_path)] = self._get_lookup_parameter(
-                filter_params,
-                self.lookup_kwarg_lte
+        if date_value_lte:
+            query_params['{0}__lte'.format(self.field_path)] = make_dt_aware(
+                datetime.datetime.combine(date_value_lte, datetime.time.min)
             )
         return query_params
-
-    def _get_lookup_parameter(self, filter_params, field_name):
-        if self.lookup_kwarg_gte:
-            time_boundary = datetime.time.min
-        else:
-            time_boundary = datetime.time.max
-        if filter_params[field_name]:
-            return make_dt_aware(datetime.datetime.combine(
-                filter_params[field_name], datetime.time.min
-            ))
-        else:
-            return None
 
     def get_template(self):
         if django.VERSION <= (1, 8):

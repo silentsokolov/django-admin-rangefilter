@@ -1,2 +1,8 @@
+0.1.2 (2016-07-28)
+    - Fix filter with only one params
+
+0.1.1 (2016-06-24)
+    - Fix name template
+
 0.1.0 (2016-06-24)
     - Initial release
