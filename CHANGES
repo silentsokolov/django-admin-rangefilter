@@ -1,3 +1,6 @@
+0.1.3 (2016-07-29)
+    - Fix "__lte" max date
+
 0.1.2 (2016-07-28)
     - Fix filter with only one params
 

@@ -22,7 +22,19 @@ class MyModel(models.Model):
         ordering = ('created_at',)
 
 
+class MyModelDate(models.Model):
+    created_at = models.DateField()
+
+    class Meta:
+        ordering = ('created_at',)
+
+
 class MyModelAdmin(ModelAdmin):
+    list_filter = (('created_at', DateRangeFilter),)
+    ordering = ('-id',)
+
+
+class MyModelDateAdmin(ModelAdmin):
     list_filter = (('created_at', DateRangeFilter),)
     ordering = ('-id',)
 
@@ -63,6 +75,9 @@ class DateRangeFilterTestCase(TestCase):
 
         self.django_book = MyModel.objects.create(created_at=self.today)
         self.djangonaut_book = MyModel.objects.create(created_at=self.one_week_ago)
+
+        self.django_book_date = MyModelDate.objects.create(created_at=self.today)
+        self.djangonaut_book_date = MyModelDate.objects.create(created_at=self.one_week_ago)
 
     def get_changelist(self, request, model, modeladmin):
         return ChangeList(
@@ -114,6 +129,24 @@ class DateRangeFilterTestCase(TestCase):
         queryset = changelist.get_queryset(request)
 
         self.assertEqual(list(queryset), [self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_text(filterspec.title), 'created at')
+
+        choice = select_by(filterspec.choices(changelist))
+        self.assertEqual(choice['query_string'], '?')
+        self.assertEqual(choice['system_name'], 'created-at')
+
+    def test_datefilter_filtered_datefield(self):
+        self.request_factory = RequestFactory()
+        modeladmin = MyModelDateAdmin(MyModelDate, site)
+
+        request = self.request_factory.get('/', {'created_at__gte': self.today,
+                                                 'created_at__lte': self.tomorrow})
+        changelist = self.get_changelist(request, MyModelDate, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.django_book_date])
         filterspec = changelist.get_filters(request)[0][0]
         self.assertEqual(force_text(filterspec.title), 'created at')
 

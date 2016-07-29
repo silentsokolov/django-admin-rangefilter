@@ -74,7 +74,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             )
         if date_value_lte:
             query_params['{0}__lte'.format(self.field_path)] = make_dt_aware(
-                datetime.datetime.combine(date_value_lte, datetime.time.min)
+                datetime.datetime.combine(date_value_lte, datetime.time.max)
             )
         return query_params
 
