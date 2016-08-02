@@ -2,7 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 from setuptools import setup
+
+
+def get_version(package):
+    init_py = open(os.path.join(package, '__init__.py')).read()
+    return re.search("__version__ = ['\"]([^'\"]+)['\"]", init_py).group(1)
 
 
 def get_packages(package):
@@ -24,7 +30,7 @@ def get_package_data(package):
 
 setup(
     name='django-admin-rangefilter',
-    version='0.1.2',
+    version=get_version('rangefilter'),
     url='https://github.com/silentsokolov/django-admin-rangefilter',
     license='MIT',
     author='Dmitriy Sokolov',
