@@ -11,6 +11,7 @@ python:
 install:
     - pip install Django${DJANGO_VERSION}
     - pip install pytz
+    - pip install 'coverage<4' coveralls
 
 env:
   matrix:
@@ -40,4 +41,6 @@ branches:
     - master
 
 script:
-  - python runtests.py
+  - coverage run --omit='setup.py' --source='.' runtests.py
+
+after_success: coveralls

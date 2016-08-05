@@ -1,5 +1,8 @@
-.. image:: https://travis-ci.org/silentsokolov/django-admin-rangefilter.png?branch=master
+.. image:: https://travis-ci.org/silentsokolov/django-admin-rangefilter.svg?branch=master
    :target: https://travis-ci.org/silentsokolov/django-admin-rangefilter
+
+.. image:: https://coveralls.io/repos/github/silentsokolov/django-admin-rangefilter/badge.svg?branch=master
+   :target: https://coveralls.io/github/silentsokolov/django-admin-rangefilter?branch=master
 
 
 django-admin-rangefilter
