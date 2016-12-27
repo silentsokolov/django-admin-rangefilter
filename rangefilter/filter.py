@@ -10,6 +10,7 @@ from collections import OrderedDict
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.utils.html import format_html
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 
@@ -21,7 +22,7 @@ except ImportError:
 try:
     from suit.widgets import SuitDateWidget as AdminDateWidget
 except ImportError:
-    from django.contrib.admin.widgets import AdminDateWidget
+    from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime as BaseAdminSplitDateTime
 
 
 def make_dt_aware(dt):
@@ -32,6 +33,13 @@ def make_dt_aware(dt):
         else:
             dt = timezone.localize(dt)
     return dt
+
+
+class AdminSplitDateTime(BaseAdminSplitDateTime):
+    def format_output(self, rendered_widgets):
+        return format_html('<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
+                           rendered_widgets[0],
+                           rendered_widgets[1])
 
 
 class DateRangeFilter(admin.filters.FieldListFilter):
@@ -47,12 +55,12 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         yield {
             'system_name': slugify(self.title),
             'query_string': cl.get_query_string(
-                {}, remove=[self.lookup_kwarg_gte, self.lookup_kwarg_lte]
+                {}, remove=self._get_expected_fields()
             )
         }
 
     def expected_parameters(self):
-        return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
+        return self._get_expected_fields()
 
     def queryset(self, request, queryset):
         if self.form.is_valid():
@@ -62,6 +70,9 @@ class DateRangeFilter(admin.filters.FieldListFilter):
                     **self._make_query_filter(validated_data)
                 )
         return queryset
+
+    def _get_expected_fields(self):
+        return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
 
     def _make_query_filter(self, validated_data):
         query_params = {}
@@ -76,10 +87,11 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             query_params['{0}__lte'.format(self.field_path)] = make_dt_aware(
                 datetime.datetime.combine(date_value_lte, datetime.time.max)
             )
+
         return query_params
 
     def get_template(self):
-        if django.VERSION <= (1, 8):
+        if django.VERSION[:2] <= (1, 8):
             return 'rangefilter/date_filter_1_8.html'
         return 'rangefilter/date_filter.html'
 
@@ -130,3 +142,45 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             js=['admin/js/%s' % url for url in js],
             css={'all': ['admin/css/%s' % path for path in css]}
         )
+
+
+class DateTimeRangeFilter(DateRangeFilter):
+    def _get_expected_fields(self):
+        expected_fields = []
+        for field in [self.lookup_kwarg_gte, self.lookup_kwarg_lte]:
+            for i in range(2):
+                expected_fields.append('{}_{}'.format(field, i))
+
+        return expected_fields
+
+    def _get_form_fields(self):
+        return OrderedDict((
+                (self.lookup_kwarg_gte, forms.SplitDateTimeField(
+                    label='',
+                    widget=AdminSplitDateTime(attrs={'placeholder': _('From date')}),
+                    localize=True,
+                    required=False
+                )),
+                (self.lookup_kwarg_lte, forms.SplitDateTimeField(
+                    label='',
+                    widget=AdminSplitDateTime(attrs={'placeholder': _('To date')}),
+                    localize=True,
+                    required=False
+                )),
+        ))
+
+    def _make_query_filter(self, validated_data):
+        query_params = {}
+        date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
+        date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
+
+        if date_value_gte:
+            query_params['{0}__gte'.format(self.field_path)] = make_dt_aware(
+                date_value_gte
+            )
+        if date_value_lte:
+            query_params['{0}__lte'.format(self.field_path)] = make_dt_aware(
+                date_value_lte
+            )
+
+        return query_params

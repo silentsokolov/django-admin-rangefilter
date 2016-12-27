@@ -8,7 +8,7 @@
 django-admin-rangefilter
 ========================
 
-django-admin-rangefilter app, add the filter by a custom date range on the admin UI.
+django-admin-rangefilter app, add the filter by a custom date / datetime range on the admin UI.
 
 .. image:: https://raw.githubusercontent.com/silentsokolov/django-admin-rangefilter/master/docs/images/screenshot.png
 
@@ -52,10 +52,10 @@ In admin
 .. code:: python
 
     from django.contrib import admin
-    from rangefilter.filter import DateRangeFilter
+    from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
 
     @admin.register(Post)
     class PostAdmin(admin.ModelAdmin):
         list_filter = (
-            ('created_at', DateRangeFilter), ('updated_at', DateRangeFilter),
+            ('created_at', DateRangeFilter), ('updated_at', DateTimeRangeFilter),
         )
