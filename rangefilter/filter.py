@@ -13,16 +13,12 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
+from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime as BaseAdminSplitDateTime
 
 try:
     import pytz
 except ImportError:
     pytz = None
-
-try:
-    from suit.widgets import SuitDateWidget as AdminDateWidget
-except ImportError:
-    from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime as BaseAdminSplitDateTime
 
 
 def make_dt_aware(dt):
