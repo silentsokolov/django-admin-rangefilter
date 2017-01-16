@@ -21,6 +21,7 @@ except ImportError:
 
 try:
     from suit.widgets import SuitDateWidget as AdminDateWidget
+    BaseAdminSplitDateTime = AdminDateWidget
 except ImportError:
     from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime as BaseAdminSplitDateTime
 
