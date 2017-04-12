@@ -12,7 +12,7 @@ from django.contrib.admin import ModelAdmin, site
 from django.contrib.admin.views.main import ChangeList
 from django.utils.encoding import force_text
 
-from .filter import make_dt_aware, DateRangeFilter, DateTimeRangeFilter
+from .filter import DateRangeFilter, DateTimeRangeFilter
 
 
 class MyModel(models.Model):
@@ -57,7 +57,7 @@ class DateFuncTestCase(TestCase):
     def test_make_dt_aware_without_pytz(self):
         with override_settings(USE_TZ=False):
             now = datetime.datetime.now()
-            date = make_dt_aware(now)
+            date = DateRangeFilter.make_dt_aware(now, None)
 
             self.assertEqual(date.tzinfo, None)
             self.assertTrue(timezone.is_naive(date))
@@ -65,14 +65,13 @@ class DateFuncTestCase(TestCase):
     def test_make_dt_aware_with_pytz(self):
         local_tz = timezone.get_current_timezone()
         now = datetime.datetime.now()
-        date = make_dt_aware(now)
+        date = DateRangeFilter.make_dt_aware(now, local_tz)
 
         self.assertEqual(date.tzinfo.zone, local_tz.zone)
         self.assertTrue(timezone.is_aware(date))
 
         now = timezone.now()
-        date = make_dt_aware(now)
-
+        date = DateRangeFilter.make_dt_aware(now, local_tz)
         self.assertEqual(date.tzinfo.zone, local_tz.zone)
         self.assertTrue(timezone.is_aware(date))
 

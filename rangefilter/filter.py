@@ -11,24 +11,10 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils import timezone
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime as BaseAdminSplitDateTime
-
-try:
-    import pytz
-except ImportError:
-    pytz = None
-
-
-def make_dt_aware(dt):
-    if pytz is not None and settings.USE_TZ:
-        timezone = pytz.timezone(settings.TIME_ZONE)
-        if dt.tzinfo is not None:
-            dt = timezone.normalize(dt)
-        else:
-            dt = timezone.localize(dt)
-    return dt
 
 
 class AdminSplitDateTime(BaseAdminSplitDateTime):
@@ -47,6 +33,19 @@ class DateRangeFilter(admin.filters.FieldListFilter):
 
         self.form = self.get_form(request)
 
+    def get_timezone(self, request):
+        return timezone.get_default_timezone()
+
+    @staticmethod
+    def make_dt_aware(value, timezone):
+        if settings.USE_TZ:
+            default_tz = timezone
+            if value.tzinfo is not None:
+                value = default_tz.normalize(value)
+            else:
+                value = default_tz.localize(value)
+        return value
+
     def choices(self, cl):
         yield {
             'system_name': slugify(self.title),
@@ -63,25 +62,27 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             validated_data = dict(self.form.cleaned_data.items())
             if validated_data:
                 return queryset.filter(
-                    **self._make_query_filter(validated_data)
+                    **self._make_query_filter(request, validated_data)
                 )
         return queryset
 
     def _get_expected_fields(self):
         return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
 
-    def _make_query_filter(self, validated_data):
+    def _make_query_filter(self, request, validated_data):
         query_params = {}
         date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
         date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
 
         if date_value_gte:
-            query_params['{0}__gte'.format(self.field_path)] = make_dt_aware(
-                datetime.datetime.combine(date_value_gte, datetime.time.min)
+            query_params['{0}__gte'.format(self.field_path)] = self.make_dt_aware(
+                datetime.datetime.combine(date_value_gte, datetime.time.min),
+                self.get_timezone(request),
             )
         if date_value_lte:
-            query_params['{0}__lte'.format(self.field_path)] = make_dt_aware(
-                datetime.datetime.combine(date_value_lte, datetime.time.max)
+            query_params['{0}__lte'.format(self.field_path)] = self.make_dt_aware(
+                datetime.datetime.combine(date_value_lte, datetime.time.max),
+                self.get_timezone(request),
             )
 
         return query_params
@@ -165,18 +166,18 @@ class DateTimeRangeFilter(DateRangeFilter):
                 )),
         ))
 
-    def _make_query_filter(self, validated_data):
+    def _make_query_filter(self, request, validated_data):
         query_params = {}
         date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
         date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
 
         if date_value_gte:
-            query_params['{0}__gte'.format(self.field_path)] = make_dt_aware(
-                date_value_gte
+            query_params['{0}__gte'.format(self.field_path)] = self.make_dt_aware(
+                date_value_gte, self.get_timezone(request)
             )
         if date_value_lte:
-            query_params['{0}__lte'.format(self.field_path)] = make_dt_aware(
-                date_value_lte
+            query_params['{0}__lte'.format(self.field_path)] = self.make_dt_aware(
+                date_value_lte, self.get_timezone(request)
             )
 
         return query_params

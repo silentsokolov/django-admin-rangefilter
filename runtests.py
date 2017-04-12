@@ -25,11 +25,7 @@ settings.configure(
     USE_TZ=True
 )
 
-from django.test.utils import setup_test_environment
-setup_test_environment()
-
-if django.VERSION > (1, 7):
-    django.setup()
+django.setup()
 
 if __name__ == '__main__':
     call_command('test', 'rangefilter')
