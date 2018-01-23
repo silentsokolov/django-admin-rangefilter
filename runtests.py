@@ -22,7 +22,8 @@ settings.configure(
         'default': {'ENGINE': 'django.db.backends.sqlite3'}
     },
     TEST_RUNNER='django.test.runner.DiscoverRunner',
-    USE_TZ=True
+    USE_TZ=True,
+    TIME_ZONE='UTC',
 )
 
 django.setup()

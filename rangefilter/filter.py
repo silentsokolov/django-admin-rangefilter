@@ -5,6 +5,11 @@ from __future__ import unicode_literals
 import datetime
 import django
 
+try:
+    import pytz
+except ImportError:
+    pytz = None
+
 from collections import OrderedDict
 
 from django import forms
@@ -38,7 +43,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
 
     @staticmethod
     def make_dt_aware(value, timezone):
-        if settings.USE_TZ:
+        if settings.USE_TZ and pytz is not None:
             default_tz = timezone
             if value.tzinfo is not None:
                 value = default_tz.normalize(value)

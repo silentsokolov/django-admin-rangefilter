@@ -4,6 +4,13 @@ from __future__ import unicode_literals
 
 import datetime
 
+try:
+    import pytz
+except ImportError:
+    pytz = None
+
+from unittest import skipIf
+
 from django.utils import timezone
 from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
@@ -62,6 +69,7 @@ class DateFuncTestCase(TestCase):
             self.assertEqual(date.tzinfo, None)
             self.assertTrue(timezone.is_naive(date))
 
+    @skipIf(pytz is None, "install pytz")
     def test_make_dt_aware_with_pytz(self):
         local_tz = timezone.get_current_timezone()
         now = datetime.datetime.now()
