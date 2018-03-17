@@ -6,6 +6,7 @@ python:
   - 3.3
   - 3.4
   - 3.5
+  - 3.6
 
 install:
     - pip install Django${DJANGO_VERSION}
@@ -17,7 +18,8 @@ env:
     - DJANGO_VERSION=">=1.8,<1.9"
     - DJANGO_VERSION=">=1.9,<1.10"
     - DJANGO_VERSION=">=1.10,<1.11"
-    - DJANGO_VERSION=">=1.11,<2.0.0"
+    - DJANGO_VERSION=">=1.11,<2.0"
+    - DJANGO_VERSION=">=2.0,<2.1"
 
 matrix:
   exclude:
@@ -26,9 +28,11 @@ matrix:
     - python: 3.3
       env: DJANGO_VERSION=">=1.10,<1.11"
     - python: 3.3
-      env: DJANGO_VERSION=">=1.11,<2.0.0"
-    - python: 3.4
-      env: DJANGO_VERSION=">=1.11,<2.0.0"
+      env: DJANGO_VERSION=">=1.11,<2.0"
+    - python: 3.3
+      env: DJANGO_VERSION=">=2.0,<2.1"
+    - python: 2.7
+      env: DJANGO_VERSION=">=2.0,<2.1"
 
 branches:
   only:
