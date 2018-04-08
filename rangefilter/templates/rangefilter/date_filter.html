@@ -1,5 +1,6 @@
 {% load i18n admin_static %}
 <h3>{% blocktrans with filter_title=title %} By {{ filter_title }} {% endblocktrans %}</h3>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style>
     .button, input[type=reset] {
         background: #79aec8;
@@ -68,9 +69,43 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
         window.location = window.location.pathname + query_string;
     }
 </script>
+<script>
+    // Code below makes sure that the DateTimeShortcuts.js is loaded exactly once
+    // regardless the presence of AdminDateWidget
+    // How it worked:
+    //  - First Django loads the model formset with predefined widgets for different
+    //    field types. If there's a date based field, then it loads the AdminDateWidget
+    //    and it's required media to context under {{media.js}} in admin/change_list.html.
+    //    (Note: it accumulates media in django.forms.widgets.Media object,
+    //    which prevents duplicates, but the DateRangeFilter is not included yet
+    //    since it's not model field related.
+    //    List of predefined widgets is in django.contrib.admin.options.FORMFIELD_FOR_DBFIELD_DEFAULTS)
+    //  - After that Django starts rendering forms, which have the {{form.media}}
+    //    tag. Only then the DjangoRangeFilter.get_media is called and rendered,
+    //    which creates the duplicates.
+    // How it works:
+    //  - first step is the same, if there's a AdminDateWidget to be loaded then
+    //    nothing changes
+    //  - DOM gets rendered and if the AdminDateWidget was rendered then
+    //    the DateTimeShortcuts.js is initiated which sets the window.DateTimeShortcuts.
+    //    Otherwise, the window.DateTimeShortcuts is undefined.
+    //  - The lines below check if the DateTimeShortcuts has been set and if not
+    //    then the DateTimeShortcuts.js and calendar.js is rendered
+    //
+    //  https://github.com/silentsokolov/django-admin-rangefilter/issues/9
+    //
+    django.jQuery('document').ready(function () {
+        if (!('DateTimeShortcuts' in window)) {
+            {% for m in spec.form.js %}
+                var script = document.createElement('script');
+                script.src = '{{m}}';
+                document.head.appendChild(script);
+            {% endfor %}
+        }
+    })
+</script>
 <div class="admindatefilter">
     <form method="GET" action="." id="{{ choices.0.system_name }}-form">
-        {{ spec.form.media }}
         {{ spec.form.as_p }}
         {% for choice in choices %}
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
