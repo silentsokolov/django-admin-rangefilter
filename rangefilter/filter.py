@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils import timezone
 from django.template.defaultfilters import slugify
+from django.templatetags.static import StaticNode
 from django.utils.translation import ugettext as _
 from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime as BaseAdminSplitDateTime
 
@@ -35,7 +36,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         self.lookup_kwarg_lte = '{}__lte'.format(field_path)
 
         super(DateRangeFilter, self).__init__(field, request, params, model, model_admin, field_path)
-
+        self.request = request
         self.form = self.get_form(request)
 
     def get_timezone(self, request):
@@ -112,7 +113,14 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             {'base_fields': fields}
         )
         form_class.media = self._get_media()
-
+        # lines below ensure that the js static files are loaded just once
+        # even if there is more than one DateRangeFilter in use
+        request_key = 'DJANGO_RANGEFILTER_ADMIN_JS_SET'
+        if (getattr(self.request, request_key, False)):
+            form_class.js = []
+        else:
+            setattr(self.request, request_key, True)
+            form_class.js = self.get_js()
         return form_class
 
     def _get_form_fields(self):
@@ -130,6 +138,13 @@ class DateRangeFilter(admin.filters.FieldListFilter):
                     required=False
                 )),
         ))
+
+    @staticmethod
+    def get_js():
+        return [
+            StaticNode.handle_simple('admin/js/calendar.js'),
+            StaticNode.handle_simple('admin/js/admin/DateTimeShortcuts.js'),
+        ]
 
     @staticmethod
     def _get_media():
