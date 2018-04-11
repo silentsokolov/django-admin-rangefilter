@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 
 __author__ = 'Dmitriy Sokolov'
-__version__ = '0.3.3'
+__version__ = '0.3.4'
 
 
 default_app_config = 'rangefilter.apps.RangeFilterConfig'

@@ -6,6 +6,10 @@ import re
 from setuptools import setup
 
 
+def read_md(f):
+    return open(f, 'r', encoding='utf-8').read()
+
+
 def get_version(package):
     init_py = open(os.path.join(package, '__init__.py')).read()
     return re.search("__version__ = ['\"]([^'\"]+)['\"]", init_py).group(1)
@@ -33,17 +37,18 @@ setup(
     version=get_version('rangefilter'),
     url='https://github.com/silentsokolov/django-admin-rangefilter',
     license='MIT',
+    description='django-admin-rangefilter app, add the filter by a custom date range on the admin UI.',
+    long_description=read_md('README.rst'),
     author='Dmitriy Sokolov',
     author_email='silentsokolov@gmail.com',
-    description='django-admin-rangefilter app, add the filter by a custom date range on the admin UI.',
-    zip_safe=False,
-    include_package_data=True,
-    platforms='any',
     packages=get_packages('rangefilter'),
     package_data=get_package_data('rangefilter'),
+    include_package_data=True,
     install_requires=[],
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
+    zip_safe=False,
+    platforms='any',
     classifiers=[
-        'Development Status :: 4 - Beta',
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
@@ -51,7 +56,12 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Utilities',
     ],
 )
