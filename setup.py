@@ -3,11 +3,8 @@
 
 import os
 import re
+from os.path import join, dirname
 from setuptools import setup
-
-
-def read_md(f):
-    return open(f, 'r', encoding='utf-8').read()
 
 
 def get_version(package):
@@ -38,7 +35,7 @@ setup(
     url='https://github.com/silentsokolov/django-admin-rangefilter',
     license='MIT',
     description='django-admin-rangefilter app, add the filter by a custom date range on the admin UI.',
-    long_description=read_md('README.rst'),
+    long_description=open(join(dirname(__file__), 'README.rst')).read(),
     author='Dmitriy Sokolov',
     author_email='silentsokolov@gmail.com',
     packages=get_packages('rangefilter'),
