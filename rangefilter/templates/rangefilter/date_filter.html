@@ -2,9 +2,10 @@
 <h3>{% blocktrans with filter_title=title %} By {{ filter_title }} {% endblocktrans %}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style>
+    .button, input[type=submit], input[type=button], .submit-row input, a.button,
     .button, input[type=reset] {
         background: #79aec8;
-        padding: 10px 15px;
+        padding: 4px 5px;
         border: none;
         border-radius: 4px;
         color: #fff;
