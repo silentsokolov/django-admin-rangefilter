@@ -1,3 +1,6 @@
+0.3.7 (2018-06-29)
+    - Fix system name with non-unicode char (#18)
+
 0.3.6 (2018-04-27)
     - Change padding on the buttons (#16)
 
