@@ -17,6 +17,7 @@ from django.test.utils import override_settings
 from django.db import models
 from django.contrib.admin import ModelAdmin, site
 from django.contrib.admin.views.main import ChangeList
+from django.contrib.auth.models import User
 from django.utils.encoding import force_text
 
 from .filter import DateRangeFilter, DateTimeRangeFilter
@@ -98,7 +99,12 @@ class DateRangeFilterTestCase(TestCase):
         self.djangonaut_book_date = MyModelDate.objects.create(
             created_at=timezone.now() - datetime.timedelta(days=7))
 
+        self.user = User.objects.create_user(username='test', password='top_secret')
+
     def get_changelist(self, request, model, modeladmin):
+        if getattr(modeladmin, 'get_changelist_instance', None):
+            return modeladmin.get_changelist_instance(request)
+
         return ChangeList(
             request, model, modeladmin.list_display,
             modeladmin.list_display_links, modeladmin.list_filter,
@@ -112,6 +118,8 @@ class DateRangeFilterTestCase(TestCase):
         modeladmin = MyModelAdmin(MyModel, site)
 
         request = self.request_factory.get('/')
+        request.user = self.user
+
         changelist = self.get_changelist(request, MyModel, modeladmin)
 
         queryset = changelist.get_queryset(request)
@@ -126,6 +134,8 @@ class DateRangeFilterTestCase(TestCase):
 
         request = self.request_factory.get('/', {'created_at__gte': self.today,
                                                  'created_at__lte': self.tomorrow})
+        request.user = self.user
+
         changelist = self.get_changelist(request, MyModel, modeladmin)
 
         queryset = changelist.get_queryset(request)
@@ -143,6 +153,8 @@ class DateRangeFilterTestCase(TestCase):
         modeladmin = MyModelAdmin(MyModel, site)
 
         request = self.request_factory.get('/', {'created_at__gte': self.today})
+        request.user = self.user
+
         changelist = self.get_changelist(request, MyModel, modeladmin)
 
         queryset = changelist.get_queryset(request)
@@ -161,6 +173,8 @@ class DateRangeFilterTestCase(TestCase):
 
         request = self.request_factory.get('/', {'created_at__gte': self.today,
                                                  'created_at__lte': self.tomorrow})
+        request.user = self.user
+
         changelist = self.get_changelist(request, MyModelDate, modeladmin)
 
         queryset = changelist.get_queryset(request)
@@ -190,7 +204,12 @@ class DateTimeRangeFilterTestCase(TestCase):
         self.djangonaut_book_date = MyModelDate.objects.create(
             created_at=timezone.now() - datetime.timedelta(days=7))
 
+        self.user = User.objects.create_user(username='test', password='top_secret')
+
     def get_changelist(self, request, model, modeladmin):
+        if getattr(modeladmin, 'get_changelist_instance', None):
+            return modeladmin.get_changelist_instance(request)
+
         return ChangeList(
             request, model, modeladmin.list_display,
             modeladmin.list_display_links, modeladmin.list_filter,
@@ -204,6 +223,8 @@ class DateTimeRangeFilterTestCase(TestCase):
         modeladmin = MyModelTimeAdmin(MyModel, site)
 
         request = self.request_factory.get('/')
+        request.user = self.user
+
         changelist = self.get_changelist(request, MyModel, modeladmin)
 
         queryset = changelist.get_queryset(request)
@@ -220,6 +241,8 @@ class DateTimeRangeFilterTestCase(TestCase):
                                                  'created_at__gte_1': self.min_time,
                                                  'created_at__lte_0': self.tomorrow,
                                                  'created_at__lte_1': self.max_time})
+        request.user = self.user
+
         changelist = self.get_changelist(request, MyModel, modeladmin)
 
         queryset = changelist.get_queryset(request)
@@ -238,6 +261,8 @@ class DateTimeRangeFilterTestCase(TestCase):
 
         request = self.request_factory.get('/', {'created_at__gte_0': self.today,
                                                  'created_at__gte_1': self.min_time})
+        request.user = self.user
+
         changelist = self.get_changelist(request, MyModel, modeladmin)
 
         queryset = changelist.get_queryset(request)
