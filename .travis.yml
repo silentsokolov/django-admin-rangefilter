@@ -16,19 +16,13 @@ matrix:
       - { python: "3.5", env: DJANGO_VERSION=">=1.11,<2.0" }
       - { python: "3.5", env: DJANGO_VERSION=">=2.0,<2.1" }
       - { python: "3.5", env: DJANGO_VERSION=">=2.1,<2.2" }
-      - { python: "3.5", env: DJANGO_VERSION="==master" }
 
       - { python: "3.6", env: DJANGO_VERSION=">=1.11,<2.0" }
       - { python: "3.6", env: DJANGO_VERSION=">=2.0,<2.1" }
       - { python: "3.6", env: DJANGO_VERSION=">=2.1,<2.2" }
-      - { python: "3.6", env: DJANGO_VERSION="==master" }
 
-      - { python: "3.7", env: DJANGO_VERSION=">=2.0,<2.1" }
-      - { python: "3.7", env: DJANGO_VERSION=">=2.1,<2.2" }
-      - { python: "3.7", env: DJANGO_VERSION="==master" }
-
-    allow_failures:
-      - env: DJANGO_VERSION=master
+      - { python: "3.7", env: DJANGO_VERSION=">=2.0,<2.1", dist: xenial, sudo: true }
+      - { python: "3.7", env: DJANGO_VERSION=">=2.1,<2.2", dist: xenial, sudo: true }
 
 install:
     - pip install Django${DJANGO_VERSION}
