@@ -102,6 +102,8 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
                 script.src = '{{m}}';
                 document.head.appendChild(script);
             {% endfor %}
+            $(".datetimeshortcuts").remove();
+            DateTimeShortcuts.init();
         }
     })
 </script>
