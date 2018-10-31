@@ -97,13 +97,19 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
     //
     django.jQuery('document').ready(function () {
         if (!('DateTimeShortcuts' in window)) {
-            {% for m in spec.form.js %}
-                var script = document.createElement('script');
-                script.src = '{{m}}';
-                document.head.appendChild(script);
-            {% endfor %}
+            django.jQuery.when(
+                {% for m in spec.form.js %}
+                    django.jQuery.getScript('{{m}}'),
+                {% endfor %}
+                django.jQuery.Deferred(function( deferred ){
+                    django.jQuery( deferred.resolve );
+                })
+            ).done(function(){
+                django.jQuery(".datetimeshortcuts").remove();
+                DateTimeShortcuts.init();
+            });
         }
-    })
+    });
 </script>
 <div class="admindatefilter">
     <form method="GET" action="." id="{{ choices.0.system_name }}-form">
