@@ -95,6 +95,9 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
     //
     //  https://github.com/silentsokolov/django-admin-rangefilter/issues/9
     //
+    // Django 2.1
+    //  https://github.com/silentsokolov/django-admin-rangefilter/issues/21
+    //
     django.jQuery('document').ready(function () {
         if (!('DateTimeShortcuts' in window)) {
             django.jQuery.when(
@@ -105,7 +108,7 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
                     django.jQuery( deferred.resolve );
                 })
             ).done(function(){
-                django.jQuery(".datetimeshortcuts").remove();
+                django.jQuery('.datetimeshortcuts').remove();
                 DateTimeShortcuts.init();
             });
         }
