@@ -32,8 +32,6 @@
     }
     .calendarbox {
         z-index: 1100;
-        margin-left: -16em !important;
-        margin-top: 9em !important;
     }
     .clockbox {
         z-index: 1100;
@@ -51,6 +49,12 @@
         position: absolute;
         padding-top: 3px;
         padding-left: 4px;
+    }
+    @media (min-width: 768px) {
+        .calendarbox {
+            margin-left: -16em !important;
+            margin-top: 9em !important;
+        }
     }
 </style>
 <!--
