@@ -1,3 +1,6 @@
+0.3.10 (2018-12-05)
+    - Fix calendar position on mobile (#23)
+
 0.3.9 (2018-10-31)
     - Fix calendar icons displayed for Django 2.1
 
