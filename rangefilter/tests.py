@@ -12,6 +12,7 @@ except ImportError:
 from unittest import skipIf
 
 from django.utils import timezone
+from django.template import Context, Template
 from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
 from django.db import models
@@ -274,3 +275,18 @@ class DateTimeRangeFilterTestCase(TestCase):
         choice = select_by(filterspec.choices(changelist))
         self.assertEqual(choice['query_string'], '?')
         self.assertEqual(choice['system_name'], 'created-at')
+
+
+class StaticOrAdminStaticTestCase(TestCase):
+
+    def test_renders_static_path_to_asset(self):
+        context = Context()
+        test_template = Template('{% load static_or_admin_static %}'
+                                 '<link rel="stylesheet" type="text/css" '
+                                 'href="{% static \'admin/css/widgets.css\' %}">')
+
+        rendered_template = test_template.render(context)
+
+        self.assertEqual(rendered_template,
+                         '<link rel="stylesheet" type="text/css" '
+                         'href="admin/css/widgets.css">')
