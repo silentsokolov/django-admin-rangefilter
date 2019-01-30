@@ -1,0 +1,49 @@
+# This file is distributed under the same license as the django-admin-rangefilter package.
+#
+# Translators:
+# Sardorbek Imomaliev <sardorbek.imomaliev@gmail.com>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: rangefilter\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-29 11:31+0000\n"
+"PO-Revision-Date: 2019-01-29 12:53+0000\n"
+"Last-Translator: Sardorbek Imomaliev <sardorbek.imomaliev@gmail.com>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: apps.py:11
+msgid "Range Filter"
+msgstr "Фильтр диапазона"
+
+#: filter.py:133 filter.py:180
+msgid "From date"
+msgstr "С даты"
+
+#: filter.py:139 filter.py:186
+msgid "To date"
+msgstr "По дату"
+
+#: templates/rangefilter/date_filter.html:2
+#: templates/rangefilter/date_filter_1_8.html:2
+#, python-format
+msgid " By %(filter_title)s "
+msgstr "От %(filter_title)s "
+
+#: templates/rangefilter/date_filter.html:133
+#: templates/rangefilter/date_filter_1_8.html:89
+msgid "Search"
+msgstr "Найти"
+
+#: templates/rangefilter/date_filter.html:134
+#: templates/rangefilter/date_filter_1_8.html:90
+msgid "Reset"
+msgstr "Сбросить"
