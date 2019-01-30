@@ -23,6 +23,7 @@ settings.configure(
     TEST_RUNNER='django.test.runner.DiscoverRunner',
     USE_TZ=True,
     TIME_ZONE='UTC',
+    STATIC_URL='/static/',
 )
 
 django.setup()

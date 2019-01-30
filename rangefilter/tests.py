@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 
 import datetime
 
+from django.contrib.staticfiles.storage import staticfiles_storage
+
 try:
     import pytz
 except ImportError:
@@ -21,6 +23,7 @@ from django.contrib.auth.models import User
 from django.utils.encoding import force_text
 
 from .filter import DateRangeFilter, DateTimeRangeFilter
+from .templatetags import static_or_admin_static
 
 
 class MyModel(models.Model):
@@ -274,3 +277,23 @@ class DateTimeRangeFilterTestCase(TestCase):
         choice = select_by(filterspec.choices(changelist))
         self.assertEqual(choice['query_string'], '?')
         self.assertEqual(choice['system_name'], 'created-at')
+
+
+class StaticOrAdminStaticTestCase(TestCase):
+
+    @override_settings(STATIC_URL='/my_statics/')
+    def test_returns_static_path_to_asset_when_staticfiles_app_is_not_installed(self):
+        self.assertEqual(static_or_admin_static.static('admin/css/widgets.css'),
+                         '/my_statics/admin/css/widgets.css')
+
+    def test_returns_static_path_to_asset_when_staticfiles_app_is_installed(self):
+        with self.modify_settings(INSTALLED_APPS={
+            'append': 'django.contrib.staticfiles',
+        }):
+            old_url = staticfiles_storage.base_url
+            staticfiles_storage.base_url = '/test/'
+            try:
+                self.assertEqual(static_or_admin_static.static('admin/css/widgets.css'),
+                                 '/test/admin/css/widgets.css')
+            finally:
+                staticfiles_storage.base_url = old_url
