@@ -1,3 +1,6 @@
+0.3.11 (2019-01-30)
+    - Avoid loading admin_static in templates under Django>=1.10 (#27)
+
 0.3.10 (2018-12-05)
     - Fix calendar position on mobile (#23)
 

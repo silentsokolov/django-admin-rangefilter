@@ -278,7 +278,7 @@ class DateTimeRangeFilterTestCase(TestCase):
         self.assertEqual(choice['system_name'], 'created-at')
 
 
-class StaticOrAdminStaticTestCase(TestCase):
+class TemplateTagsTestCase(TestCase):
     @override_settings(STATIC_URL='/test/')
     def test_returns_static_path_to_asset_when_staticfiles_app_is_not_installed(self):
         self.assertEqual(static('path'), '/test/path')
