@@ -15,7 +15,7 @@ django-admin-rangefilter app, add the filter by a custom date / datetime range o
 Requirements
 ------------
 
-* Python 2.7+ or Python 3.3+
+* Python 2.7+ or Python 3.4+
 * Django 1.8+
 
 
@@ -52,6 +52,7 @@ In admin
 
     from django.contrib import admin
     from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
+
 
     @admin.register(Post)
     class PostAdmin(admin.ModelAdmin):
