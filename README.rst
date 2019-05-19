@@ -53,6 +53,8 @@ In admin
     from django.contrib import admin
     from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
 
+    from .models import Post
+
 
     @admin.register(Post)
     class PostAdmin(admin.ModelAdmin):
