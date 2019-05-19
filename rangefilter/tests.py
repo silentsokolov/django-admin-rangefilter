@@ -72,7 +72,7 @@ class DateFuncTestCase(TestCase):
             self.assertEqual(date.tzinfo, None)
             self.assertTrue(timezone.is_naive(date))
 
-    @skipIf(pytz is None, "install pytz")
+    @skipIf(pytz is None, 'install pytz')
     def test_make_dt_aware_with_pytz(self):
         local_tz = timezone.get_current_timezone()
         now = datetime.datetime.now()
@@ -134,8 +134,8 @@ class DateRangeFilterTestCase(TestCase):
         self.request_factory = RequestFactory()
         modeladmin = MyModelAdmin(MyModel, site)
 
-        request = self.request_factory.get('/', {'created_at__gte': self.today,
-                                                 'created_at__lte': self.tomorrow})
+        request = self.request_factory.get('/', {'created_at__range__gte': self.today,
+                                                 'created_at__range__lte': self.tomorrow})
         request.user = self.user
 
         changelist = self.get_changelist(request, MyModel, modeladmin)
@@ -154,7 +154,7 @@ class DateRangeFilterTestCase(TestCase):
         self.request_factory = RequestFactory()
         modeladmin = MyModelAdmin(MyModel, site)
 
-        request = self.request_factory.get('/', {'created_at__gte': self.today})
+        request = self.request_factory.get('/', {'created_at__range__gte': self.today})
         request.user = self.user
 
         changelist = self.get_changelist(request, MyModel, modeladmin)
@@ -173,8 +173,8 @@ class DateRangeFilterTestCase(TestCase):
         self.request_factory = RequestFactory()
         modeladmin = MyModelDateAdmin(MyModelDate, site)
 
-        request = self.request_factory.get('/', {'created_at__gte': self.today,
-                                                 'created_at__lte': self.tomorrow})
+        request = self.request_factory.get('/', {'created_at__range__gte': self.today,
+                                                 'created_at__range__lte': self.tomorrow})
         request.user = self.user
 
         changelist = self.get_changelist(request, MyModelDate, modeladmin)
@@ -239,10 +239,10 @@ class DateTimeRangeFilterTestCase(TestCase):
         self.request_factory = RequestFactory()
         modeladmin = MyModelTimeAdmin(MyModel, site)
 
-        request = self.request_factory.get('/', {'created_at__gte_0': self.today,
-                                                 'created_at__gte_1': self.min_time,
-                                                 'created_at__lte_0': self.tomorrow,
-                                                 'created_at__lte_1': self.max_time})
+        request = self.request_factory.get('/', {'created_at__range__gte_0': self.today,
+                                                 'created_at__range__gte_1': self.min_time,
+                                                 'created_at__range__lte_0': self.tomorrow,
+                                                 'created_at__range__lte_1': self.max_time})
         request.user = self.user
 
         changelist = self.get_changelist(request, MyModel, modeladmin)
@@ -261,8 +261,8 @@ class DateTimeRangeFilterTestCase(TestCase):
         self.request_factory = RequestFactory()
         modeladmin = MyModelTimeAdmin(MyModel, site)
 
-        request = self.request_factory.get('/', {'created_at__gte_0': self.today,
-                                                 'created_at__gte_1': self.min_time})
+        request = self.request_factory.get('/', {'created_at__range__gte_0': self.today,
+                                                 'created_at__range__gte_1': self.min_time})
         request.user = self.user
 
         changelist = self.get_changelist(request, MyModel, modeladmin)

@@ -33,8 +33,8 @@ class AdminSplitDateTime(BaseAdminSplitDateTime):
 
 class DateRangeFilter(admin.filters.FieldListFilter):
     def __init__(self, field, request, params, model, model_admin, field_path):
-        self.lookup_kwarg_gte = '{}__gte'.format(field_path)
-        self.lookup_kwarg_lte = '{}__lte'.format(field_path)
+        self.lookup_kwarg_gte = '{0}__range__gte'.format(field_path)
+        self.lookup_kwarg_lte = '{0}__range__lte'.format(field_path)
 
         super(DateRangeFilter, self).__init__(field, request, params, model, model_admin, field_path)
         self.request = request
