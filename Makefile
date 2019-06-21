@@ -16,8 +16,7 @@ pre-release: sdist wheel
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
 clean:
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
+	find . | grep -E '(__pycache__|\.pyc|\.pyo$)' | xargs rm -rf
 	rm -rf build
 	rm -rf dist
 	rm -rf *.egg-info
