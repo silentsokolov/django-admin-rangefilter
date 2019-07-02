@@ -28,8 +28,8 @@
   django.jQuery('document').ready(function () {
       if (!('DateTimeShortcuts' in window)) {
           django.jQuery.when(
-              django.jQuery.getScript('/static/admin/js/admin/DateTimeShortcuts.js'),
               django.jQuery.getScript('/static/admin/js/calendar.js'),
+              django.jQuery.getScript('/static/admin/js/admin/DateTimeShortcuts.js'),
               django.jQuery.Deferred(function( deferred ){
                   django.jQuery( deferred.resolve );
               })
