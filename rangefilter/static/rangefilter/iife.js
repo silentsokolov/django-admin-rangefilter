@@ -1,4 +1,4 @@
-(
+(function() {
   // Code below makes sure that the DateTimeShortcuts.js is loaded exactly once
   // regardless the presence of AdminDateWidget
   // How it worked:
@@ -63,4 +63,5 @@
       });
 
     });
-)()
+
+})();
