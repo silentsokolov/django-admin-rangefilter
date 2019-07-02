@@ -103,7 +103,7 @@ function embedScript(url) {
     newScript.onload = resolve();
     newScript.src = url;
     newScript.setAttribute("nonce", "{{ spec.request.csp_nonce }}");
-    document.body.appendChild(newScript);
+    document.head.appendChild(newScript);
   });
 }
 
