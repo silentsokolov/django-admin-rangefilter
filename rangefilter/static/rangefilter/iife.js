@@ -3,7 +3,6 @@
   django.jQuery(".admindatefilter").each(
     function(){
       var form_id = django.jQuery(this).find("form").attr('id').slice(0,-5);
-      console.info(form_id);
       var qs_name = form_id+"-query-string";
       var form_name = form_id+"-form";
 
