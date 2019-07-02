@@ -95,17 +95,24 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
 //
 // Django 2.1
 //  https://github.com/silentsokolov/django-admin-rangefilter/issues/21
+
+// Make a promise of a vanilla script creation
+function embedScript(url) {
+  return new Promise(function pr(resolve, reject) {
+    var newScript = document.createElement("script");
+    newScript.src = url;
+    newScript.setAttribute("nonce", "{{ spec.request.csp_nonce }}");
+    newScript.onload = resolve();
+    document.body.appendChild(newScript);
+  });
+}
+
+
 django.jQuery('document').ready(function () {
    if (!('DateTimeShortcuts' in window)) {
        django.jQuery.when(
            {% for m in spec.form.js %}
-               django.jQuery.ajax({
-                 dataType: "script",
-                 url: "{{ m }}",
-                 attrs: {
-                   nonce : "{{ spec.request.csp_nonce }}"
-                 }
-               }),
+                embedScript("{{ m }}"),
            {% endfor %}
            django.jQuery.Deferred(function( deferred ){
                django.jQuery( deferred.resolve );
