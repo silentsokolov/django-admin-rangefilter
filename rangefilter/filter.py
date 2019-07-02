@@ -10,6 +10,11 @@ try:
 except ImportError:
     pytz = None
 
+try:
+    import csp
+except ImportError:
+    csp = None
+
 from collections import OrderedDict
 
 from django import forms
@@ -100,8 +105,10 @@ class DateRangeFilter(admin.filters.FieldListFilter):
     def get_template(self):
         if django.VERSION[:2] <= (1, 8):
             return 'rangefilter/date_filter_1_8.html'
-
-        return 'rangefilter/date_filter.html'
+        else:
+            if csp:
+                return 'rangefilter/date_filter_csp.html'
+            return 'rangefilter/date_filter.html'
 
     template = property(get_template)
 
