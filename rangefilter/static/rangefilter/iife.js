@@ -18,7 +18,7 @@
       // Bind reset buttons
       django.jQuery(this).find("input[type=reset]").bind("click",
         function(){
-          var query_string = django.jQuery('input#'+qs_name).val();
+          var query_string = django.jQuery('input#'+query_name).val();
           window.location = window.location.pathname + query_string;
       });
 

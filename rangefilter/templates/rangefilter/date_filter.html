@@ -99,7 +99,13 @@ django.jQuery('document').ready(function () {
    if (!('DateTimeShortcuts' in window)) {
        django.jQuery.when(
            {% for m in spec.form.js %}
-               django.jQuery.getScript('{{m}}'),
+               django.jQuery.ajax({
+                 dataType: "script",
+                 url: "{{ m }}",
+                 attrs: {
+                   nonce : "{{ spec.request.csp_nonce }}"
+                 }
+               }),
            {% endfor %}
            django.jQuery.Deferred(function( deferred ){
                django.jQuery( deferred.resolve );
