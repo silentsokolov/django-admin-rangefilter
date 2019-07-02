@@ -1,4 +1,5 @@
 (function() {
+
   // Code below makes sure that the DateTimeShortcuts.js is loaded exactly once
   // regardless the presence of AdminDateWidget
   // How it worked:
@@ -47,7 +48,7 @@
       var form_name = form_id+"-form";
 
       // Bind submit buttons
-      $(this).find("input[type=select]").bind("click",
+      django.jQuery(this).find("input[type=select]").bind("click",
         function(event){
           event.preventDefault();
           var query_string = django.jQuery('input#'+query_name).val();
@@ -56,7 +57,7 @@
       });
 
       // Bind reset buttons
-      $(this).find("input[type=reset]").bind("click",
+      django.jQuery(this).find("input[type=reset]").bind("click",
         function(){
           var query_string = django.jQuery('input#'+qs_name).val();
           window.location = window.location.pathname + query_string;
