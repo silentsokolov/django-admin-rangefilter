@@ -1,9 +1,8 @@
 {% load i18n rangefilter_compat %}
 <h3>{% blocktrans with filter_title=title %}By {{ filter_title }}{% endblocktrans %}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'rangefilter/style.css' %}">
 <!--
-Resources
+JS admin resources
 -->
 <script type="text/javascript" src="{% static 'admin/js/calendar.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/admin/DateTimeShortcuts.js' %}"></script>
