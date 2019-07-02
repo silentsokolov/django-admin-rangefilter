@@ -1,6 +1,5 @@
 <style>
-    .button, input[type=submit], input[type=button], .submit-row input, a.button,
-    .button, input[type=reset] {
+    .button, input[type=submit], input[type=reset], input[type=button], .submit-row input, a.button {
         background: #79aec8;
         padding: 4px 5px;
         border: none;
