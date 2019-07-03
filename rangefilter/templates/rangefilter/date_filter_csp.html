@@ -106,11 +106,7 @@ function embedScript(url) {
         newScript.onload = resolve;
         newScript.setAttribute("nonce", "{{ spec.request.csp_nonce }}");
         document.head.appendChild(newScript);
-    })
-    .then(
-      function() {console.debug('Success');},
-      function() {console.debug('Failure');}
-    );
+    });
 }
 
 django.jQuery('document').ready(function () {
@@ -122,7 +118,6 @@ django.jQuery('document').ready(function () {
         {% endfor %}
 
         Promise.all(promiseList).then(function() {
-            console.debug('All promises resolved');
             django.jQuery('.datetimeshortcuts').remove();
             window.DateTimeShortcuts.init();
         });
