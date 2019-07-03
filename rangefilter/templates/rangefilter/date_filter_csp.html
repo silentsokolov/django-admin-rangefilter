@@ -98,26 +98,34 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
 
 // Make a promise out of script embed
 function embedScript(url) {
-  return new Promise(function pr(resolve, reject) {
-    var newScript = document.createElement("script");
-    newScript.onload = resolve();
-    newScript.src = url;
-    newScript.setAttribute("nonce", "{{ spec.request.csp_nonce }}");
-    document.head.appendChild(newScript);
-  });
+    return new Promise(function pr(resolve, reject) {
+        var newScript = document.createElement("script");
+        newScript.type = "text/javascript";
+        newScript.src = url;
+        newScript.onload = resolve;
+        newScript.setAttribute("nonce", "{{ spec.request.csp_nonce }}");
+        document.head.appendChild(newScript);
+    })
+    .then(
+      function() {console.debug('Success');},
+      function() {console.info('Failure');}
+    );
 }
 
 django.jQuery('document').ready(function () {
-   if (!('DateTimeShortcuts' in window)) {
-       django.jQuery.when(
-           {% for m in spec.form.js %}
-                embedScript("{{ m }}"),
-           {% endfor %}
-       ).done(function(){
-           django.jQuery('.datetimeshortcuts').remove();
-           DateTimeShortcuts.init();
-       });
-   }
+    if (!('DateTimeShortcuts' in window)) {
+        var promiseList = [];
+
+        {% for m in spec.form.js %}
+            promiseList.push(embedScript("{{ m }}"));
+        {% endfor %}
+
+        Promise.all(promiseList).then(function() {
+            console.debug('All promises resolved');
+            django.jQuery('.datetimeshortcuts').remove();
+            window.DateTimeShortcuts.init();
+        });
+    }
 });
 </script>
 
