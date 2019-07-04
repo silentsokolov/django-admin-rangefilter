@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Added
+- Add csp compliance through django-csp (thanks @jsumnerPhD)
+
 ## [0.4.0] - 2019-04-19
 ### Changed
 - Changed name lookup field `{field}__gte` -> `{field}__range__gte`

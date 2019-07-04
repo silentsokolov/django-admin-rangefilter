@@ -42,21 +42,6 @@ Example:
     )
 
 
-For Django 1.8+, if django-csp is installed, nonces will be added to style and script tags.
-
-Example:
-
-.. code:: python
-
-    INSTALLED_APPS = (
-        ...
-        'rangefilter',
-        "csp",
-        ...
-    )
-    
-
-
 Example usage
 -------------
 
@@ -76,3 +61,18 @@ In admin
         list_filter = (
             ('created_at', DateRangeFilter), ('updated_at', DateTimeRangeFilter),
         )
+
+
+Support Content-Security-Policy
+-------------------------------
+
+For Django 1.8+, if [django-csp](https://github.com/mozilla/django-csp) is installed, nonces will be added to style and script tags.
+
+.. code:: python
+
+    INSTALLED_APPS = (
+        ...
+        'rangefilter',
+        'csp',
+        ...
+    )
