@@ -1,7 +1,11 @@
 ## [Unreleased]
 
+## [0.5.0] - 2019-07-04
 ### Added
 - Add csp compliance through django-csp (thanks @jsumnerPhD)
+
+### Fixed
+- Fix problem with locale
 
 ## [0.4.0] - 2019-04-19
 ### Changed
@@ -63,7 +67,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.3.16...v0.4.0
 [0.3.16]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.3.15...v0.3.16
 [0.3.15]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.3.14...v0.3.15
