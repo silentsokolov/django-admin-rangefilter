@@ -66,7 +66,7 @@ In admin
 Support Content-Security-Policy
 -------------------------------
 
-For Django 1.8+, if [django-csp](https://github.com/mozilla/django-csp) is installed, nonces will be added to style and script tags.
+For Django 1.8+, if `django-csp <https://github.com/mozilla/django-csp>`_ is installed, nonces will be added to style and script tags.
 
 .. code:: python
 
