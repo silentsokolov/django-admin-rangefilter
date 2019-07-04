@@ -42,6 +42,21 @@ Example:
     )
 
 
+For Django 1.8+, if django-csp is installed, nonces will be added to style and script tags.
+
+Example:
+
+.. code:: python
+
+    INSTALLED_APPS = (
+        ...
+        'rangefilter',
+        "csp",
+        ...
+    )
+    
+
+
 Example usage
 -------------
 
