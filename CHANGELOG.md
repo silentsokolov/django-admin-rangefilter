@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Fix CSS overrides base admin button CSS (#36)
 
 ## [0.5.0] - 2019-07-04
 ### Added

@@ -2,8 +2,8 @@
 <h3>{% blocktrans with filter_title=title %}By {{ filter_title }}{% endblocktrans %}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style nonce="{{ spec.request.csp_nonce }}">
-    .button, input[type=submit], input[type=button], .submit-row input, a.button,
-    .button, input[type=reset] {
+    .admindatefilter .button, input[type=submit], input[type=button], .submit-row input, a.button,
+    .admindatefilter .button, input[type=reset] {
         background: #79aec8;
         padding: 4px 5px;
         border: none;
@@ -132,8 +132,8 @@ django.jQuery('document').ready(function () {
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
         <div class="controls">
-            <input type="submit" class="button" value="{% trans "Search" %}">
-            <input type="reset" class="button" value="{% trans "Reset" %}">
+            <input type="submit" class="admindatefilter" class="button" value="{% trans "Search" %}">
+            <input type="reset" class="admindatefilter button" value="{% trans "Reset" %}">
         </div>
     </form>
 </div>

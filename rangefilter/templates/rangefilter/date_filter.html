@@ -2,8 +2,8 @@
 <h3>{% blocktrans with filter_title=title %}By {{ filter_title }}{% endblocktrans %}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style>
-    .button, input[type=submit], input[type=button], .submit-row input, a.button,
-    .button, input[type=reset] {
+    .admindatefilter .button, input[type=submit], input[type=button], .submit-row input, a.button,
+    .admindatefilter .button, input[type=reset] {
         background: #79aec8;
         padding: 4px 5px;
         border: none;
@@ -130,8 +130,8 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
         <div class="controls">
-            <input type="submit" value="{% trans "Search" %}" onclick="datefilter_apply(event, '{{ choices.0.system_name }}-query-string', '{{ choices.0.system_name }}-form')">
-            <input type="reset" class="button" value="{% trans "Reset" %}" onclick="datefilter_reset('{{ choices.0.system_name }}-query-string')">
+            <input type="submit" class="admindatefilter" value="{% trans "Search" %}" onclick="datefilter_apply(event, '{{ choices.0.system_name }}-query-string', '{{ choices.0.system_name }}-form')">
+            <input type="reset" class="admindatefilter button" value="{% trans "Reset" %}" onclick="datefilter_reset('{{ choices.0.system_name }}-query-string')">
         </div>
     </form>
 </div>
