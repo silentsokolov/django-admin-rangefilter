@@ -1,5 +1,8 @@
 ## [Unreleased]
-- Fix CSS overrides base admin button CSS (#36)
+
+## [0.5.1] - 2019-10-15
+### Changed
+- Fix inline CSS that overrided base a admin CSS (#36)
 
 ## [0.5.0] - 2019-07-04
 ### Added
@@ -68,7 +71,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.3.16...v0.4.0
 [0.3.16]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.3.15...v0.3.16
