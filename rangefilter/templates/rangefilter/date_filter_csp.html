@@ -2,8 +2,8 @@
 <h3>{% blocktrans with filter_title=title %}By {{ filter_title }}{% endblocktrans %}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style nonce="{{ spec.request.csp_nonce }}">
-    .admindatefilter .button, input[type=submit], input[type=button], .submit-row input, a.button,
-    .admindatefilter .button, input[type=reset] {
+    .admindatefilter .button, .admindatefilter input[type=submit], .admindatefilter input[type=button], .admindatefilter .submit-row input, .admindatefilter a.button,
+    .admindatefilter .button, .admindatefilter input[type=reset] {
         background: #79aec8;
         padding: 4px 5px;
         border: none;
