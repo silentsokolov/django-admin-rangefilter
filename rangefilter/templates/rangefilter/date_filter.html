@@ -1,10 +1,11 @@
-{% load i18n admin_static %}
-<h3>{% blocktrans with filter_title=title %} By {{ filter_title }} {% endblocktrans %}</h3>
+{% load i18n rangefilter_compat %}
+<h3>{% blocktrans with filter_title=title %}By {{ filter_title }}{% endblocktrans %}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style>
-    .button, input[type=reset] {
+    .admindatefilter .button, .admindatefilter input[type=submit], .admindatefilter input[type=button], .admindatefilter .submit-row input, .admindatefilter a.button,
+    .admindatefilter .button, .admindatefilter input[type=reset] {
         background: #79aec8;
-        padding: 10px 15px;
+        padding: 4px 5px;
         border: none;
         border-radius: 4px;
         color: #fff;
@@ -31,8 +32,6 @@
     }
     .calendarbox {
         z-index: 1100;
-        margin-left: -16em !important;
-        margin-top: 9em !important;
     }
     .clockbox {
         z-index: 1100;
@@ -50,6 +49,17 @@
         position: absolute;
         padding-top: 3px;
         padding-left: 4px;
+    }
+    @media (min-width: 768px) {
+        .calendarbox {
+            margin-left: -16em !important;
+            margin-top: 9em !important;
+        }
+    }
+    @media (max-width: 767px) {
+        .calendarbox {
+            overflow: visible;
+        }
     }
 </style>
 <!--
@@ -94,15 +104,24 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
     //
     //  https://github.com/silentsokolov/django-admin-rangefilter/issues/9
     //
+    // Django 2.1
+    //  https://github.com/silentsokolov/django-admin-rangefilter/issues/21
+    //
     django.jQuery('document').ready(function () {
         if (!('DateTimeShortcuts' in window)) {
-            {% for m in spec.form.js %}
-                var script = document.createElement('script');
-                script.src = '{{m}}';
-                document.head.appendChild(script);
-            {% endfor %}
+            django.jQuery.when(
+                {% for m in spec.form.js %}
+                    django.jQuery.getScript('{{m}}'),
+                {% endfor %}
+                django.jQuery.Deferred(function( deferred ){
+                    django.jQuery( deferred.resolve );
+                })
+            ).done(function(){
+                django.jQuery('.datetimeshortcuts').remove();
+                DateTimeShortcuts.init();
+            });
         }
-    })
+    });
 </script>
 <div class="admindatefilter">
     <form method="GET" action="." id="{{ choices.0.system_name }}-form">

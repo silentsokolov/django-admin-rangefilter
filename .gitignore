@@ -46,7 +46,6 @@ coverage.xml
 .hypothesis/
 
 # Translations
-*.mo
 *.pot
 
 # Django stuff:
@@ -87,3 +86,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Translate
+.tx

@@ -9,7 +9,7 @@ from setuptools import setup
 
 def get_version(package):
     init_py = open(os.path.join(package, '__init__.py')).read()
-    return re.search("__version__ = ['\"]([^'\"]+)['\"]", init_py).group(1)
+    return re.search('__version__ = [\'"]([^\'"]+)[\'"]', init_py).group(1)
 
 
 def get_packages(package):
@@ -59,6 +59,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Utilities',
     ],
 )

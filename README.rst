@@ -15,7 +15,7 @@ django-admin-rangefilter app, add the filter by a custom date / datetime range o
 Requirements
 ------------
 
-* Python 2.7+ or Python 3.3+
+* Python 2.7+ or Python 3.4+
 * Django 1.8+
 
 
@@ -53,8 +53,26 @@ In admin
     from django.contrib import admin
     from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
 
+    from .models import Post
+
+
     @admin.register(Post)
     class PostAdmin(admin.ModelAdmin):
         list_filter = (
             ('created_at', DateRangeFilter), ('updated_at', DateTimeRangeFilter),
         )
+
+
+Support Content-Security-Policy
+-------------------------------
+
+For Django 1.8+, if `django-csp <https://github.com/mozilla/django-csp>`_ is installed, nonces will be added to style and script tags.
+
+.. code:: python
+
+    INSTALLED_APPS = (
+        ...
+        'rangefilter',
+        'csp',
+        ...
+    )

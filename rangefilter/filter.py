@@ -10,6 +10,11 @@ try:
 except ImportError:
     pytz = None
 
+try:
+    import csp
+except ImportError:
+    csp = None
+
 from collections import OrderedDict
 
 from django import forms
@@ -20,6 +25,7 @@ from django.utils import timezone
 from django.template.defaultfilters import slugify
 from django.templatetags.static import StaticNode
 from django.utils.translation import ugettext as _
+from django.utils.encoding import force_text
 from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime as BaseAdminSplitDateTime
 
 
@@ -32,8 +38,8 @@ class AdminSplitDateTime(BaseAdminSplitDateTime):
 
 class DateRangeFilter(admin.filters.FieldListFilter):
     def __init__(self, field, request, params, model, model_admin, field_path):
-        self.lookup_kwarg_gte = '{}__gte'.format(field_path)
-        self.lookup_kwarg_lte = '{}__lte'.format(field_path)
+        self.lookup_kwarg_gte = '{0}__range__gte'.format(field_path)
+        self.lookup_kwarg_lte = '{0}__range__lte'.format(field_path)
 
         super(DateRangeFilter, self).__init__(field, request, params, model, model_admin, field_path)
         self.request = request
@@ -54,7 +60,10 @@ class DateRangeFilter(admin.filters.FieldListFilter):
 
     def choices(self, cl):
         yield {
-            'system_name': slugify(self.title),
+            # slugify converts any non-unicode characters to empty characters
+            # but system_name is required, if title converts to empty string use id
+            # https://github.com/silentsokolov/django-admin-rangefilter/issues/18
+            'system_name': force_text(slugify(self.title) if slugify(self.title) else id(self.title)),
             'query_string': cl.get_query_string(
                 {}, remove=self._get_expected_fields()
             )
@@ -96,7 +105,10 @@ class DateRangeFilter(admin.filters.FieldListFilter):
     def get_template(self):
         if django.VERSION[:2] <= (1, 8):
             return 'rangefilter/date_filter_1_8.html'
-        return 'rangefilter/date_filter.html'
+        else:
+            if csp:
+                return 'rangefilter/date_filter_csp.html'
+            return 'rangefilter/date_filter.html'
 
     template = property(get_template)
 
@@ -124,7 +136,8 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         return form_class
 
     def _get_form_fields(self):
-        return OrderedDict((
+        return OrderedDict(
+            (
                 (self.lookup_kwarg_gte, forms.DateField(
                     label='',
                     widget=AdminDateWidget(attrs={'placeholder': _('From date')}),
@@ -137,7 +150,8 @@ class DateRangeFilter(admin.filters.FieldListFilter):
                     localize=True,
                     required=False
                 )),
-        ))
+            )
+        )
 
     @staticmethod
     def get_js():
@@ -171,7 +185,8 @@ class DateTimeRangeFilter(DateRangeFilter):
         return expected_fields
 
     def _get_form_fields(self):
-        return OrderedDict((
+        return OrderedDict(
+            (
                 (self.lookup_kwarg_gte, forms.SplitDateTimeField(
                     label='',
                     widget=AdminSplitDateTime(attrs={'placeholder': _('From date')}),
@@ -184,7 +199,8 @@ class DateTimeRangeFilter(DateRangeFilter):
                     localize=True,
                     required=False
                 )),
-        ))
+            )
+        )
 
     def _make_query_filter(self, request, validated_data):
         query_params = {}
