@@ -51,10 +51,10 @@
         margin-bottom: 2px;
     }
 </style>
-<!--
+{% comment %}
 Force load jsi18n, issues #5
 https://github.com/django/django/blob/stable/1.8.x/django/contrib/admin/templates/admin/change_list.html#L7
--->
+{% endcomment %}
 <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
 <script>
     function datefilter_apply(event, qs_name, form_name){
