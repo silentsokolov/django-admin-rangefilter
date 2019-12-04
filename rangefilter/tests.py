@@ -18,7 +18,7 @@ from django.db import models
 from django.contrib.admin import ModelAdmin, site
 from django.contrib.admin.views.main import ChangeList
 from django.contrib.auth.models import User
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.contrib.staticfiles.storage import staticfiles_storage
 
 from .filter import DateRangeFilter, DateTimeRangeFilter
@@ -128,7 +128,7 @@ class DateRangeFilterTestCase(TestCase):
 
         self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
         filterspec = changelist.get_filters(request)[0][0]
-        self.assertEqual(force_text(filterspec.title), 'created at')
+        self.assertEqual(force_str(filterspec.title), 'created at')
 
     def test_datefilter_filtered(self):
         self.request_factory = RequestFactory()
@@ -144,7 +144,7 @@ class DateRangeFilterTestCase(TestCase):
 
         self.assertEqual(list(queryset), [self.django_book])
         filterspec = changelist.get_filters(request)[0][0]
-        self.assertEqual(force_text(filterspec.title), 'created at')
+        self.assertEqual(force_str(filterspec.title), 'created at')
 
         choice = select_by(filterspec.choices(changelist))
         self.assertEqual(choice['query_string'], '?')
@@ -163,7 +163,7 @@ class DateRangeFilterTestCase(TestCase):
 
         self.assertEqual(list(queryset), [self.django_book])
         filterspec = changelist.get_filters(request)[0][0]
-        self.assertEqual(force_text(filterspec.title), 'created at')
+        self.assertEqual(force_str(filterspec.title), 'created at')
 
         choice = select_by(filterspec.choices(changelist))
         self.assertEqual(choice['query_string'], '?')
@@ -183,7 +183,7 @@ class DateRangeFilterTestCase(TestCase):
 
         self.assertEqual(list(queryset), [self.django_book_date])
         filterspec = changelist.get_filters(request)[0][0]
-        self.assertEqual(force_text(filterspec.title), 'created at')
+        self.assertEqual(force_str(filterspec.title), 'created at')
 
         choice = select_by(filterspec.choices(changelist))
         self.assertEqual(choice['query_string'], '?')
@@ -233,7 +233,7 @@ class DateTimeRangeFilterTestCase(TestCase):
 
         self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
         filterspec = changelist.get_filters(request)[0][0]
-        self.assertEqual(force_text(filterspec.title), 'created at')
+        self.assertEqual(force_str(filterspec.title), 'created at')
 
     def test_datetimfilter_filtered(self):
         self.request_factory = RequestFactory()
@@ -251,7 +251,7 @@ class DateTimeRangeFilterTestCase(TestCase):
 
         self.assertEqual(list(queryset), [self.django_book])
         filterspec = changelist.get_filters(request)[0][0]
-        self.assertEqual(force_text(filterspec.title), 'created at')
+        self.assertEqual(force_str(filterspec.title), 'created at')
 
         choice = select_by(filterspec.choices(changelist))
         self.assertEqual(choice['query_string'], '?')
@@ -271,7 +271,7 @@ class DateTimeRangeFilterTestCase(TestCase):
 
         self.assertEqual(list(queryset), [self.django_book])
         filterspec = changelist.get_filters(request)[0][0]
-        self.assertEqual(force_text(filterspec.title), 'created at')
+        self.assertEqual(force_str(filterspec.title), 'created at')
 
         choice = select_by(filterspec.choices(changelist))
         self.assertEqual(choice['query_string'], '?')

@@ -24,9 +24,13 @@ from django.utils.html import format_html
 from django.utils import timezone
 from django.template.defaultfilters import slugify
 from django.templatetags.static import StaticNode
-from django.utils.translation import ugettext as _
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime as BaseAdminSplitDateTime
+
+if django.VERSION >= (2, 0, 0):
+    from django.utils.translation import gettext_lazy as _
+else:
+    from django.utils.translation import ugettext_lazy as _
 
 
 class AdminSplitDateTime(BaseAdminSplitDateTime):
@@ -63,7 +67,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             # slugify converts any non-unicode characters to empty characters
             # but system_name is required, if title converts to empty string use id
             # https://github.com/silentsokolov/django-admin-rangefilter/issues/18
-            'system_name': force_text(slugify(self.title) if slugify(self.title) else id(self.title)),
+            'system_name': force_str(slugify(self.title) if slugify(self.title) else id(self.title)),
             'query_string': cl.get_query_string(
                 {}, remove=self._get_expected_fields()
             )
