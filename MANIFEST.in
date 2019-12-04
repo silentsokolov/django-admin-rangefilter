@@ -2,5 +2,5 @@ include LICENSE CHANGELOG.md README.rst
 recursive-include rangefilter/static *.js *.css *.png *.eot *.svg *.ttf *.woff
 recursive-include rangefilter/templates *.html
 recursive-include rangefilter/locale *.mo
-recursive-exclude * __pycache__
-recursive-exclude * *.py[co]
+global-exclude __pycache__
+global-exclude *.py[co]
