@@ -63,13 +63,14 @@
     }
 </style>
 
-<!--
+{% comment %}
 Force load jsi18n, issues #5
 https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templates/admin/change_list.html#L7
--->
+{% endcomment %}
 <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
 
 <script type="text/javascript" nonce="{{ spec.request.csp_nonce }}">
+{% comment %}
 // Code below makes sure that the DateTimeShortcuts.js is loaded exactly once
 // regardless the presence of AdminDateWidget
 // How it worked:
@@ -98,6 +99,7 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
 //  https://github.com/silentsokolov/django-admin-rangefilter/issues/21
 
 // Make a promise out of script embed
+{% endcomment %}
 function embedScript(url) {
     return new Promise(function pr(resolve, reject) {
         var newScript = document.createElement("script");
@@ -138,7 +140,5 @@ django.jQuery('document').ready(function () {
     </form>
 </div>
 
-<!--
-JS not requiring template variables refactored as an iife
--->
+{% comment %} JS not requiring template variables refactored as an iife {% endcomment %}
 <script type="text/javascript" src="{% static 'rangefilter/iife.js' %}"></script>
