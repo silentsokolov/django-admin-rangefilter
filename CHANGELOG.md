@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.5.4] - 2020-02-10
+### Added
+- Added Simplified Chinese translation (thx @daimon99)
+
 ## [0.5.3] - 2019-12-16
 ### Added
 - Added Brazilian portuguese translation (thx @sandrofolk)
@@ -80,7 +84,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.5.3...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.5.4...HEAD
+[0.5.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.5.0...v0.5.1
