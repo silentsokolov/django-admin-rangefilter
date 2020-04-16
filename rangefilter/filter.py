@@ -45,6 +45,13 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         self.lookup_kwarg_gte = '{0}__range__gte'.format(field_path)
         self.lookup_kwarg_lte = '{0}__range__lte'.format(field_path)
 
+        self.default_gte, self.default_lte = None, None
+        default_method_name = 'get_rangefilter_{0}_default'.format(field_path)
+        default_method = getattr(model_admin, default_method_name, None)
+
+        if callable(default_method):
+            self.default_gte, self.default_lte = default_method(request)
+
         super(DateRangeFilter, self).__init__(field, request, params, model, model_admin, field_path)
         self.request = request
         self.form = self.get_form(request)
@@ -118,7 +125,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
 
     def get_form(self, request):
         form_class = self._get_form_class()
-        return form_class(self.used_parameters)
+        return form_class(self.used_parameters or None)
 
     def _get_form_class(self):
         fields = self._get_form_fields()
@@ -146,13 +153,15 @@ class DateRangeFilter(admin.filters.FieldListFilter):
                     label='',
                     widget=AdminDateWidget(attrs={'placeholder': _('From date')}),
                     localize=True,
-                    required=False
+                    required=False,
+                    initial=self.default_gte,
                 )),
                 (self.lookup_kwarg_lte, forms.DateField(
                     label='',
                     widget=AdminDateWidget(attrs={'placeholder': _('To date')}),
                     localize=True,
-                    required=False
+                    required=False,
+                    initial=self.default_lte,
                 )),
             )
         )
@@ -195,13 +204,15 @@ class DateTimeRangeFilter(DateRangeFilter):
                     label='',
                     widget=AdminSplitDateTime(attrs={'placeholder': _('From date')}),
                     localize=True,
-                    required=False
+                    required=False,
+                    initial=self.default_gte,
                 )),
                 (self.lookup_kwarg_lte, forms.SplitDateTimeField(
                     label='',
                     widget=AdminSplitDateTime(attrs={'placeholder': _('To date')}),
                     localize=True,
-                    required=False
+                    required=False,
+                    initial=self.default_lte,
                 )),
             )
         )

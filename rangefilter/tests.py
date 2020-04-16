@@ -150,6 +150,24 @@ class DateRangeFilterTestCase(TestCase):
         self.assertEqual(choice['query_string'], '?')
         self.assertEqual(choice['system_name'], 'created-at')
 
+    def test_datefilter_with_default(self):
+        self.request_factory = RequestFactory()
+        modeladmin = MyModelAdmin(MyModel, site)
+        modeladmin.get_rangefilter_created_at_default = lambda r: [self.today, self.tomorrow]
+
+        request = self.request_factory.get('/')
+        request.user = self.user
+
+        changelist = self.get_changelist(request, MyModel, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), 'created at')
+        self.assertEqual(filterspec.default_gte, self.today)
+        self.assertEqual(filterspec.default_lte, self.tomorrow)
+
     def test_datefilter_filtered_with_one_params(self):
         self.request_factory = RequestFactory()
         modeladmin = MyModelAdmin(MyModel, site)
@@ -256,6 +274,24 @@ class DateTimeRangeFilterTestCase(TestCase):
         choice = select_by(filterspec.choices(changelist))
         self.assertEqual(choice['query_string'], '?')
         self.assertEqual(choice['system_name'], 'created-at')
+
+    def test_datetimfilter_with_default(self):
+        self.request_factory = RequestFactory()
+        modeladmin = MyModelTimeAdmin(MyModel, site)
+        modeladmin.get_rangefilter_created_at_default = lambda r: [self.today, self.tomorrow]
+
+        request = self.request_factory.get('/')
+        request.user = self.user
+
+        changelist = self.get_changelist(request, MyModel, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), 'created at')
+        self.assertEqual(filterspec.default_gte, self.today)
+        self.assertEqual(filterspec.default_lte, self.tomorrow)
 
     def test_datefilter_filtered_with_one_params(self):
         self.request_factory = RequestFactory()
