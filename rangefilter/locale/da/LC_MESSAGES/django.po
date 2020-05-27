@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-25 15:22+0200\n"
+"PO-Revision-Date: 2020-05-25 15:26+0050\n"
+"Last-Translator: b'Anonymous User <a@b.c>'\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Translated-Using: django-rosetta 0.9.0\n"
+
+#: rangefilter/apps.py:18
+msgid "Range Filter"
+msgstr "Datofilter"
+
+#: rangefilter/filter.py:154 rangefilter/filter.py:205
+msgid "From date"
+msgstr "Fra dato"
+
+#: rangefilter/filter.py:161 rangefilter/filter.py:212
+msgid "To date"
+msgstr "Til dato"
+
+#: rangefilter/templates/rangefilter/date_filter.html:2
+#: rangefilter/templates/rangefilter/date_filter_1_8.html:2
+#: rangefilter/templates/rangefilter/date_filter_csp.html:2
+#, python-format
+msgid "By %(filter_title)s"
+msgstr "Efter %(filter_title)s"
+
+#: rangefilter/templates/rangefilter/date_filter.html:135
+#: rangefilter/templates/rangefilter/date_filter_1_8.html:89
+#: rangefilter/templates/rangefilter/date_filter_csp.html:137
+msgid "Search"
+msgstr "Søg"
+
+#: rangefilter/templates/rangefilter/date_filter.html:136
+#: rangefilter/templates/rangefilter/date_filter_1_8.html:90
+#: rangefilter/templates/rangefilter/date_filter_csp.html:138
+msgid "Reset"
+msgstr "Nulstil"
