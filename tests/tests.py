@@ -14,47 +14,34 @@ from unittest import skipIf
 from django.utils import timezone
 from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
-from django.db import models
 from django.contrib.admin import ModelAdmin, site
 from django.contrib.admin.views.main import ChangeList
 from django.contrib.auth.models import User
 from django.utils.encoding import force_str
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-from .filter import DateRangeFilter, DateTimeRangeFilter
-from .templatetags.rangefilter_compat import static
+from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
+from rangefilter.templatetags.rangefilter_compat import static
+
+from .models import RangeModelDT, RangeModelD
 
 
-class MyModel(models.Model):
-    created_at = models.DateTimeField()
-
-    class Meta:
-        ordering = ('created_at',)
-
-
-class MyModelDate(models.Model):
-    created_at = models.DateField()
-
-    class Meta:
-        ordering = ('created_at',)
-
-
-class MyModelAdmin(ModelAdmin):
+class RangeModelDTAdmin(ModelAdmin):
     list_filter = (('created_at', DateRangeFilter),)
     ordering = ('-id',)
 
 
-class MyModelDateAdmin(ModelAdmin):
+class RangeModelDAdmin(ModelAdmin):
     list_filter = (('created_at', DateRangeFilter),)
     ordering = ('-id',)
 
 
-class MyModelTimeAdmin(ModelAdmin):
+class RangeModelDTTimeAdmin(ModelAdmin):
     list_filter = (('created_at', DateTimeRangeFilter),)
     ordering = ('-id',)
 
 
-class MyModelDateTimeAdmin(ModelAdmin):
+class RangeModelDTimeAdmin(ModelAdmin):
     list_filter = (('created_at', DateTimeRangeFilter),)
     ordering = ('-id',)
 
@@ -93,15 +80,20 @@ class DateRangeFilterTestCase(TestCase):
         self.tomorrow = self.today + datetime.timedelta(days=1)
         self.one_week_ago = self.today - datetime.timedelta(days=7)
 
-        self.django_book = MyModel.objects.create(created_at=timezone.now())
-        self.djangonaut_book = MyModel.objects.create(
+        self.django_book = RangeModelDT.objects.create(created_at=timezone.now())
+        self.djangonaut_book = RangeModelDT.objects.create(
             created_at=timezone.now() - datetime.timedelta(days=7))
 
-        self.django_book_date = MyModelDate.objects.create(created_at=timezone.now())
-        self.djangonaut_book_date = MyModelDate.objects.create(
+        self.django_book_date = RangeModelD.objects.create(created_at=timezone.now())
+        self.djangonaut_book_date = RangeModelD.objects.create(
             created_at=timezone.now() - datetime.timedelta(days=7))
 
-        self.user = User.objects.create_user(username='test', password='top_secret')
+        self.username = 'foo'
+        self.email = 'bar@foo.com'
+        self.password = 'top_secret'
+        self.user = User.objects.create_user(
+            self.username, self.email, self.password
+        )
 
     def get_changelist(self, request, model, modeladmin):
         if getattr(modeladmin, 'get_changelist_instance', None):
@@ -117,12 +109,12 @@ class DateRangeFilterTestCase(TestCase):
 
     def test_datefilter(self):
         self.request_factory = RequestFactory()
-        modeladmin = MyModelAdmin(MyModel, site)
+        modeladmin = RangeModelDTAdmin(RangeModelDT, site)
 
         request = self.request_factory.get('/')
         request.user = self.user
 
-        changelist = self.get_changelist(request, MyModel, modeladmin)
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
 
         queryset = changelist.get_queryset(request)
 
@@ -132,13 +124,13 @@ class DateRangeFilterTestCase(TestCase):
 
     def test_datefilter_filtered(self):
         self.request_factory = RequestFactory()
-        modeladmin = MyModelAdmin(MyModel, site)
+        modeladmin = RangeModelDTAdmin(RangeModelDT, site)
 
         request = self.request_factory.get('/', {'created_at__range__gte': self.today,
                                                  'created_at__range__lte': self.tomorrow})
         request.user = self.user
 
-        changelist = self.get_changelist(request, MyModel, modeladmin)
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
 
         queryset = changelist.get_queryset(request)
 
@@ -152,13 +144,13 @@ class DateRangeFilterTestCase(TestCase):
 
     def test_datefilter_with_default(self):
         self.request_factory = RequestFactory()
-        modeladmin = MyModelAdmin(MyModel, site)
+        modeladmin = RangeModelDTAdmin(RangeModelDT, site)
         modeladmin.get_rangefilter_created_at_default = lambda r: [self.today, self.tomorrow]
 
         request = self.request_factory.get('/')
         request.user = self.user
 
-        changelist = self.get_changelist(request, MyModel, modeladmin)
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
 
         queryset = changelist.get_queryset(request)
 
@@ -170,12 +162,12 @@ class DateRangeFilterTestCase(TestCase):
 
     def test_datefilter_filtered_with_one_params(self):
         self.request_factory = RequestFactory()
-        modeladmin = MyModelAdmin(MyModel, site)
+        modeladmin = RangeModelDTAdmin(RangeModelDT, site)
 
         request = self.request_factory.get('/', {'created_at__range__gte': self.today})
         request.user = self.user
 
-        changelist = self.get_changelist(request, MyModel, modeladmin)
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
 
         queryset = changelist.get_queryset(request)
 
@@ -189,13 +181,13 @@ class DateRangeFilterTestCase(TestCase):
 
     def test_datefilter_filtered_datefield(self):
         self.request_factory = RequestFactory()
-        modeladmin = MyModelDateAdmin(MyModelDate, site)
+        modeladmin = RangeModelDAdmin(RangeModelD, site)
 
         request = self.request_factory.get('/', {'created_at__range__gte': self.today,
                                                  'created_at__range__lte': self.tomorrow})
         request.user = self.user
 
-        changelist = self.get_changelist(request, MyModelDate, modeladmin)
+        changelist = self.get_changelist(request, RangeModelD, modeladmin)
 
         queryset = changelist.get_queryset(request)
 
@@ -216,15 +208,20 @@ class DateTimeRangeFilterTestCase(TestCase):
         self.tomorrow = self.today + datetime.timedelta(days=1)
         self.one_week_ago = self.today - datetime.timedelta(days=7)
 
-        self.django_book = MyModel.objects.create(created_at=timezone.now())
-        self.djangonaut_book = MyModel.objects.create(
+        self.django_book = RangeModelDT.objects.create(created_at=timezone.now())
+        self.djangonaut_book = RangeModelDT.objects.create(
             created_at=timezone.now() - datetime.timedelta(days=7))
 
-        self.django_book_date = MyModelDate.objects.create(created_at=timezone.now())
-        self.djangonaut_book_date = MyModelDate.objects.create(
+        self.django_book_date = RangeModelD.objects.create(created_at=timezone.now())
+        self.djangonaut_book_date = RangeModelD.objects.create(
             created_at=timezone.now() - datetime.timedelta(days=7))
 
-        self.user = User.objects.create_user(username='test', password='top_secret')
+        self.username = 'foo'
+        self.email = 'bar@foo.com'
+        self.password = 'top_secret'
+        self.user = User.objects.create_user(
+            self.username, self.email, self.password
+        )
 
     def get_changelist(self, request, model, modeladmin):
         if getattr(modeladmin, 'get_changelist_instance', None):
@@ -240,12 +237,12 @@ class DateTimeRangeFilterTestCase(TestCase):
 
     def test_datetimfilter(self):
         self.request_factory = RequestFactory()
-        modeladmin = MyModelTimeAdmin(MyModel, site)
+        modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
 
         request = self.request_factory.get('/')
         request.user = self.user
 
-        changelist = self.get_changelist(request, MyModel, modeladmin)
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
 
         queryset = changelist.get_queryset(request)
 
@@ -255,7 +252,7 @@ class DateTimeRangeFilterTestCase(TestCase):
 
     def test_datetimfilter_filtered(self):
         self.request_factory = RequestFactory()
-        modeladmin = MyModelTimeAdmin(MyModel, site)
+        modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
 
         request = self.request_factory.get('/', {'created_at__range__gte_0': self.today,
                                                  'created_at__range__gte_1': self.min_time,
@@ -263,7 +260,7 @@ class DateTimeRangeFilterTestCase(TestCase):
                                                  'created_at__range__lte_1': self.max_time})
         request.user = self.user
 
-        changelist = self.get_changelist(request, MyModel, modeladmin)
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
 
         queryset = changelist.get_queryset(request)
 
@@ -277,13 +274,13 @@ class DateTimeRangeFilterTestCase(TestCase):
 
     def test_datetimfilter_with_default(self):
         self.request_factory = RequestFactory()
-        modeladmin = MyModelTimeAdmin(MyModel, site)
+        modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
         modeladmin.get_rangefilter_created_at_default = lambda r: [self.today, self.tomorrow]
 
         request = self.request_factory.get('/')
         request.user = self.user
 
-        changelist = self.get_changelist(request, MyModel, modeladmin)
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
 
         queryset = changelist.get_queryset(request)
 
@@ -295,13 +292,13 @@ class DateTimeRangeFilterTestCase(TestCase):
 
     def test_datefilter_filtered_with_one_params(self):
         self.request_factory = RequestFactory()
-        modeladmin = MyModelTimeAdmin(MyModel, site)
+        modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
 
         request = self.request_factory.get('/', {'created_at__range__gte_0': self.today,
                                                  'created_at__range__gte_1': self.min_time})
         request.user = self.user
 
-        changelist = self.get_changelist(request, MyModel, modeladmin)
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
 
         queryset = changelist.get_queryset(request)
 

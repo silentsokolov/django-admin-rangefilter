@@ -43,7 +43,7 @@ branches:
     - master
 
 script:
-  - coverage run --omit='setup.py' --source='.' runtests.py
+  - coverage run --omit='setup.py,tests/*' --source='.' -m django test --settings=tests.settings 
 
 after_success:
   - codecov

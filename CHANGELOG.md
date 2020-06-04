@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Refactor tests
 
 ## [0.6.0] - 2020-05-04
 ### Added

@@ -1,4 +1,5 @@
 include LICENSE CHANGELOG.md README.rst
+recursive-include tests/* *
 recursive-include rangefilter/static *.js *.css *.png *.eot *.svg *.ttf *.woff
 recursive-include rangefilter/templates *.html
 recursive-include rangefilter/locale *.mo
