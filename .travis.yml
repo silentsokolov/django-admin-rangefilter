@@ -43,7 +43,7 @@ branches:
     - master
 
 script:
-  - coverage run --omit='setup.py,tests/*' --source='.' `which django-admin.py` test --settings=tests.settings 
+  - PYTHONPATH=".:tests:$PYTHONPATH" coverage run --omit='setup.py,tests/*' --source='.' `which django-admin.py` test --settings=tests.settings 
 
 after_success:
   - codecov
