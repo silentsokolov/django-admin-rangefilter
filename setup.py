@@ -35,6 +35,7 @@ setup(
     url='https://github.com/silentsokolov/django-admin-rangefilter',
     license='MIT',
     description='django-admin-rangefilter app, add the filter by a custom date range on the admin UI.',
+    long_description_content_type='text/x-rst',
     long_description=open(join(dirname(__file__), 'README.rst')).read(),
     author='Dmitriy Sokolov',
     author_email='silentsokolov@gmail.com',
@@ -60,6 +61,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Utilities',
     ],
 )
