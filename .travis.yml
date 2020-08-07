@@ -24,14 +24,17 @@ matrix:
       - { python: "3.6", env: DJANGO_VERSION="2.1.*" }
       - { python: "3.6", env: DJANGO_VERSION="2.2.*" }
       - { python: "3.6", env: DJANGO_VERSION="3.0.*" }
+      - { python: "3.6", env: DJANGO_VERSION="3.1.*" }
 
       - { python: "3.7", env: DJANGO_VERSION="2.0.*" }
       - { python: "3.7", env: DJANGO_VERSION="2.1.*" }
       - { python: "3.7", env: DJANGO_VERSION="2.2.*" }
       - { python: "3.7", env: DJANGO_VERSION="3.0.*" }
+      - { python: "3.7", env: DJANGO_VERSION="3.1.*" }
 
       - { python: "3.8", env: DJANGO_VERSION="2.2.*" }
       - { python: "3.8", env: DJANGO_VERSION="3.0.*" }
+      - { python: "3.8", env: DJANGO_VERSION="3.1.*" }
 
 install:
     - pip install Django==${DJANGO_VERSION}
@@ -43,7 +46,7 @@ branches:
     - master
 
 script:
-  - PYTHONPATH=".:tests:$PYTHONPATH" coverage run --omit='setup.py,tests/*' --source='.' `which django-admin.py` test --settings=tests.settings 
+  - PYTHONPATH=".:tests:$PYTHONPATH" coverage run --omit='setup.py,tests/*' --source='.' `which django-admin test --settings=tests.settings 
 
 after_success:
   - codecov
