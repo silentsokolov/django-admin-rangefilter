@@ -4,8 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Rui Mineiro <mineiro.rui@gmail.com>, 2020
-# Dmitriy Sokolov <silentsokolov@gmail.com>, 2020
+# syachi <syachi-reg@brownmush.net>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -14,38 +13,38 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-01-31 12:09+0300\n"
 "PO-Revision-Date: 2019-01-31 09:16+0000\n"
-"Last-Translator: Dmitriy Sokolov <silentsokolov@gmail.com>, 2020\n"
-"Language-Team: Portuguese (Portugal) (https://www.transifex.com/django-admin-rangefilter/teams/95736/pt_PT/)\n"
+"Last-Translator: syachi <syachi-reg@brownmush.net>, 2020\n"
+"Language-Team: Japanese (https://www.transifex.com/django-admin-rangefilter/teams/95736/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pt_PT\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: apps.py:11
 msgid "Range Filter"
-msgstr "Range Filter"
+msgstr "範囲フィルター"
 
 #: filter.py:133 filter.py:180
 msgid "From date"
-msgstr "Data inicial"
+msgstr "開始"
 
 #: filter.py:139 filter.py:186
 msgid "To date"
-msgstr "Data final"
+msgstr "終了"
 
 #: templates/rangefilter/date_filter.html:2
 #: templates/rangefilter/date_filter_1_8.html:2
 #, python-format
 msgid "By %(filter_title)s"
-msgstr "Por %(filter_title)s"
+msgstr "%(filter_title)s で絞り込む"
 
 #: templates/rangefilter/date_filter.html:133
 #: templates/rangefilter/date_filter_1_8.html:89
 msgid "Search"
-msgstr "Pesquisar"
+msgstr "検索"
 
 #: templates/rangefilter/date_filter.html:134
 #: templates/rangefilter/date_filter_1_8.html:90
 msgid "Reset"
-msgstr "Limpar"
+msgstr "リセット"
