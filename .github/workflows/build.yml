@@ -1,4 +1,4 @@
-name: code
+name: "Build"
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Ubuntu | Python ${{ matrix.python-version }} | Django ${{ matrix.django-version}}
+    name: Python ${{ matrix.python-version }} | Django ${{ matrix.django-version}} | Ubuntu
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
