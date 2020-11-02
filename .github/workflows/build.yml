@@ -67,6 +67,7 @@ jobs:
     - name: Install Django ${{ matrix.django-version }}
       run: |
         pip install Django==${{ matrix.django-version }}
+        pip install coverage
         pip install pytz
 
     - name: Run tests
