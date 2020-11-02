@@ -1,4 +1,5 @@
 ## [Unreleased]
+- Moved tests to Github Actions
 
 ## [0.6.3] - 2020-10-01
 ### Added

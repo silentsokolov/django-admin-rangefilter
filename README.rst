@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.org/silentsokolov/django-admin-rangefilter.svg?branch=master
-   :target: https://travis-ci.org/silentsokolov/django-admin-rangefilter
+.. image:: https://github.com/silentsokolov/django-admin-rangefilter/workflows/Build/badge.svg?branch=master
+   :target: https://github.com/silentsokolov/django-admin-rangefilter/actions?query=workflow%3ABuild
 
 .. image:: https://codecov.io/gh/silentsokolov/django-admin-rangefilter/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/silentsokolov/django-admin-rangefilter
