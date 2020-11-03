@@ -12,48 +12,60 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [2.7, 3.6, 3.7, 3.8]
-        django-version: ["1.8.*", "1.9.*", "1.10.*", "1.11.*", "2.0.*", "2.1.*", "2.2.*", "3.0.*", "3.1.*"]
-        exclude:
+        include:
           - python-version: 2.7
+            django-version: "1.8.*"
+          - python-version: 2.7
+            django-version: "1.9.*"
+          - python-version: 2.7
+            django-version: "1.10.*"
+          - python-version: 2.7
+            django-version: "1.11.*"
+
+          - python-version: 3.5
+            django-version: "1.11.*"
+          - python-version: 3.5
             django-version: "2.0.*"
-          - python-version: 2.7
+          - python-version: 3.5
             django-version: "2.1.*"
-          - python-version: 2.7
+          - python-version: 3.5
             django-version: "2.2.*"
-          - python-version: 2.7
+
+          - python-version: 3.6
+            django-version: "1.11.*"
+          - python-version: 3.6
+            django-version: "2.0.*"
+          - python-version: 3.6
+            django-version: "2.1.*"
+          - python-version: 3.6
+            django-version: "2.2.*"
+          - python-version: 3.6
             django-version: "3.0.*"
-          - python-version: 2.7
+          - python-version: 3.6
             django-version: "3.1.*"
 
-          - python-version: 3.6
-            django-version: "1.8.*"
-          - python-version: 3.6
-            django-version: "1.9.*"
-          - python-version: 3.6
-            django-version: "1.10.*"
-
           - python-version: 3.7
-            django-version: "1.8.*"
-          - python-version: 3.7
-            django-version: "1.9.*"
-          - python-version: 3.7
-            django-version: "1.10.*"
-          - python-version: 3.7
-            django-version: "1.11.*"
-
-          - python-version: 3.8
-            django-version: "1.8.*"
-          - python-version: 3.8
-            django-version: "1.9.*"
-          - python-version: 3.8
-            django-version: "1.10.*"
-          - python-version: 3.8
-            django-version: "1.11.*"
-          - python-version: 3.8
             django-version: "2.0.*"
-          - python-version: 3.8
+          - python-version: 3.7
             django-version: "2.1.*"
+          - python-version: 3.7
+            django-version: "2.2.*"
+          - python-version: 3.7
+            django-version: "3.0.*"
+          - python-version: 3.7
+            django-version: "3.1.*"
+
+          - python-version: 3.8
+            django-version: "2.2.*"
+          - python-version: 3.8
+            django-version: "3.0.*"
+          - python-version: 3.8
+            django-version: "3.1.*"
+
+          - python-version: 3.9
+            django-version: "3.0.*"
+          - python-version: 3.9
+            django-version: "3.1.*"
 
     steps:
     - name: Checkout
