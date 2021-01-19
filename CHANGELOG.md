@@ -1,4 +1,9 @@
 ## [Unreleased]
+
+## [0.6.4] - 2021-01-19
+### Added
+- Added Greek translation
+- Added Italian translation
 - Moved tests to Github Actions
 
 ## [0.6.3] - 2020-10-01
@@ -108,8 +113,9 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.3...HEAD
-[0.6.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.2...v0.6.3
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.4...HEAD
+[0.6.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.3...v0.6.4
+[0.6.3]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.5.4...v0.6.0

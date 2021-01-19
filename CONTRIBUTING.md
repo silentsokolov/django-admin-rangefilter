@@ -5,4 +5,4 @@ Thank you for your interest in contributing to django-admin-rangefilter!
 
 ### Add translations
 
-We use [Transifex](https://www.transifex.com/). You need to join our group - [django-admin-rangefilter](https://www.transifex.com/django-admin-rangefilter/django-admin-rangefilter) in order to add translation.
+If you does not know how to translate a Django app, start by reading [Django's translation docs](https://docs.djangoproject.com/en/3.1/topics/i18n/translation/#localization-how-to-create-language-files).
