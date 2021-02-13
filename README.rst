@@ -61,6 +61,10 @@ In admin
         list_filter = (
             ('created_at', DateRangeFilter), ('updated_at', DateTimeRangeFilter),
         )
+        
+        # If you would like to add a default range filter
+        get_rangefilter_created_at_default(self, request):
+            return ('2021-01-01', '2021-02-01')
 
 
 Support Content-Security-Policy
