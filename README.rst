@@ -63,8 +63,9 @@ In admin
         )
         
         # If you would like to add a default range filter
-        get_rangefilter_created_at_default(self, request):
-            return ('2021-01-01', '2021-02-01')
+        # https://github.com/silentsokolov/django-admin-rangefilter/issues/44#issuecomment-614605487
+        def get_rangefilter_created_at_default(self, request):
+            return (datetime.date.today, datetime.date.today)
 
 
 Support Content-Security-Policy
