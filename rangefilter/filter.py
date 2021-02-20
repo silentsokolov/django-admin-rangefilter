@@ -45,19 +45,36 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         self.lookup_kwarg_gte = '{0}__range__gte'.format(field_path)
         self.lookup_kwarg_lte = '{0}__range__lte'.format(field_path)
 
-        self.default_gte, self.default_lte = None, None
-        default_method_name = 'get_rangefilter_{0}_default'.format(field_path)
-        default_method = getattr(model_admin, default_method_name, None)
-
-        if callable(default_method):
-            self.default_gte, self.default_lte = default_method(request)
+        self.default_gte, self.default_lte = self._get_default_values(request, model_admin, field_path)
 
         super(DateRangeFilter, self).__init__(field, request, params, model, model_admin, field_path)
         self.request = request
         self.form = self.get_form(request)
 
+        custom_title = self._get_custom_title(request, model_admin, field_path)
+        if custom_title:
+            self.title = custom_title
+
     def get_timezone(self, request):
         return timezone.get_default_timezone()
+
+    @staticmethod
+    def _get_custom_title(request, model_admin, field_path):
+        title_method_name = 'get_rangefilter_{0}_title'.format(field_path)
+        title_method = getattr(model_admin, title_method_name, None)
+
+        if callable(title_method):
+            return title_method(request, field_path)
+
+    @staticmethod
+    def _get_default_values(request, model_admin, field_path):
+        default_method_name = 'get_rangefilter_{0}_default'.format(field_path)
+        default_method = getattr(model_admin, default_method_name, None)
+
+        if callable(default_method):
+            return default_method(request)
+
+        return None, None
 
     @staticmethod
     def make_dt_aware(value, timezone):

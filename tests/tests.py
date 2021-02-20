@@ -235,7 +235,7 @@ class DateTimeRangeFilterTestCase(TestCase):
             modeladmin.list_max_show_all, modeladmin.list_editable, modeladmin,
         )
 
-    def test_datetimfilter(self):
+    def test_datetimefilter(self):
         self.request_factory = RequestFactory()
         modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
 
@@ -250,7 +250,7 @@ class DateTimeRangeFilterTestCase(TestCase):
         filterspec = changelist.get_filters(request)[0][0]
         self.assertEqual(force_str(filterspec.title), 'created at')
 
-    def test_datetimfilter_filtered(self):
+    def test_datetimefilter_filtered(self):
         self.request_factory = RequestFactory()
         modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
 
@@ -272,7 +272,7 @@ class DateTimeRangeFilterTestCase(TestCase):
         self.assertEqual(choice['query_string'], '?')
         self.assertEqual(choice['system_name'], 'created-at')
 
-    def test_datetimfilter_with_default(self):
+    def test_datetimefilter_with_default(self):
         self.request_factory = RequestFactory()
         modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
         modeladmin.get_rangefilter_created_at_default = lambda r: [self.today, self.tomorrow]
@@ -309,6 +309,23 @@ class DateTimeRangeFilterTestCase(TestCase):
         choice = select_by(filterspec.choices(changelist))
         self.assertEqual(choice['query_string'], '?')
         self.assertEqual(choice['system_name'], 'created-at')
+
+    def test_datetimefilter_custom_title(self):
+        self.request_factory = RequestFactory()
+        custom_title = 'foo bar'
+        modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
+        modeladmin.get_rangefilter_created_at_title = lambda r, f: custom_title
+
+        request = self.request_factory.get('/')
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), custom_title)
 
 
 class TemplateTagsTestCase(TestCase):

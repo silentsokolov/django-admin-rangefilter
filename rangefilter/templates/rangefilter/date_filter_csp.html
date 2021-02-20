@@ -1,5 +1,5 @@
 {% load i18n rangefilter_compat %}
-<h3>{% blocktrans with filter_title=title %}By {{ filter_title }}{% endblocktrans %}</h3>
+<h3>{{ title }}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style nonce="{{ spec.request.csp_nonce }}">
     .admindatefilter .button, .admindatefilter input[type=submit], .admindatefilter input[type=button], .admindatefilter .submit-row input, .admindatefilter a.button,

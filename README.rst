@@ -67,6 +67,10 @@ In admin
         def get_rangefilter_created_at_default(self, request):
             return (datetime.date.today, datetime.date.today)
 
+        # If you would like to change a title range filter
+        def get_rangefilter_created_at_title(self, request, field_path):
+            return 'custom title'
+
 
 Support Content-Security-Policy
 -------------------------------
