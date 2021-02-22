@@ -12,7 +12,8 @@
         function(event){
           event.preventDefault();
           var form_data = django.jQuery('#'+form_name).serialize();
-          window.location = window.location.pathname + query_string + '&' + form_data;
+          amp = query_string == "?" ? "" : "&";  // avoid leading ?& combination
+          window.location = window.location.pathname + query_string + amp + form_data;
       });
 
       // Bind reset buttons

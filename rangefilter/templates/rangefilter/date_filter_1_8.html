@@ -60,8 +60,8 @@ https://github.com/django/django/blob/stable/1.8.x/django/contrib/admin/template
     function datefilter_apply(event, qs_name, form_name){
         event.preventDefault();
         var query_string = django.jQuery('input#'+qs_name).val();
-        var form_data = django.jQuery('#'+form_name).serialize();
-        window.location = window.location.pathname + query_string + '&' + form_data;
+        amp = query_string == "?" ? "" : "&";  // avoid leading ?& combination
+        window.location = window.location.pathname + query_string + amp + form_data;
     }
     function datefilter_reset(qs_name){
         var query_string = django.jQuery('input#'+qs_name).val();
