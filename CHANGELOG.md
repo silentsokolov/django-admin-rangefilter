@@ -1,5 +1,15 @@
 ## [Unreleased]
 
+## [0.7.0] - 2021-02-22
+### Added
+- Added possibility to set a title of filter #58
+
+### Fix
+- Avoided leading ?& GET parameters #59 (thx @jaredahern)
+
+### Changed
+- Changed title of filter from `By {field_name}` to `{field_name}`
+
 ## [0.6.4] - 2021-01-19
 ### Added
 - Added Greek translation
@@ -113,7 +123,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.4...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.4...v0.7.0
 [0.6.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.1...v0.6.2

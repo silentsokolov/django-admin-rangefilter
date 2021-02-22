@@ -63,11 +63,12 @@ In admin
         )
         
         # If you would like to add a default range filter
-        # https://github.com/silentsokolov/django-admin-rangefilter/issues/44#issuecomment-614605487
+        # method pattern "get_rangefilter_{field_name}_default"
         def get_rangefilter_created_at_default(self, request):
             return (datetime.date.today, datetime.date.today)
 
         # If you would like to change a title range filter
+        # method pattern "get_rangefilter_{field_name}_title"
         def get_rangefilter_created_at_title(self, request, field_path):
             return 'custom title'
 
