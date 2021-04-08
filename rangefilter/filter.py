@@ -41,10 +41,10 @@ class OnceCallMedia(object):
     ]
 
     def __str__(self):
-        return str(self._js)
+        return str([str(s) for s in self._js])
 
     def __repr__(self):
-        return 'OnceCallMedia(js=%r)' % (self._js)
+        return 'OnceCallMedia(js=%r)' % ([str(s) for s in self._js])
 
     def __call__(self):
         if self._is_rendered:
