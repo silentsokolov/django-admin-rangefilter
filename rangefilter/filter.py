@@ -33,6 +33,27 @@ else:
     from django.utils.translation import ugettext_lazy as _
 
 
+class OnceCallMedia(object):
+    _is_rendered = False
+    _js = [
+        StaticNode.handle_simple('admin/js/calendar.js'),
+        StaticNode.handle_simple('admin/js/admin/DateTimeShortcuts.js'),
+    ]
+
+    def __str__(self):
+        return str(self._js)
+
+    def __repr__(self):
+        return 'OnceCallMedia(js=%r)' % (self._js)
+
+    def __call__(self):
+        if self._is_rendered:
+            return []
+
+        self._is_rendered = True
+        return self._js
+
+
 class AdminSplitDateTime(BaseAdminSplitDateTime):
     def format_output(self, rendered_widgets):
         return format_html('<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
@@ -41,6 +62,8 @@ class AdminSplitDateTime(BaseAdminSplitDateTime):
 
 
 class DateRangeFilter(admin.filters.FieldListFilter):
+    _request_key = 'DJANGO_RANGEFILTER_ADMIN_JS_LIST'
+
     def __init__(self, field, request, params, model, model_admin, field_path):
         self.lookup_kwarg_gte = '{0}__range__gte'.format(field_path)
         self.lookup_kwarg_lte = '{0}__range__lte'.format(field_path)
@@ -49,6 +72,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
 
         super(DateRangeFilter, self).__init__(field, request, params, model, model_admin, field_path)
         self.request = request
+        self.model_admin = model_admin
         self.form = self.get_form(request)
 
         custom_title = self._get_custom_title(request, model_admin, field_path)
@@ -152,15 +176,16 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             (forms.BaseForm,),
             {'base_fields': fields}
         )
-        form_class.media = self._get_media()
+
         # lines below ensure that the js static files are loaded just once
         # even if there is more than one DateRangeFilter in use
-        request_key = 'DJANGO_RANGEFILTER_ADMIN_JS_SET'
-        if (getattr(self.request, request_key, False)):
-            form_class.js = []
-        else:
-            setattr(self.request, request_key, True)
-            form_class.js = self.get_js()
+        js_list = getattr(self.request, self._request_key, None)
+        if not js_list:
+            js_list = OnceCallMedia()
+            setattr(self.request, self._request_key, js_list)
+
+        form_class.js = js_list
+
         return form_class
 
     def _get_form_fields(self):
@@ -181,27 +206,6 @@ class DateRangeFilter(admin.filters.FieldListFilter):
                     initial=self.default_lte,
                 )),
             )
-        )
-
-    @staticmethod
-    def get_js():
-        return [
-            StaticNode.handle_simple('admin/js/calendar.js'),
-            StaticNode.handle_simple('admin/js/admin/DateTimeShortcuts.js'),
-        ]
-
-    @staticmethod
-    def _get_media():
-        js = [
-            'calendar.js',
-            'admin/DateTimeShortcuts.js',
-        ]
-        css = [
-            'widgets.css',
-        ]
-        return forms.Media(
-            js=['admin/js/%s' % url for url in js],
-            css={'all': ['admin/css/%s' % path for path in css]}
         )
 
 

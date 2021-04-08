@@ -20,7 +20,7 @@ from django.contrib.auth.models import User
 from django.utils.encoding import force_str
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
+from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter, OnceCallMedia
 from rangefilter.templatetags.rangefilter_compat import static
 
 from .models import RangeModelDT, RangeModelD
@@ -343,3 +343,27 @@ class TemplateTagsTestCase(TestCase):
                 self.assertEqual(static('path'), '/test/path')
             finally:
                 staticfiles_storage.base_url = old_url
+
+
+class OnceCallMediaTestCase(TestCase):
+    def setUp(self):
+        self.media = OnceCallMedia()
+
+    def test_str(self):
+        self.assertEqual(
+            str(self.media),
+            "['/static/admin/js/calendar.js', '/static/admin/js/admin/DateTimeShortcuts.js']"
+        )
+
+    def test_repr(self):
+        self.assertEqual(
+            repr(self.media),
+            "OnceCallMedia(js=['/static/admin/js/calendar.js', '/static/admin/js/admin/DateTimeShortcuts.js'])"
+        )
+
+    def test_call(self):
+        self.assertFalse(self.media._is_rendered)
+        self.assertNotEqual(self.media(), [])
+        self.assertTrue(self.media._is_rendered)
+        self.assertEqual(self.media(), [])
+
