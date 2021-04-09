@@ -1,4 +1,9 @@
 ## [Unreleased]
+### Added
+- Compatibility Django 3.2
+
+### Fix
+- Fixed static loads
 
 ## [0.7.0] - 2021-02-22
 ### Added
