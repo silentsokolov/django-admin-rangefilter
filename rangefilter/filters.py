@@ -35,10 +35,6 @@ else:
 
 class OnceCallMedia(object):
     _is_rendered = False
-    _js = [
-        StaticNode.handle_simple('admin/js/calendar.js'),
-        StaticNode.handle_simple('admin/js/admin/DateTimeShortcuts.js'),
-    ]
 
     def __str__(self):
         return str([str(s) for s in self._js])
@@ -52,6 +48,13 @@ class OnceCallMedia(object):
 
         self._is_rendered = True
         return self._js
+
+    def get_js(self):
+        return [
+            StaticNode.handle_simple('admin/js/calendar.js'),
+            StaticNode.handle_simple('admin/js/admin/DateTimeShortcuts.js'),
+        ]
+    _js = property(get_js)
 
 
 class AdminSplitDateTime(BaseAdminSplitDateTime):
