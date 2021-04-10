@@ -20,7 +20,7 @@ from django.contrib.auth.models import User
 from django.utils.encoding import force_str
 from django.contrib.staticfiles.storage import staticfiles_storage
 
-from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter, OnceCallMedia
+from rangefilter.filters import DateRangeFilter, DateTimeRangeFilter, OnceCallMedia
 from rangefilter.templatetags.rangefilter_compat import static
 
 from .models import RangeModelDT, RangeModelD

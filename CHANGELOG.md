@@ -2,6 +2,9 @@
 ### Added
 - Compatibility Django 3.2
 
+### Changed
+- Module `filter` rename to `filters`
+
 ### Fix
 - Fixed static loads
 
