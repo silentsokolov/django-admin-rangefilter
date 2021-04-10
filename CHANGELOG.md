@@ -1,4 +1,6 @@
 ## [Unreleased]
+
+## [0.8.0] - 2021-04-10
 ### Added
 - Compatibility Django 3.2
 
@@ -131,7 +133,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.4...v0.7.0
 [0.6.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.3...v0.6.4
 [0.6.3]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.2...v0.6.3
