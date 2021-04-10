@@ -51,7 +51,7 @@ In admin
 .. code:: python
 
     from django.contrib import admin
-    from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
+    from rangefilter.filters import DateRangeFilter, DateTimeRangeFilter
 
     from .models import Post
 
