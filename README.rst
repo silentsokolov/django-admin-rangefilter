@@ -7,7 +7,7 @@
 django-admin-rangefilter
 ========================
 
-django-admin-rangefilter app, add the filter by a custom date / datetime range on the admin UI.
+A Django app that adds a filter by date range to the admin UI.
 
 .. image:: https://raw.githubusercontent.com/silentsokolov/django-admin-rangefilter/master/docs/images/screenshot.png
 
