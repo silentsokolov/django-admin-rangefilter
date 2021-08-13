@@ -68,15 +68,17 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
 {% endcomment %}
 <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
 <script>
-    function datefilter_apply(event, qs_name, form_name){
+    function datefilter_apply(event, qs_name){
         event.preventDefault();
-        var query_string = django.jQuery('input#'+qs_name).val();
-        var form_data = django.jQuery('#'+form_name).serialize();
-        amp = query_string == "?" ? "" : "&";  // avoid leading ?& combination
+        const $form = django.jQuery(event.target).closest('form');
+        const query_string = $form.find('input#'+qs_name).val();
+        const form_data = $form.serialize();
+        const amp = query_string === "?" ? "" : "&";  // avoid leading ?& combination
         window.location = window.location.pathname + query_string + amp + form_data;
     }
-    function datefilter_reset(qs_name){
-        var query_string = django.jQuery('input#'+qs_name).val();
+    function datefilter_reset(event, qs_name){
+        const $form = django.jQuery(event.target).closest('form');
+        const query_string = $form.find('input#' + qs_name).val();
         window.location = window.location.pathname + query_string;
     }
 </script>
@@ -132,8 +134,8 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
         <div class="controls">
-            <input type="submit" class="button" value="{% trans "Search" %}" onclick="datefilter_apply(event, '{{ choices.0.system_name }}-query-string', '{{ choices.0.system_name }}-form')">
-            <input type="reset" class="button" value="{% trans "Reset" %}" onclick="datefilter_reset('{{ choices.0.system_name }}-query-string')">
+            <input type="submit" class="button" value="{% trans "Search" %}" onclick="datefilter_apply(event, '{{ choices.0.system_name }}-query-string')">
+            <input type="reset" class="button" value="{% trans "Reset" %}" onclick="datefilter_reset(event, '{{ choices.0.system_name }}-query-string')">
         </div>
     </form>
 </div>
