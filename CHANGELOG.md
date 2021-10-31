@@ -1,6 +1,10 @@
 ## [Unreleased]
 
-## [0.8.1] - 2021-04-10
+## [0.8.2] - 2021-10-31
+### Fix
+- Fixing case with two widgets on one page #67 (thx @snnwolf)
+
+## [0.8.1] - 2021-08-10
 ### Fix
 - Fixed problem with `ManifestStaticFilesStorage` #63
 
@@ -137,7 +141,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.1...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.2...HEAD
+[0.8.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.6.4...v0.7.0

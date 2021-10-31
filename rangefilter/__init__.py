@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import django
 
 __author__ = 'Dmitriy Sokolov'
-__version__ = '0.8.1'
+__version__ = '0.8.2'
 
 if django.VERSION < (3, 2):
     default_app_config = 'rangefilter.apps.RangeFilterConfig'
