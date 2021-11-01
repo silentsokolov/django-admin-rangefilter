@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import unicode_literals
-
 import datetime
 
 try:
@@ -18,10 +14,8 @@ from django.contrib.admin import ModelAdmin, site
 from django.contrib.admin.views.main import ChangeList
 from django.contrib.auth.models import User
 from django.utils.encoding import force_str
-from django.contrib.staticfiles.storage import staticfiles_storage
 
 from rangefilter.filters import DateRangeFilter, DateTimeRangeFilter, OnceCallMedia
-from rangefilter.templatetags.rangefilter_compat import static
 
 from .models import RangeModelDT, RangeModelD
 
@@ -326,23 +320,6 @@ class DateTimeRangeFilterTestCase(TestCase):
         self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
         filterspec = changelist.get_filters(request)[0][0]
         self.assertEqual(force_str(filterspec.title), custom_title)
-
-
-class TemplateTagsTestCase(TestCase):
-    @override_settings(STATIC_URL='/test/')
-    def test_returns_static_path_to_asset_when_staticfiles_app_is_not_installed(self):
-        self.assertEqual(static('path'), '/test/path')
-
-    def test_returns_static_path_to_asset_when_staticfiles_app_is_installed(self):
-        with self.modify_settings(INSTALLED_APPS={
-            'append': 'django.contrib.staticfiles',
-        }):
-            old_url = staticfiles_storage.base_url
-            staticfiles_storage.base_url = '/test/'
-            try:
-                self.assertEqual(static('path'), '/test/path')
-            finally:
-                staticfiles_storage.base_url = old_url
 
 
 class OnceCallMediaTestCase(TestCase):

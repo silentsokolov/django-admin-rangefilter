@@ -1,4 +1,4 @@
-{% load i18n rangefilter_compat %}
+{% load i18n static %}
 <h3>{{ title }}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style>
@@ -62,10 +62,6 @@
         }
     }
 </style>
-{% comment %}
-Force load jsi18n, issues #5
-https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templates/admin/change_list.html#L7
-{% endcomment %}
 <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
 <script>
     function datefilter_apply(event, qs_name){
