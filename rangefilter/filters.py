@@ -15,6 +15,14 @@ try:
 except ImportError:
     csp = None
 
+try:
+    import zoneinfo
+except ImportError:
+    try:
+        from backports import zoneinfo
+    except ImportError:
+        zoneinfo = None
+
 from collections import OrderedDict
 
 from django import forms
@@ -104,13 +112,16 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         return None, None
 
     @staticmethod
-    def make_dt_aware(value, timezone):
-        if settings.USE_TZ and pytz is not None:
-            default_tz = timezone
-            if value.tzinfo is not None:
-                value = default_tz.normalize(value)
-            else:
-                value = default_tz.localize(value)
+    def make_dt_aware(value, tzname):
+        if django.VERSION <= (4, 0, 0):
+            if settings.USE_TZ and pytz is not None:
+                default_tz = tzname
+                if value.tzinfo is not None:
+                    value = default_tz.normalize(value)
+                else:
+                    value = default_tz.localize(value)
+        else:
+            value = value.replace(tzinfo=tzname)
         return value
 
     def choices(self, cl):
