@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.8.3] - 2021-12-19
+### Added
+- Compatibility Django 4.0
+
 ## [0.8.2] - 2021-10-31
 ### Fix
 - Fixing case with two widgets on one page #67 (thx @snnwolf)
@@ -141,7 +145,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.2...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.3...HEAD
+[0.8.3]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.7.0...v0.8.0
