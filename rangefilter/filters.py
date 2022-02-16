@@ -172,7 +172,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         if django.VERSION[:2] <= (1, 8):
             return 'rangefilter/date_filter_1_8.html'
         else:
-            if csp:
+            if csp and settings.ADMIN_RANGEFILTER_NONCE_ENABLED:
                 return 'rangefilter/date_filter_csp.html'
             return 'rangefilter/date_filter.html'
 
