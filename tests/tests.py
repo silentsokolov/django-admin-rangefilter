@@ -11,6 +11,7 @@ except ImportError:
 
 from unittest import skipIf
 
+import django
 from django.utils import timezone
 from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
@@ -60,6 +61,7 @@ class DateFuncTestCase(TestCase):
             self.assertTrue(timezone.is_naive(date))
 
     @skipIf(pytz is None, 'install pytz')
+    @skipIf(django.VERSION >= (4, 0, 0), 'pytz not django >= 4')
     def test_make_dt_aware_with_pytz(self):
         local_tz = timezone.get_current_timezone()
         now = datetime.datetime.now()
