@@ -22,15 +22,6 @@ jobs:
           - python-version: 2.7
             django-version: "1.11.*"
 
-          - python-version: 3.5
-            django-version: "1.11.*"
-          - python-version: 3.5
-            django-version: "2.0.*"
-          - python-version: 3.5
-            django-version: "2.1.*"
-          - python-version: 3.5
-            django-version: "2.2.*"
-
           - python-version: 3.6
             django-version: "1.11.*"
           - python-version: 3.6
@@ -67,6 +58,8 @@ jobs:
             django-version: "3.1.*"
           - python-version: 3.8
             django-version: "3.2.*"
+          - python-version: 3.8
+            django-version: "4.0.*"
 
           - python-version: 3.9
             django-version: "3.0.*"
@@ -74,6 +67,17 @@ jobs:
             django-version: "3.1.*"
           - python-version: 3.9
             django-version: "3.2.*"
+          - python-version: 3.9
+            django-version: "4.0.*"
+
+          - python-version: 3.10
+            django-version: "3.0.*"
+          - python-version: 3.10
+            django-version: "3.1.*"
+          - python-version: 3.10
+            django-version: "3.2.*"
+          - python-version: 3.10
+            django-version: "4.0.*"
 
     steps:
     - name: Checkout

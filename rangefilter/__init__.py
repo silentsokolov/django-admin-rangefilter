@@ -4,8 +4,6 @@ from __future__ import unicode_literals
 
 import django
 
-from rangefilter import settings
-
 __author__ = 'Dmitriy Sokolov'
 __version__ = '0.8.3'
 
