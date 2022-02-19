@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [0.8.4] - 2021-12-19
+### Fix
+- `nonce` breaks admin inlines styles #74 (thx @fabiocaccamo)
+- Fix tests
+
 ## [0.8.3] - 2021-12-19
 ### Added
 - Compatibility Django 4.0
@@ -145,7 +150,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.3...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.4...HEAD
+[0.8.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.3...v0.8.4
 [0.8.3]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.0...v0.8.1

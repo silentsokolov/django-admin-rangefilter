@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Python ${{ matrix.python-version }} | Django ${{ matrix.django-version}} | Ubuntu
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
