@@ -7,7 +7,10 @@ import django
 __author__ = 'Dmitriy Sokolov'
 __version__ = '0.8.4'
 
-if django.VERSION < (3, 2):
+if django.VERSION >= (3, 2):
+    # The declaration is only needed for older Django versions
+    pass
+else:
     default_app_config = 'rangefilter.apps.RangeFilterConfig'
 
 
