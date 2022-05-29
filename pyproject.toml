@@ -1,0 +1,10 @@
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39']
+exclude = '(\.eggs|\.git|\.mypy_cache|\.venv|venv|env|_build|build|build|dist|eggs)'
+
+[tool.isort]
+line_length = 100
+profile = "black"
+use_parentheses = true
+skip = '.eggs/,.mypy_cache/,.venv/,venv/,env/,eggs/'

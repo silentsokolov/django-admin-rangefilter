@@ -1,0 +1,15 @@
+[flake8]
+ignore =
+	W503,
+	E731,
+	E203, # black and flake8 disagree on whitespace before ':'
+	E501, # line too long (> 79 characters)
+	W503, # black and flake8 disagree on how to place operators
+
+per-file-ignores =
+	# imported but unused
+	__init__.py: F401
+
+max-line-length = 100
+max-complexity = 18
+exclude = .venv/,venv/,eggs/

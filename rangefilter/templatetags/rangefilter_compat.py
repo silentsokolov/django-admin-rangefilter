@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 import django
-
 from django.template import Library
 
 if django.VERSION[:2] >= (1, 10):

@@ -1,6 +1,7 @@
+---
 name: "build"
 
-on:
+on:  # yamllint disable-line rule:truthy
   pull_request:
   push:
     branches: master
@@ -80,24 +81,23 @@ jobs:
             django-version: "4.0.*"
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install Django ${{ matrix.django-version }}
-      run: |
-        pip install Django==${{ matrix.django-version }}
-        pip install coverage
-        pip install pytz
+      - name: Install Django ${{ matrix.django-version }}
+        run: |
+          pip install Django==${{ matrix.django-version }}
+          pip install coverage
+          pip install pytz
 
-    - name: Run tests
-      run: |
-        PYTHONPATH=".:tests:$PYTHONPATH" coverage run --omit='setup.py,tests/*' --source='.' `which django-admin` test --settings=tests.settings 
+      - name: Run tests
+        run: |
+          make test
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
