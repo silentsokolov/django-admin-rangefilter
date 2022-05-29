@@ -8,7 +8,7 @@ on:  # yamllint disable-line rule:truthy
 
 jobs:
   lint:
-    name: PyPI Release
+    name: Lint
     runs-on: ubuntu-latest
 
     steps:
