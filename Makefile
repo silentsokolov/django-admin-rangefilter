@@ -1,4 +1,4 @@
-.PHONY: check-black check-isort check-flake8 static-analysis test sdist wheel release pre-release clean
+.PHONY: check-black check-isort check-pylint static-analysis test sdist wheel release pre-release clean
 
 sdist:
 	python setup.py sdist
@@ -26,15 +26,15 @@ check-isort:
 	@echo "--> Running isort checks"
 	@isort --check-only .
 
-check-flake8:
-	@echo "--> Running flake8 checks"
-	@flake8 .
+check-pylint:
+	@echo "--> Running pylint checks"
+	@pylint `git ls-files '*.py'`
 
 check-yamllint:
 	@echo "--> Running yamllint checks"
 	@yamllint .
 
-static-analysis: check-black check-isort check-flake8 check-yamllint
+lint: check-black check-isort check-pylint check-yamllint
 
 # Format code
 .PHONY: fmt
@@ -50,4 +50,4 @@ fmt:
 
 test:
 	@echo "--> Running tests"
-	PYTHONWARNINGS=all PYTHONPATH=".:tests:$PYTHONPATH" django-admin test --settings=tests.settings
+	PYTHONWARNINGS=all PYTHONPATH=".:tests:${PYTHONPATH}" django-admin test --settings=tests.settings

@@ -16,14 +16,6 @@ try:
 except ImportError:
     csp = None
 
-try:
-    import zoneinfo
-except ImportError:
-    try:
-        from backports import zoneinfo
-    except ImportError:
-        zoneinfo = None
-
 from collections import OrderedDict
 
 from django import forms
@@ -40,7 +32,7 @@ from django.utils.html import format_html
 if django.VERSION >= (2, 0, 0):
     from django.utils.translation import gettext_lazy as _
 else:
-    from django.utils.translation import ugettext_lazy as _
+    from django.utils.translation import ugettext_lazy as _  # pylint: disable=E0611
 
 
 class OnceCallMedia(object):
@@ -99,7 +91,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         if custom_title:
             self.title = custom_title
 
-    def get_timezone(self, request):
+    def get_timezone(self, _request):
         return timezone.get_default_timezone()
 
     @staticmethod
@@ -107,18 +99,20 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         title_method_name = "get_rangefilter_{0}_title".format(field_path)
         title_method = getattr(model_admin, title_method_name, None)
 
-        if callable(title_method):
-            return title_method(request, field_path)
+        if not callable(title_method):
+            return None
+
+        return title_method(request, field_path)
 
     @staticmethod
     def _get_default_values(request, model_admin, field_path):
         default_method_name = "get_rangefilter_{0}_default".format(field_path)
         default_method = getattr(model_admin, default_method_name, None)
 
-        if callable(default_method):
-            return default_method(request)
+        if not callable(default_method):
+            return None, None
 
-        return None, None
+        return default_method(request)
 
     @staticmethod
     def make_dt_aware(value, tzname):
@@ -133,7 +127,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             value = value.replace(tzinfo=tzname)
         return value
 
-    def choices(self, cl):
+    def choices(self, changelist):
         yield {
             # slugify converts any non-unicode characters to empty characters
             # but system_name is required, if title converts to empty string use id
@@ -141,7 +135,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             "system_name": force_str(
                 slugify(self.title) if slugify(self.title) else id(self.title)
             ),
-            "query_string": cl.get_query_string({}, remove=self._get_expected_fields()),
+            "query_string": changelist.get_query_string({}, remove=self._get_expected_fields()),
         }
 
     def expected_parameters(self):
@@ -178,14 +172,15 @@ class DateRangeFilter(admin.filters.FieldListFilter):
     def get_template(self):
         if django.VERSION[:2] <= (1, 8):
             return "rangefilter/date_filter_1_8.html"
-        else:
-            if csp and getattr(settings, "ADMIN_RANGEFILTER_NONCE_ENABLED", True):
-                return "rangefilter/date_filter_csp.html"
-            return "rangefilter/date_filter.html"
+
+        if csp and getattr(settings, "ADMIN_RANGEFILTER_NONCE_ENABLED", True):
+            return "rangefilter/date_filter_csp.html"
+
+        return "rangefilter/date_filter.html"
 
     template = property(get_template)
 
-    def get_form(self, request):
+    def get_form(self, _request):
         form_class = self._get_form_class()
         return form_class(self.used_parameters or None)
 

@@ -48,7 +48,7 @@ class RangeModelDTimeAdmin(ModelAdmin):
 
 
 def select_by(dictlist):
-    return [x for x in dictlist][0]
+    return list(dictlist)[0]
 
 
 class DateFuncTestCase(TestCase):
@@ -117,10 +117,10 @@ class DateRangeFilterTestCase(TestCase):
         )
 
     def test_datefilter(self):
-        self.request_factory = RequestFactory()
+        request_factory = RequestFactory()
         modeladmin = RangeModelDTAdmin(RangeModelDT, site)
 
-        request = self.request_factory.get("/")
+        request = request_factory.get("/")
         request.user = self.user
 
         changelist = self.get_changelist(request, RangeModelDT, modeladmin)
@@ -132,10 +132,10 @@ class DateRangeFilterTestCase(TestCase):
         self.assertEqual(force_str(filterspec.title), "created at")
 
     def test_datefilter_filtered(self):
-        self.request_factory = RequestFactory()
+        request_factory = RequestFactory()
         modeladmin = RangeModelDTAdmin(RangeModelDT, site)
 
-        request = self.request_factory.get(
+        request = request_factory.get(
             "/",
             {
                 "created_at__range__gte": self.today,
@@ -157,14 +157,14 @@ class DateRangeFilterTestCase(TestCase):
         self.assertEqual(choice["system_name"], "created-at")
 
     def test_datefilter_with_default(self):
-        self.request_factory = RequestFactory()
+        request_factory = RequestFactory()
         modeladmin = RangeModelDTAdmin(RangeModelDT, site)
-        modeladmin.get_rangefilter_created_at_default = lambda r: [
+        modeladmin.get_rangefilter_created_at_default = lambda func: [  # pylint: disable=W0201
             self.today,
             self.tomorrow,
         ]
 
-        request = self.request_factory.get("/")
+        request = request_factory.get("/")
         request.user = self.user
 
         changelist = self.get_changelist(request, RangeModelDT, modeladmin)
@@ -178,10 +178,10 @@ class DateRangeFilterTestCase(TestCase):
         self.assertEqual(filterspec.default_lte, self.tomorrow)
 
     def test_datefilter_filtered_with_one_params(self):
-        self.request_factory = RequestFactory()
+        request_factory = RequestFactory()
         modeladmin = RangeModelDTAdmin(RangeModelDT, site)
 
-        request = self.request_factory.get("/", {"created_at__range__gte": self.today})
+        request = request_factory.get("/", {"created_at__range__gte": self.today})
         request.user = self.user
 
         changelist = self.get_changelist(request, RangeModelDT, modeladmin)
@@ -197,10 +197,10 @@ class DateRangeFilterTestCase(TestCase):
         self.assertEqual(choice["system_name"], "created-at")
 
     def test_datefilter_filtered_datefield(self):
-        self.request_factory = RequestFactory()
+        request_factory = RequestFactory()
         modeladmin = RangeModelDAdmin(RangeModelD, site)
 
-        request = self.request_factory.get(
+        request = request_factory.get(
             "/",
             {
                 "created_at__range__gte": self.today,
@@ -265,10 +265,10 @@ class DateTimeRangeFilterTestCase(TestCase):
         )
 
     def test_datetimefilter(self):
-        self.request_factory = RequestFactory()
+        request_factory = RequestFactory()
         modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
 
-        request = self.request_factory.get("/")
+        request = request_factory.get("/")
         request.user = self.user
 
         changelist = self.get_changelist(request, RangeModelDT, modeladmin)
@@ -280,10 +280,10 @@ class DateTimeRangeFilterTestCase(TestCase):
         self.assertEqual(force_str(filterspec.title), "created at")
 
     def test_datetimefilter_filtered(self):
-        self.request_factory = RequestFactory()
+        request_factory = RequestFactory()
         modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
 
-        request = self.request_factory.get(
+        request = request_factory.get(
             "/",
             {
                 "created_at__range__gte_0": self.today,
@@ -307,14 +307,14 @@ class DateTimeRangeFilterTestCase(TestCase):
         self.assertEqual(choice["system_name"], "created-at")
 
     def test_datetimefilter_with_default(self):
-        self.request_factory = RequestFactory()
+        request_factory = RequestFactory()
         modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
-        modeladmin.get_rangefilter_created_at_default = lambda r: [
+        modeladmin.get_rangefilter_created_at_default = lambda r: [  # pylint: disable=W0201
             self.today,
             self.tomorrow,
         ]
 
-        request = self.request_factory.get("/")
+        request = request_factory.get("/")
         request.user = self.user
 
         changelist = self.get_changelist(request, RangeModelDT, modeladmin)
@@ -328,10 +328,10 @@ class DateTimeRangeFilterTestCase(TestCase):
         self.assertEqual(filterspec.default_lte, self.tomorrow)
 
     def test_datefilter_filtered_with_one_params(self):
-        self.request_factory = RequestFactory()
+        request_factory = RequestFactory()
         modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
 
-        request = self.request_factory.get(
+        request = request_factory.get(
             "/",
             {
                 "created_at__range__gte_0": self.today,
@@ -353,12 +353,14 @@ class DateTimeRangeFilterTestCase(TestCase):
         self.assertEqual(choice["system_name"], "created-at")
 
     def test_datetimefilter_custom_title(self):
-        self.request_factory = RequestFactory()
+        request_factory = RequestFactory()
         custom_title = "foo bar"
         modeladmin = RangeModelDTTimeAdmin(RangeModelDT, site)
-        modeladmin.get_rangefilter_created_at_title = lambda r, f: custom_title
+        modeladmin.get_rangefilter_created_at_title = (  # pylint: disable=W0201
+            lambda r, f: custom_title
+        )
 
-        request = self.request_factory.get("/")
+        request = request_factory.get("/")
         request.user = self.user
 
         changelist = self.get_changelist(request, RangeModelDT, modeladmin)
@@ -406,7 +408,7 @@ class OnceCallMediaTestCase(TestCase):
         )
 
     def test_call(self):
-        self.assertFalse(self.media._is_rendered)
+        self.assertFalse(self.media._is_rendered)  # pylint: disable=protected-access
         self.assertNotEqual(self.media(), [])
-        self.assertTrue(self.media._is_rendered)
+        self.assertTrue(self.media._is_rendered)  # pylint: disable=protected-access
         self.assertEqual(self.media(), [])

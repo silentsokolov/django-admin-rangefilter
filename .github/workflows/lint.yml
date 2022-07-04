@@ -27,4 +27,4 @@ jobs:
         run: pip install -r requirements-dev.txt
 
       - name: Run lint
-        run: make static-analysis
+        run: make lint

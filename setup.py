@@ -9,7 +9,7 @@ from setuptools import setup
 
 
 def get_version(package):
-    init_py = open(os.path.join(package, "__init__.py")).read()
+    init_py = open(os.path.join(package, "__init__.py"), encoding="utf-8").read()
     return re.search("__version__ = ['\"]([^'\"]+)['\"]", init_py).group(1)
 
 
@@ -41,7 +41,7 @@ setup(
     license="MIT",
     description="django-admin-rangefilter app, add the filter by a custom date range on the admin UI.",
     long_description_content_type="text/x-rst",
-    long_description=open(join(dirname(__file__), "README.rst")).read(),
+    long_description=open(join(dirname(__file__), "README.rst"), encoding="utf-8").read(),
     author="Dmitriy Sokolov",
     author_email="silentsokolov@gmail.com",
     packages=get_packages("rangefilter"),

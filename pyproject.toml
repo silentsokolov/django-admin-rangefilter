@@ -8,3 +8,29 @@ line_length = 100
 profile = "black"
 use_parentheses = true
 skip = '.eggs/,.mypy_cache/,.venv/,venv/,env/,eggs/'
+
+[tool.pylint]
+[tool.pylint.master]
+py-version = 3.9
+
+[tool.pylint.messages-control]
+disable=[
+  'C',
+  'R',
+
+  # Redundant with mypy
+  'typecheck',
+
+  # There are many places where we want to catch a maximally generic exception.
+  'bare-except',
+  'broad-except',
+
+  # Pylint is by default very strict on logging string interpolations, but the
+  # (performance-motivated) rules do not make sense for infrequent log messages (like error reports)
+  # and make messages less readable.
+  'logging-fstring-interpolation',
+  'logging-format-interpolation',
+  'logging-not-lazy',
+  'too-many-arguments',
+  'duplicate-code',
+]
