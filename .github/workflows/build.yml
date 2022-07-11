@@ -79,6 +79,7 @@ jobs:
             django-version: "3.2.*"
           - python-version: "3.10"
             django-version: "4.0.*"
+            coverage: true
 
     steps:
       - name: Checkout
@@ -99,7 +100,12 @@ jobs:
         run: |
           make test
 
-      - name: Upload coverage to Codecov
+      - if: ${{ matrix.coverage }}
+        run: |
+          make coverage
+
+      - if: ${{ matrix.coverage }}
+        name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

@@ -1,5 +1,7 @@
 .PHONY: check-black check-isort check-pylint static-analysis test sdist wheel release pre-release clean
 
+PATH_DADMIN := $(shell which django-admin)
+
 sdist:
 	python setup.py sdist
 
@@ -51,3 +53,7 @@ fmt:
 test:
 	@echo "--> Running tests"
 	PYTHONWARNINGS=all PYTHONPATH=".:tests:${PYTHONPATH}" django-admin test --settings=tests.settings
+
+coverage:
+	@echo "--> Running coverage"
+	PYTHONWARNINGS=all PYTHONPATH=".:tests:${PYTHONPATH}" coverage run --source='.' $(PATH_DADMIN) test --settings=tests.settings
