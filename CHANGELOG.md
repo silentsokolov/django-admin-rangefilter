@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.8.6] - 2022-08-07
+### Added
+- Compatibility Django 4.1
+
 ## [0.8.5] - 2022-07-03
 ### Fix
 - Fix use of admin_static causes validate_templates fails #78
