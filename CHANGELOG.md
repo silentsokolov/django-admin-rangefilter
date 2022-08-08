@@ -158,7 +158,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.5...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.6...HEAD
+[0.8.5]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.5...v0.8.6
 [0.8.5]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.4...v0.8.5
 [0.8.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.3...v0.8.4
 [0.8.3]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.2...v0.8.3
