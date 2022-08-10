@@ -2,19 +2,20 @@
 <h3>{{ title }}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style nonce="{{ spec.request.csp_nonce }}">
-    .admindatefilter .button, .admindatefilter input[type=submit], .admindatefilter input[type=button], .admindatefilter .submit-row input, .admindatefilter a.button,
+   {% default_css_vars_if_needed %}
+   .admindatefilter .button, .admindatefilter input[type=submit], .admindatefilter input[type=button], .admindatefilter .submit-row input, .admindatefilter a.button,
     .admindatefilter .button, .admindatefilter input[type=reset] {
-        background: #79aec8;
+        background: var(--button-bg);
         padding: 4px 5px;
         border: none;
         border-radius: 4px;
-        color: #fff;
+        color: var(--button-fg);
         cursor: pointer;
     }
     .admindatefilter {
         padding-left: 15px;
         padding-bottom: 10px;
-        border-bottom: 1px solid #eaeaea;
+        border-bottom: 1px solid var(--border-color);
     }
     .admindatefilter p {
         padding-left: 0px;
