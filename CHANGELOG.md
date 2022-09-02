@@ -1,7 +1,7 @@
 ## [Unreleased]
 
 ## [0.8.8] - 2022-09-01
-### Added
+### Fix
 - Fix using settings.USE_TZ = False on django4.0+ #85
 
 ## [0.8.7] - 2022-08-13
