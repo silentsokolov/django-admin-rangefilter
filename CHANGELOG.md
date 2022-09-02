@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.8.8] - 2022-09-01
+### Added
+- Fix using settings.USE_TZ = False on django4.0+ #85
+
 ## [0.8.7] - 2022-08-13
 ### Added
 - Use admin CSS vars for colors (thx @mharju)
@@ -163,7 +167,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.7...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.8...HEAD
+[0.8.8]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.7...v0.8.8
 [0.8.7]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.6...v0.8.7
 [0.8.6]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.5...v0.8.6
 [0.8.5]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.4...v0.8.5
