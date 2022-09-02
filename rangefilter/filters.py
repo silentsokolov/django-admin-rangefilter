@@ -116,15 +116,15 @@ class DateRangeFilter(admin.filters.FieldListFilter):
 
     @staticmethod
     def make_dt_aware(value, tzname):
-        if django.VERSION <= (4, 0, 0):
-            if settings.USE_TZ and pytz is not None:
+        if settings.USE_TZ:
+            if django.VERSION <= (4, 0, 0) and pytz is not None:
                 default_tz = tzname
                 if value.tzinfo is not None:
                     value = default_tz.normalize(value)
                 else:
                     value = default_tz.localize(value)
-        else:
-            value = value.replace(tzinfo=tzname)
+            else:
+                value = value.replace(tzinfo=tzname)
         return value
 
     def choices(self, changelist):

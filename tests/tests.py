@@ -55,7 +55,7 @@ class DateFuncTestCase(TestCase):
     def test_make_dt_aware_without_pytz(self):
         with override_settings(USE_TZ=False):
             now = datetime.datetime.now()
-            date = DateRangeFilter.make_dt_aware(now, None)
+            date = DateRangeFilter.make_dt_aware(now, pytz.utc)
 
             self.assertEqual(date.tzinfo, None)
             self.assertTrue(timezone.is_naive(date))
@@ -73,6 +73,20 @@ class DateFuncTestCase(TestCase):
         now = timezone.now()
         date = DateRangeFilter.make_dt_aware(now, local_tz)
         self.assertEqual(date.tzinfo.zone, local_tz.zone)
+        self.assertTrue(timezone.is_aware(date))
+
+    @skipIf(django.VERSION < (4, 0, 0), "timezone django < 4")
+    def test_make_dt_aware(self):
+        local_tz = timezone.get_current_timezone()
+        now = datetime.datetime.now()
+        date = DateRangeFilter.make_dt_aware(now, local_tz)
+
+        self.assertEqual(date.tzinfo, local_tz)
+        self.assertTrue(timezone.is_aware(date))
+
+        now = timezone.now()
+        date = DateRangeFilter.make_dt_aware(now, local_tz)
+        self.assertEqual(date.tzinfo, local_tz)
         self.assertTrue(timezone.is_aware(date))
 
 
