@@ -46,4 +46,22 @@ class Migration(migrations.Migration):
                 "ordering": ("created_at",),
             },
         ),
+        migrations.CreateModel(
+            name="RangeModelFloat",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("float_value", models.FloatField()),
+            ],
+            options={
+                "ordering": ("float_value",),
+            },
+        ),
     ]

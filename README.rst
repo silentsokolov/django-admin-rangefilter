@@ -7,7 +7,7 @@
 django-admin-rangefilter
 ========================
 
-A Django app that adds a filter by date range to the admin UI.
+A Django app that adds a filter by date range and numeric to the admin UI.
 
 .. image:: https://raw.githubusercontent.com/silentsokolov/django-admin-rangefilter/master/docs/images/screenshot.png
 
@@ -51,7 +51,7 @@ In admin
 .. code:: python
 
     from django.contrib import admin
-    from rangefilter.filters import DateRangeFilter, DateTimeRangeFilter
+    from rangefilter.filters import DateRangeFilter, DateTimeRangeFilter, NumericRangeFilter
 
     from .models import Post
 
@@ -60,6 +60,7 @@ In admin
     class PostAdmin(admin.ModelAdmin):
         list_filter = (
             ('created_at', DateRangeFilter), ('updated_at', DateTimeRangeFilter),
+            ('num_value', NumericRangeFilter),
         )
         
         # If you would like to add a default range filter

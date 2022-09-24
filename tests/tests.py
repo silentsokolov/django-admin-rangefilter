@@ -21,10 +21,15 @@ from django.test.utils import override_settings
 from django.utils import timezone
 from django.utils.encoding import force_str
 
-from rangefilter.filters import DateRangeFilter, DateTimeRangeFilter, OnceCallMedia
+from rangefilter.filters import (
+    DateRangeFilter,
+    DateTimeRangeFilter,
+    NumericRangeFilter,
+    OnceCallMedia,
+)
 from rangefilter.templatetags.rangefilter_compat import static
 
-from .models import RangeModelD, RangeModelDT
+from .models import RangeModelD, RangeModelDT, RangeModelFloat
 
 
 class RangeModelDTAdmin(ModelAdmin):
@@ -44,6 +49,11 @@ class RangeModelDTTimeAdmin(ModelAdmin):
 
 class RangeModelDTimeAdmin(ModelAdmin):
     list_filter = (("created_at", DateTimeRangeFilter),)
+    ordering = ("-id",)
+
+
+class RangeModelFloatAdmin(ModelAdmin):
+    list_filter = (("float_value", NumericRangeFilter),)
     ordering = ("-id",)
 
 
@@ -218,7 +228,6 @@ class DateRangeFilterTestCase(TestCase):
             "/",
             {
                 "created_at__range__gte": self.today,
-                "created_at__range__lte": self.tomorrow,
             },
         )
         request.user = self.user
@@ -234,6 +243,140 @@ class DateRangeFilterTestCase(TestCase):
         choice = select_by(filterspec.choices(changelist))
         self.assertEqual(choice["query_string"], "?")
         self.assertEqual(choice["system_name"], "created-at")
+
+
+class NumericRangeFilterTestCase(TestCase):
+    def setUp(self):
+        self.django_book = RangeModelFloat.objects.create(float_value=1)
+        self.djangonaut_book = RangeModelFloat.objects.create(float_value=10)
+
+        self.username = "foo"
+        self.email = "bar@foo.com"
+        self.password = "top_secret"
+        self.user = User.objects.create_user(self.username, self.email, self.password)
+
+    def get_changelist(self, request, model, modeladmin):
+        if getattr(modeladmin, "get_changelist_instance", None):
+            return modeladmin.get_changelist_instance(request)
+
+        return ChangeList(
+            request,
+            model,
+            modeladmin.list_display,
+            modeladmin.list_display_links,
+            modeladmin.list_filter,
+            modeladmin.date_hierarchy,
+            modeladmin.search_fields,
+            modeladmin.list_select_related,
+            modeladmin.list_per_page,
+            modeladmin.list_max_show_all,
+            modeladmin.list_editable,
+            modeladmin,
+        )
+
+    def test_numericfilter(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelFloatAdmin(RangeModelFloat, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelFloat, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "float value")
+
+    def test_datetimefilter_filtered(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelFloatAdmin(RangeModelFloat, site)
+
+        request = request_factory.get(
+            "/",
+            {
+                "float_value__range__gte": 1,
+                "float_value__range__lte": 5.5,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelFloat, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "float value")
+
+        choice = select_by(filterspec.choices(changelist))
+        self.assertEqual(choice["query_string"], "?")
+        self.assertEqual(choice["system_name"], "float-value")
+
+    def test_datetimefilter_with_default(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelFloatAdmin(RangeModelFloat, site)
+        modeladmin.get_rangefilter_float_value_default = lambda r: [  # pylint: disable=W0201
+            1,
+            20,
+        ]
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelFloat, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "float value")
+        self.assertEqual(filterspec.default_gte, 1)
+        self.assertEqual(filterspec.default_lte, 20)
+
+    def test_datefilter_filtered_with_one_params(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelFloatAdmin(RangeModelFloat, site)
+
+        request = request_factory.get(
+            "/",
+            {
+                "float_value__range__lte": 5,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "float value")
+
+        choice = select_by(filterspec.choices(changelist))
+        self.assertEqual(choice["query_string"], "?")
+        self.assertEqual(choice["system_name"], "float-value")
+
+    def test_datetimefilter_custom_title(self):
+        request_factory = RequestFactory()
+        custom_title = "foo bar"
+        modeladmin = RangeModelFloatAdmin(RangeModelFloat, site)
+        modeladmin.get_rangefilter_float_value_title = (  # pylint: disable=W0201
+            lambda r, f: custom_title
+        )
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelFloat, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), custom_title)
 
 
 class DateTimeRangeFilterTestCase(TestCase):

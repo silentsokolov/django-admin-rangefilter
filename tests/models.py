@@ -17,3 +17,10 @@ class RangeModelD(models.Model):
 
     class Meta:
         ordering = ("created_at",)
+
+
+class RangeModelFloat(models.Model):
+    float_value = models.FloatField()
+
+    class Meta:
+        ordering = ("float_value",)
