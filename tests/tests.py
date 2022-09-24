@@ -347,7 +347,7 @@ class NumericRangeFilterTestCase(TestCase):
         )
         request.user = self.user
 
-        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        changelist = self.get_changelist(request, RangeModelFloat, modeladmin)
 
         queryset = changelist.get_queryset(request)
 
