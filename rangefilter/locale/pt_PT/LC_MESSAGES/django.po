@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-20 16:01+0300\n"
+"POT-Creation-Date: 2022-09-25 09:48+0300\n"
 "PO-Revision-Date: 2019-01-31 09:16+0000\n"
 "Last-Translator: Dmitriy Sokolov <silentsokolov@gmail.com>, 2020\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/django-admin-"
@@ -23,26 +23,36 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps.py:18
+#: apps.py:16
 msgid "Range Filter"
 msgstr "Range Filter"
 
-#: filter.py:171 filter.py:222
+#: filters.py:210 filters.py:246
 msgid "From date"
 msgstr "Data inicial"
 
-#: filter.py:178 filter.py:229
+#: filters.py:220 filters.py:256
 msgid "To date"
 msgstr "Data final"
 
-#: templates/rangefilter/date_filter.html:135
-#: templates/rangefilter/date_filter_1_8.html:89
-#: templates/rangefilter/date_filter_csp.html:137
+#: filters.py:351
+msgid "From"
+msgstr "Inicial"
+
+#: filters.py:361
+msgid "To"
+msgstr "Final"
+
+#: templates/rangefilter/date_filter.html:139
+#: templates/rangefilter/date_filter_1_8.html:90
+#: templates/rangefilter/date_filter_csp.html:138
+#: templates/rangefilter/numeric_filter.html:55
 msgid "Search"
 msgstr "Pesquisar"
 
-#: templates/rangefilter/date_filter.html:136
-#: templates/rangefilter/date_filter_1_8.html:90
-#: templates/rangefilter/date_filter_csp.html:138
+#: templates/rangefilter/date_filter.html:140
+#: templates/rangefilter/date_filter_1_8.html:91
+#: templates/rangefilter/date_filter_csp.html:139
+#: templates/rangefilter/numeric_filter.html:56
 msgid "Reset"
 msgstr "Limpar"

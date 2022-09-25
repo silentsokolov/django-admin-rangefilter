@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-12 23:54+0430\n"
+"POT-Creation-Date: 2022-09-25 09:48+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Mahdi Shahmohammadi <shahmohammadiemes@gmail.com>\n"
 "Language-Team: Iran \n"
@@ -30,14 +30,24 @@ msgstr "از روز"
 msgid "To date"
 msgstr "تا روز"
 
+#: filters.py:351
+msgid "From"
+msgstr ""
+
+#: filters.py:361
+msgid "To"
+msgstr ""
+
 #: templates/rangefilter/date_filter.html:139
 #: templates/rangefilter/date_filter_1_8.html:90
 #: templates/rangefilter/date_filter_csp.html:138
+#: templates/rangefilter/numeric_filter.html:55
 msgid "Search"
 msgstr "جست و جو"
 
 #: templates/rangefilter/date_filter.html:140
 #: templates/rangefilter/date_filter_1_8.html:91
 #: templates/rangefilter/date_filter_csp.html:139
+#: templates/rangefilter/numeric_filter.html:56
 msgid "Reset"
 msgstr "بازنشانی"

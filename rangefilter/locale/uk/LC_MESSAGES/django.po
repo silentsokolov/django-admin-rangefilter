@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-20 16:01+0300\n"
+"POT-Creation-Date: 2022-09-25 09:48+0300\n"
 "PO-Revision-Date: 2019-01-31 09:16+0000\n"
 "Last-Translator: vadshu <vadik@shustikov.kiev.ua>, 2019\n"
 "Language-Team: Ukrainian (https://www.transifex.com/django-admin-rangefilter/"
@@ -25,26 +25,36 @@ msgstr ""
 "100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
 "(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
-#: apps.py:18
+#: apps.py:16
 msgid "Range Filter"
 msgstr "Фільтр діапазону"
 
-#: filter.py:171 filter.py:222
+#: filters.py:210 filters.py:246
 msgid "From date"
 msgstr "З дати"
 
-#: filter.py:178 filter.py:229
+#: filters.py:220 filters.py:256
 msgid "To date"
 msgstr "По дату"
 
-#: templates/rangefilter/date_filter.html:135
-#: templates/rangefilter/date_filter_1_8.html:89
-#: templates/rangefilter/date_filter_csp.html:137
+#: filters.py:351
+msgid "From"
+msgstr "З"
+
+#: filters.py:361
+msgid "To"
+msgstr "По"
+
+#: templates/rangefilter/date_filter.html:139
+#: templates/rangefilter/date_filter_1_8.html:90
+#: templates/rangefilter/date_filter_csp.html:138
+#: templates/rangefilter/numeric_filter.html:55
 msgid "Search"
 msgstr "Пошук"
 
-#: templates/rangefilter/date_filter.html:136
-#: templates/rangefilter/date_filter_1_8.html:90
-#: templates/rangefilter/date_filter_csp.html:138
+#: templates/rangefilter/date_filter.html:140
+#: templates/rangefilter/date_filter_1_8.html:91
+#: templates/rangefilter/date_filter_csp.html:139
+#: templates/rangefilter/numeric_filter.html:56
 msgid "Reset"
 msgstr "Скинути"
