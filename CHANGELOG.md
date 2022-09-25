@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.9.0] - 2022-09-25
+### Added
+- Add filter for integer and float #85
+
 ## [0.8.8] - 2022-09-01
 ### Fix
 - Fix using settings.USE_TZ = False on django4.0+ #85
@@ -167,7 +171,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.8...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.9.0...HEAD
+[0.9.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.8...v0.9.0
 [0.8.8]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.7...v0.8.8
 [0.8.7]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.6...v0.8.7
 [0.8.6]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.5...v0.8.6
