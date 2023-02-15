@@ -1,4 +1,4 @@
-Django==4.1.6
+Django==4.1.7
 black==22.3.0
 isort==5.10.1
 pylint==2.14.4
