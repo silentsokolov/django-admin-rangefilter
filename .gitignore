@@ -89,3 +89,7 @@ ENV/
 
 # Translate
 .tx
+
+# PyCharm
+
+.idea/*
