@@ -1,8 +1,8 @@
-.. image:: https://github.com/silentsokolov/django-admin-rangefilter/workflows/build/badge.svg?branch=master
-   :target: https://github.com/EricOuma/django-admin-rangefilter/actions?query=workflow%3Abuild
+.. image:: https://github.com/EricOuma/django-jazzmin-admin-rangefilter/workflows/build/badge.svg?branch=master
+   :target: https://github.com/EricOuma/django-jazzmin-admin-rangefilter/actions?query=workflow%3Abuild
 
-.. image:: https://codecov.io/gh/silentsokolov/django-admin-rangefilter/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/silentsokolov/django-admin-rangefilter
+.. image:: https://codecov.io/gh/EricOuma/django-jazzmin-admin-rangefilter/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/EricOuma/django-jazzmin-admin-rangefilter
 
 django-jazzmin-admin-rangefilter
 ================================
