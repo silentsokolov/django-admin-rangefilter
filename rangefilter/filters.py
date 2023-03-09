@@ -210,7 +210,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
                     forms.DateField(
                         label="",
                         widget=AdminDateWidget(
-                            attrs={"placeholder": _("from {}".format(self.title.replace('_', ' ')))}
+                            attrs={"placeholder": _("from {}".format(self.title.replace("_", " ")))}
                         ),
                         localize=True,
                         required=False,
@@ -222,7 +222,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
                     forms.DateField(
                         label="",
                         widget=AdminDateWidget(
-                            attrs={"placeholder": _("to {}".format(self.title.replace('_', ' ')))}
+                            attrs={"placeholder": _("to {}".format(self.title.replace("_", " ")))}
                         ),
                         localize=True,
                         required=False,
@@ -250,7 +250,7 @@ class DateTimeRangeFilter(DateRangeFilter):
                     forms.SplitDateTimeField(
                         label="",
                         widget=AdminSplitDateTime(
-                            attrs={"placeholder": _("from {}".format(self.title.replace('_', ' ')))}
+                            attrs={"placeholder": _("from {}".format(self.title.replace("_", " ")))}
                         ),
                         localize=True,
                         required=False,
@@ -262,7 +262,7 @@ class DateTimeRangeFilter(DateRangeFilter):
                     forms.SplitDateTimeField(
                         label="",
                         widget=AdminSplitDateTime(
-                            attrs={"placeholder": _("to {}".format(self.title.replace('_', ' ')))}
+                            attrs={"placeholder": _("to {}".format(self.title.replace("_", " ")))}
                         ),
                         localize=True,
                         required=False,
@@ -359,7 +359,7 @@ class NumericRangeFilter(admin.filters.FieldListFilter):
                     forms.FloatField(
                         label="",
                         widget=forms.NumberInput(
-                            attrs={"placeholder": _("from {}".format(self.title.replace('_', ' ')))}
+                            attrs={"placeholder": _("from {}".format(self.title.replace("_", " ")))}
                         ),
                         required=False,
                         localize=True,
@@ -371,7 +371,7 @@ class NumericRangeFilter(admin.filters.FieldListFilter):
                     forms.FloatField(
                         label="",
                         widget=forms.NumberInput(
-                            attrs={"placeholder": _("to {}".format(self.title.replace('_', ' ')))}
+                            attrs={"placeholder": _("to {}".format(self.title.replace("_", " ")))}
                         ),
                         localize=True,
                         required=False,
