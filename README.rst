@@ -5,7 +5,7 @@
    :target: https://codecov.io/gh/silentsokolov/django-admin-rangefilter
 
 django-jazzmin-admin-rangefilter
-========================
+================================
 
 A Django app that adds a filter by date range and numeric range to the Django Jazzmin admin UI.
 
