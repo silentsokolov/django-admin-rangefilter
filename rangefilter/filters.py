@@ -93,7 +93,7 @@ class BaseRangeFilter(admin.filters.FieldListFilter):  # pylint: disable=abstrac
             return self.default_title or self.title
 
     @staticmethod
-    def get_timezone(self, _request):
+    def get_timezone(_request):
         return timezone.get_default_timezone()
 
     @staticmethod
@@ -254,7 +254,7 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(attrs={"placeholder": _("From date")}),
+                        widget=AdminSplitDateTime(attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}),
                         localize=True,
                         required=False,
                         initial=self.default_gte,
@@ -264,7 +264,7 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(attrs={"placeholder": _("To date")}),
+                        widget=AdminSplitDateTime(attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}),
                         localize=True,
                         required=False,
                         initial=self.default_lte,
@@ -309,7 +309,7 @@ class NumericRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.FloatField(
                         label="",
-                        widget=forms.NumberInput(attrs={"placeholder": _("From")}),
+                        widget=forms.NumberInput(attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}),
                         required=False,
                         localize=True,
                         initial=self.default_lte,
@@ -319,7 +319,7 @@ class NumericRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.FloatField(
                         label="",
-                        widget=forms.NumberInput(attrs={"placeholder": _("To")}),
+                        widget=forms.NumberInput(attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}),
                         localize=True,
                         required=False,
                         initial=self.default_lte,

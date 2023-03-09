@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in contributing to django-admin-rangefilter!
+Thank you for your interest in contributing to django-jazzmin-admin-rangefilter!
 
 
 ### Add translations

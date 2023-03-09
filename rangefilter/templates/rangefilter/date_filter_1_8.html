@@ -61,10 +61,8 @@ https://github.com/django/django/blob/stable/1.8.x/django/contrib/admin/template
     })
 </script>
 <div class="admindatefilter">
-    <form method="GET" action="." id="{{ choices.0.system_name }}-form">
         {{ spec.form }}
         {% for choice in choices %}
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
-    </form>
 </div>

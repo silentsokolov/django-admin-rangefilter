@@ -128,12 +128,10 @@ django.jQuery('document').ready(function () {
 </script>
 
 <div class="admindatefilter">
-    <form method="GET" action="." id="{{ choices.0.system_name }}-form">
         {{ spec.form.as_p }}
         {% for choice in choices %}
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
-    </form>
 </div>
 
 {% comment %} JS not requiring template variables refactored as an iife {% endcomment %}
