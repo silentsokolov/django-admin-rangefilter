@@ -62,7 +62,7 @@ class OnceCallMedia(object):
 
 class AdminSplitDateTime(BaseAdminSplitDateTime):
     @staticmethod
-    def format_output(self, rendered_widgets):
+    def format_output(rendered_widgets):
         return format_html(
             '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
             rendered_widgets[0],
@@ -198,7 +198,9 @@ class DateRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.DateField(
                         label="",
-                        widget=AdminDateWidget(attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}),
+                        widget=AdminDateWidget(
+                            attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_gte,
@@ -208,7 +210,9 @@ class DateRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.DateField(
                         label="",
-                        widget=AdminDateWidget(attrs={"placeholder": _(f"to {self.title.replace('_', ' ')}")}),
+                        widget=AdminDateWidget(
+                            attrs={"placeholder": _(f"to {self.title.replace('_', ' ')}")}
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_lte,
@@ -254,7 +258,9 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}),
+                        widget=AdminSplitDateTime(
+                            attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_gte,
@@ -264,7 +270,9 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}),
+                        widget=AdminSplitDateTime(
+                            attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_lte,
@@ -309,7 +317,9 @@ class NumericRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.FloatField(
                         label="",
-                        widget=forms.NumberInput(attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}),
+                        widget=forms.NumberInput(
+                            attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}
+                        ),
                         required=False,
                         localize=True,
                         initial=self.default_lte,
@@ -319,7 +329,9 @@ class NumericRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.FloatField(
                         label="",
-                        widget=forms.NumberInput(attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}),
+                        widget=forms.NumberInput(
+                            attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_lte,
