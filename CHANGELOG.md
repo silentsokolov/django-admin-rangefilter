@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+
+## [0.9.1] - 2023-05-09
+### Added
+- Added support for Django Jazzmin
+
 ## [0.9.0] - 2022-09-25
 ### Added
 - Add filter for integer and float #85

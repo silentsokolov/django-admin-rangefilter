@@ -45,10 +45,8 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
     }
 </script>
 <div class="numericrangefilter">
-    <form method="GET" action="." id="{{ choices.0.system_name }}-form">
         {{ spec.form.as_p }}
         {% for choice in choices %}
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
-    </form>
 </div>

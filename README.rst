@@ -1,15 +1,15 @@
 .. image:: https://github.com/silentsokolov/django-admin-rangefilter/workflows/build/badge.svg?branch=master
-   :target: https://github.com/silentsokolov/django-admin-rangefilter/actions?query=workflow%3Abuild
+   :target: https://github.com/EricOuma/django-admin-rangefilter/actions?query=workflow%3Abuild
 
 .. image:: https://codecov.io/gh/silentsokolov/django-admin-rangefilter/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/silentsokolov/django-admin-rangefilter
 
-django-admin-rangefilter
+django-jazzmin-admin-rangefilter
 ========================
 
-A Django app that adds a filter by date range and numeric range to the admin UI.
+A Django app that adds a filter by date range and numeric range to the Django Jazzmin admin UI.
 
-.. image:: https://raw.githubusercontent.com/silentsokolov/django-admin-rangefilter/master/docs/images/screenshot.png
+.. image:: https://raw.githubusercontent.com/EricOuma/django-jazzmin-admin-rangefilter/master/docs/images/screenshot.png
 
 
 Requirements
@@ -26,7 +26,7 @@ Use your favorite Python package manager to install the app from PyPI, e.g.
 
 Example:
 
-``pip install django-admin-rangefilter``
+``pip install django-jazzmin-admin-rangefilter``
 
 
 Add ``rangefilter`` to ``INSTALLED_APPS``:
