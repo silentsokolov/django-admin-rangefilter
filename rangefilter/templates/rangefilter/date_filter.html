@@ -3,15 +3,6 @@
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style>
     {% default_css_vars_if_needed %}
-    .admindatefilter .button, .admindatefilter input[type=submit], .admindatefilter input[type=button], .admindatefilter .submit-row input, .admindatefilter a.button,
-    .admindatefilter .button, .admindatefilter input[type=reset] {
-        background: var(--button-bg);
-        padding: 4px 5px;
-        border: none;
-        border-radius: 4px;
-        color: var(--button-fg);
-        cursor: pointer;
-    }
     .admindatefilter {
         padding-left: 15px;
         padding-bottom: 10px;
@@ -69,21 +60,6 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
 {% endcomment %}
 <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
 <script>
-    function datefilter_apply(event, qs_name){
-        event.preventDefault();
-        const $form = django.jQuery(event.target).closest('form');
-        const query_string = $form.find('input#'+qs_name).val();
-        const form_data = $form.serialize();
-        const amp = query_string === "?" ? "" : "&";  // avoid leading ?& combination
-        window.location = window.location.pathname + query_string + amp + form_data;
-    }
-    function datefilter_reset(event, qs_name){
-        const $form = django.jQuery(event.target).closest('form');
-        const query_string = $form.find('input#' + qs_name).val();
-        window.location = window.location.pathname + query_string;
-    }
-</script>
-<script>
     {% comment %}
     // Code below makes sure that the DateTimeShortcuts.js is loaded exactly once
     // regardless the presence of AdminDateWidget
@@ -134,9 +110,5 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
         {% for choice in choices %}
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
-        <div class="controls">
-            <input type="submit" class="button" value="{% trans "Search" %}" onclick="datefilter_apply(event, '{{ choices.0.system_name }}-query-string')">
-            <input type="reset" class="button" value="{% trans "Reset" %}" onclick="datefilter_reset(event, '{{ choices.0.system_name }}-query-string')">
-        </div>
     </form>
 </div>

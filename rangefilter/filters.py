@@ -61,6 +61,7 @@ class OnceCallMedia(object):
 
 
 class AdminSplitDateTime(BaseAdminSplitDateTime):
+    @staticmethod
     def format_output(self, rendered_widgets):
         return format_html(
             '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
@@ -91,6 +92,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         if custom_title:
             self.title = custom_title
 
+    @staticmethod
     def get_timezone(self, _request):
         return timezone.get_default_timezone()
 
@@ -207,7 +209,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
                     self.lookup_kwarg_gte,
                     forms.DateField(
                         label="",
-                        widget=AdminDateWidget(attrs={"placeholder": _("From date")}),
+                        widget=AdminDateWidget(attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}),
                         localize=True,
                         required=False,
                         initial=self.default_gte,
@@ -217,7 +219,7 @@ class DateRangeFilter(admin.filters.FieldListFilter):
                     self.lookup_kwarg_lte,
                     forms.DateField(
                         label="",
-                        widget=AdminDateWidget(attrs={"placeholder": _("To date")}),
+                        widget=AdminDateWidget(attrs={"placeholder": _(f"to {self.title.replace('_', ' ')}")}),
                         localize=True,
                         required=False,
                         initial=self.default_lte,
