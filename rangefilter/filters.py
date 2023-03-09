@@ -61,6 +61,7 @@ class OnceCallMedia(object):
 
 
 class AdminSplitDateTime(BaseAdminSplitDateTime):
+    @staticmethod
     def format_output(self, rendered_widgets):
         return format_html(
             '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
@@ -91,6 +92,12 @@ class BaseRangeFilter(admin.filters.FieldListFilter):  # pylint: disable=abstrac
         if hasattr(self, "__from_builder"):
             return self.default_title or self.title
 
+    @staticmethod
+    def get_timezone(self, _request):
+        return timezone.get_default_timezone()
+
+    @staticmethod
+    def _get_custom_title(request, model_admin, field_path):
         title_method_name = "get_rangefilter_{0}_title".format(field_path)
         title_method = getattr(model_admin, title_method_name, None)
 
@@ -191,7 +198,7 @@ class DateRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.DateField(
                         label="",
-                        widget=AdminDateWidget(attrs={"placeholder": _("From date")}),
+                        widget=AdminDateWidget(attrs={"placeholder": _(f"from {self.title.replace('_', ' ')}")}),
                         localize=True,
                         required=False,
                         initial=self.default_gte,
@@ -201,7 +208,7 @@ class DateRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.DateField(
                         label="",
-                        widget=AdminDateWidget(attrs={"placeholder": _("To date")}),
+                        widget=AdminDateWidget(attrs={"placeholder": _(f"to {self.title.replace('_', ' ')}")}),
                         localize=True,
                         required=False,
                         initial=self.default_lte,

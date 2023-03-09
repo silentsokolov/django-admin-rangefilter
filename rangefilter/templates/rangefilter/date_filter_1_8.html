@@ -2,12 +2,6 @@
 <h3>{{ title }}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style>
-    .admindatefilter .button, .admindatefilter input[type=reset] {
-        padding: 3px 5px;
-        color: black;
-        border: 1px solid #bbb;
-        border-color: #ddd #aaa #aaa #ddd;
-    }
     .admindatefilter {
         padding-left: 10px;
     }
@@ -57,19 +51,6 @@ https://github.com/django/django/blob/stable/1.8.x/django/contrib/admin/template
 {% endcomment %}
 <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
 <script>
-    function datefilter_apply(event, qs_name, form_name){
-        event.preventDefault();
-        var query_string = django.jQuery('input#'+qs_name).val();
-        var form_data = django.jQuery('#'+form_name).serialize();
-        amp = query_string == "?" ? "" : "&";  // avoid leading ?& combination
-        window.location = window.location.pathname + query_string + amp + form_data;
-    }
-    function datefilter_reset(qs_name){
-        var query_string = django.jQuery('input#'+qs_name).val();
-        window.location = window.location.pathname + query_string;
-    }
-</script>
-<script>
     django.jQuery('document').ready(function () {
         if (!('DateTimeShortcuts' in window)) {
             {% for m in spec.form.js %}
@@ -86,9 +67,5 @@ https://github.com/django/django/blob/stable/1.8.x/django/contrib/admin/template
         {% for choice in choices %}
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
-        <div class="controls">
-            <input type="submit" class="button" value="{% trans "Search" %}" onclick="datefilter_apply(event, '{{ choices.0.system_name }}-query-string', '{{ choices.0.system_name }}-form')">
-            <input type="reset" class="button" value="{% trans "Reset" %}" onclick="datefilter_reset('{{ choices.0.system_name }}-query-string')">
-        </div>
     </form>
 </div>
