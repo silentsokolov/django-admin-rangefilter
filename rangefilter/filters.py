@@ -69,43 +69,40 @@ class AdminSplitDateTime(BaseAdminSplitDateTime):
         )
 
 
-class DateRangeFilter(admin.filters.FieldListFilter):
-    _request_key = "DJANGO_RANGEFILTER_ADMIN_JS_LIST"
-
+class BaseRangeFilter(admin.filters.FieldListFilter):  # pylint: disable=abstract-method
     def __init__(self, field, request, params, model, model_admin, field_path):
         self.lookup_kwarg_gte = "{0}__range__gte".format(field_path)
         self.lookup_kwarg_lte = "{0}__range__lte".format(field_path)
 
+        super(BaseRangeFilter, self).__init__(
+            field, request, params, model, model_admin, field_path
+        )
+
         self.default_gte, self.default_lte = self._get_default_values(
             request, model_admin, field_path
         )
+        self.title = self._get_default_title(request, model_admin, field_path)
 
-        super(DateRangeFilter, self).__init__(
-            field, request, params, model, model_admin, field_path
-        )
         self.request = request
         self.model_admin = model_admin
         self.form = self.get_form(request)
 
-        custom_title = self._get_custom_title(request, model_admin, field_path)
-        if custom_title:
-            self.title = custom_title
+    def _get_default_title(self, request, model_admin, field_path):
+        if hasattr(self, "__from_builder"):
+            return self.default_title or self.title
 
-    def get_timezone(self, _request):
-        return timezone.get_default_timezone()
-
-    @staticmethod
-    def _get_custom_title(request, model_admin, field_path):
         title_method_name = "get_rangefilter_{0}_title".format(field_path)
         title_method = getattr(model_admin, title_method_name, None)
 
         if not callable(title_method):
-            return None
+            return self.title
 
         return title_method(request, field_path)
 
-    @staticmethod
-    def _get_default_values(request, model_admin, field_path):
+    def _get_default_values(self, request, model_admin, field_path):
+        if hasattr(self, "__from_builder"):
+            return self.default_start, self.default_end
+
         default_method_name = "get_rangefilter_{0}_default".format(field_path)
         default_method = getattr(model_admin, default_method_name, None)
 
@@ -113,6 +110,13 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             return None, None
 
         return default_method(request)
+
+
+class DateRangeFilter(BaseRangeFilter):
+    _request_key = "DJANGO_RANGEFILTER_ADMIN_JS_LIST"
+
+    def get_timezone(self, _request):
+        return timezone.get_default_timezone()
 
     @staticmethod
     def make_dt_aware(value, tzname):
@@ -138,18 +142,11 @@ class DateRangeFilter(admin.filters.FieldListFilter):
             "query_string": changelist.get_query_string({}, remove=self._get_expected_fields()),
         }
 
-    def expected_parameters(self):
-        return self._get_expected_fields()
-
-    def queryset(self, request, queryset):
-        if self.form.is_valid():
-            validated_data = dict(self.form.cleaned_data.items())
-            if validated_data:
-                return queryset.filter(**self._make_query_filter(request, validated_data))
-        return queryset
-
     def _get_expected_fields(self):
         return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
+
+    def expected_parameters(self):
+        return self._get_expected_fields()
 
     def _make_query_filter(self, request, validated_data):
         query_params = {}
@@ -169,6 +166,13 @@ class DateRangeFilter(admin.filters.FieldListFilter):
 
         return query_params
 
+    def queryset(self, request, queryset):
+        if self.form.is_valid():
+            validated_data = dict(self.form.cleaned_data.items())
+            if validated_data:
+                return queryset.filter(**self._make_query_filter(request, validated_data))
+        return queryset
+
     def get_template(self):
         if django.VERSION[:2] <= (1, 8):
             return "rangefilter/date_filter_1_8.html"
@@ -179,26 +183,6 @@ class DateRangeFilter(admin.filters.FieldListFilter):
         return "rangefilter/date_filter.html"
 
     template = property(get_template)
-
-    def get_form(self, _request):
-        form_class = self._get_form_class()
-        return form_class(self.used_parameters or None)
-
-    def _get_form_class(self):
-        fields = self._get_form_fields()
-
-        form_class = type(str("DateRangeForm"), (forms.BaseForm,), {"base_fields": fields})
-
-        # lines below ensure that the js static files are loaded just once
-        # even if there is more than one DateRangeFilter in use
-        js_list = getattr(self.request, self._request_key, None)
-        if not js_list:
-            js_list = OnceCallMedia()
-            setattr(self.request, self._request_key, js_list)
-
-        form_class.js = js_list
-
-        return form_class
 
     def _get_form_fields(self):
         return OrderedDict(
@@ -225,6 +209,26 @@ class DateRangeFilter(admin.filters.FieldListFilter):
                 ),
             )
         )
+
+    def _get_form_class(self):
+        fields = self._get_form_fields()
+
+        form_class = type(str("DateRangeForm"), (forms.BaseForm,), {"base_fields": fields})
+
+        # lines below ensure that the js static files are loaded just once
+        # even if there is more than one DateRangeFilter in use
+        js_list = getattr(self.request, self._request_key, None)
+        if not js_list:
+            js_list = OnceCallMedia()
+            setattr(self.request, self._request_key, js_list)
+
+        form_class.js = js_list
+
+        return form_class
+
+    def get_form(self, _request):
+        form_class = self._get_form_class()
+        return form_class(self.used_parameters or None)
 
 
 class DateTimeRangeFilter(DateRangeFilter):
@@ -279,67 +283,17 @@ class DateTimeRangeFilter(DateRangeFilter):
         return query_params
 
 
-class NumericRangeFilter(admin.filters.FieldListFilter):
-    def __init__(self, field, request, params, model, model_admin, field_path):
-        self.lookup_kwarg_gte = "{0}__range__gte".format(field_path)
-        self.lookup_kwarg_lte = "{0}__range__lte".format(field_path)
-
-        self.default_gte, self.default_lte = self._get_default_values(
-            request, model_admin, field_path
-        )
-
-        super(NumericRangeFilter, self).__init__(
-            field, request, params, model, model_admin, field_path
-        )
-        self.request = request
-        self.model_admin = model_admin
-        self.form = self.get_form(request)
-
-        custom_title = self._get_custom_title(request, model_admin, field_path)
-        if custom_title:
-            self.title = custom_title
-
+class NumericRangeFilter(BaseRangeFilter):
     def get_template(self):
         return "rangefilter/numeric_filter.html"
 
     template = property(get_template)
 
-    def expected_parameters(self):
-        return self._get_expected_fields()
-
     def _get_expected_fields(self):
         return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
 
-    @staticmethod
-    def _get_custom_title(request, model_admin, field_path):
-        title_method_name = "get_rangefilter_{0}_title".format(field_path)
-        title_method = getattr(model_admin, title_method_name, None)
-
-        if not callable(title_method):
-            return None
-
-        return title_method(request, field_path)
-
-    @staticmethod
-    def _get_default_values(request, model_admin, field_path):
-        default_method_name = "get_rangefilter_{0}_default".format(field_path)
-        default_method = getattr(model_admin, default_method_name, None)
-
-        if not callable(default_method):
-            return None, None
-
-        return default_method(request)
-
-    def get_form(self, _request):
-        form_class = self._get_form_class()
-        return form_class(self.used_parameters or None)
-
-    def _get_form_class(self):
-        fields = self._get_form_fields()
-
-        form_class = type(str("NumericRangeFilter"), (forms.BaseForm,), {"base_fields": fields})
-
-        return form_class
+    def expected_parameters(self):
+        return self._get_expected_fields()
 
     def _get_form_fields(self):
         return OrderedDict(
@@ -367,6 +321,17 @@ class NumericRangeFilter(admin.filters.FieldListFilter):
             )
         )
 
+    def _get_form_class(self):
+        fields = self._get_form_fields()
+
+        form_class = type(str("NumericRangeFilter"), (forms.BaseForm,), {"base_fields": fields})
+
+        return form_class
+
+    def get_form(self, _request):
+        form_class = self._get_form_class()
+        return form_class(self.used_parameters or None)
+
     def queryset(self, request, queryset):
         if self.form.is_valid():
             validated_data = dict(self.form.cleaned_data.items())
@@ -393,3 +358,48 @@ class NumericRangeFilter(admin.filters.FieldListFilter):
             ),
             "query_string": changelist.get_query_string({}, remove=self._get_expected_fields()),
         }
+
+
+def DateRangeFilterBuilder(title=None, default_start=None, default_end=None):
+    filter_cls = type(
+        str("DateRangeFilter"),
+        (DateRangeFilter,),
+        {
+            "__from_builder": True,
+            "default_title": title,
+            "default_start": default_start,
+            "default_end": default_end,
+        },
+    )
+
+    return filter_cls
+
+
+def DateTimeRangeFilterBuilder(title=None, default_start=None, default_end=None):
+    filter_cls = type(
+        str("DateTimeRangeFilter"),
+        (DateTimeRangeFilter,),
+        {
+            "__from_builder": True,
+            "default_title": title,
+            "default_start": default_start,
+            "default_end": default_end,
+        },
+    )
+
+    return filter_cls
+
+
+def NumericRangeFilterBuilder(title=None, default_start=None, default_end=None):
+    filter_cls = type(
+        str("NumericRangeFilter"),
+        (NumericRangeFilter,),
+        {
+            "__from_builder": True,
+            "default_title": title,
+            "default_start": default_start,
+            "default_end": default_end,
+        },
+    )
+
+    return filter_cls

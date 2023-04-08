@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.10.0] - 2023-04-08
+### Added
+- Add builders. Now you can use Builders to create filters: 
+`DateRangeFilterBuilder`, `DateTimeRangeFilterBuilder`, `NumericRangeFilterBuilder`
+Its useful for definition custom title or initial (default) values
+- Compatibility Django 4.2
+
 ## [0.9.0] - 2022-09-25
 ### Added
 - Add filter for integer and float #85
@@ -171,7 +178,8 @@
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.9.0...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.10.0...HEAD
+[0.10.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.8...v0.9.0
 [0.8.8]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.7...v0.8.8
 [0.8.7]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.6...v0.8.7

@@ -50,8 +50,10 @@ In admin
 
 .. code:: python
 
+    from datetime import datetime
+
     from django.contrib import admin
-    from rangefilter.filters import DateRangeFilter, DateTimeRangeFilter, NumericRangeFilter
+    from rangefilter.filters import DateRangeFilterBuilder, DateTimeRangeFilterBuilder, NumericRangeFilterBuilder
 
     from .models import Post
 
@@ -59,19 +61,17 @@ In admin
     @admin.register(Post)
     class PostAdmin(admin.ModelAdmin):
         list_filter = (
-            ('created_at', DateRangeFilter), ('updated_at', DateTimeRangeFilter),
-            ('num_value', NumericRangeFilter),
+            ("created_at", DateRangeFilterBuilder()),
+            (
+                "updated_at",
+                DateTimeRangeFilterBuilder(
+                    title="Custom title",
+                    default_start=datetime(2020, 1, 1),
+                    default_end=datetime(2030, 1, 1),
+                ),
+            ),
+            ("num_value", NumericRangeFilterBuilder()),
         )
-        
-        # If you would like to add a default range filter
-        # method pattern "get_rangefilter_{field_name}_default"
-        def get_rangefilter_created_at_default(self, request):
-            return (datetime.date.today, datetime.date.today)
-
-        # If you would like to change a title range filter
-        # method pattern "get_rangefilter_{field_name}_title"
-        def get_rangefilter_created_at_title(self, request, field_path):
-            return 'custom title'
 
 
 Support Content-Security-Policy
