@@ -3,8 +3,8 @@
 ## [0.10.0] - 2023-04-08
 ### Added
 - Add builders. Now you can use Builders to create filters: 
-`DateRangeFilterBuilder`, `DateTimeRangeFilterBuilder`, `NumericRangeFilterBuilder`
-Its useful for definition custom title or initial (default) values
+`DateRangeFilterBuilder`, `DateTimeRangeFilterBuilder`, `NumericRangeFilterBuilder`.
+Its useful for definition custom title or initial (default) values.
 - Compatibility Django 4.2
 
 ## [0.9.0] - 2022-09-25
