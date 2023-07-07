@@ -14,15 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - python-version: 2.7
-            django-version: "1.8.*"
-          - python-version: 2.7
-            django-version: "1.9.*"
-          - python-version: 2.7
-            django-version: "1.10.*"
-          - python-version: 2.7
-            django-version: "1.11.*"
-
           - python-version: 3.6
             django-version: "1.11.*"
           - python-version: 3.6
@@ -90,10 +81,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
