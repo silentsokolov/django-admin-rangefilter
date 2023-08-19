@@ -444,3 +444,18 @@ class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter)
                 )
             )
         return fields
+
+
+def DateRangeQuickSelectListFilterBuilder(title=None, default_start=None, default_end=None):
+    filter_cls = type(
+        str("DateRangeQuickSelectListFilter"),
+        (DateRangeQuickSelectListFilter,),
+        {
+            "__from_builder": True,
+            "default_title": title,
+            "default_start": default_start,
+            "default_end": default_end,
+        },
+    )
+
+    return filter_cls
