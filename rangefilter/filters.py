@@ -403,3 +403,59 @@ def NumericRangeFilterBuilder(title=None, default_start=None, default_end=None):
     )
 
     return filter_cls
+
+
+class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter):
+    template = "rangefilter/date_range_quick_select_list_filter.html"
+
+    def expected_parameters(self):
+        params = [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
+        if self.field.null:
+            params.append(self.lookup_kwarg_isnull)
+        return params
+
+    def _make_query_filter(self, request, validated_data):
+        query_params = super()._make_query_filter(request, validated_data)
+        date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
+        date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
+        date_value_isnull = validated_data.get(self.lookup_kwarg_isnull, None)
+
+        if date_value_isnull is not None and not any([date_value_lte, date_value_gte]):
+            query_params[self.lookup_kwarg_isnull] = date_value_isnull
+
+        return query_params
+
+    def _get_form_fields(self):
+        fields = super()._get_form_fields()
+        if self.field.null:
+            fields.update(
+                OrderedDict(
+                    (
+                        (
+                            self.lookup_kwarg_isnull,
+                            forms.BooleanField(
+                                label="",
+                                localize=True,
+                                required=False,
+                                widget=forms.HiddenInput,
+                            ),
+                        ),
+                    )
+                )
+            )
+        return fields
+
+
+def DateRangeQuickSelectListFilterBuilder(title=None, default_start=None, default_end=None):
+    filter_cls = type(
+        str("DateRangeQuickSelectListFilter"),
+        (DateRangeQuickSelectListFilter,),
+        {
+            "__from_builder": True,
+            "default_title": title,
+            "default_start": default_start,
+            "default_end": default_end,
+        },
+    )
+
+    return filter_cls
