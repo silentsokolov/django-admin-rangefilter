@@ -53,7 +53,12 @@ In admin
     from datetime import datetime
 
     from django.contrib import admin
-    from rangefilter.filters import DateRangeFilterBuilder, DateTimeRangeFilterBuilder, NumericRangeFilterBuilder
+    from rangefilter.filters import (
+        DateRangeFilterBuilder,
+        DateTimeRangeFilterBuilder,
+        NumericRangeFilterBuilder,
+        DateRangeQuickSelectListFilterBuilder,
+    )
 
     from .models import Post
 
@@ -71,6 +76,7 @@ In admin
                 ),
             ),
             ("num_value", NumericRangeFilterBuilder()),
+            ("created_at", DateRangeQuickSelectListFilterBuilder()),  # Range + QuickSelect Filter
         )
 
 

@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.11.0] - 2023-08-19
+### Added
+- Add Add DateRangeQuickSelectListFilter (#103) (thx @robertpro)
+
 ## [0.10.0] - 2023-04-08
 ### Added
 - Add builders. Now you can use Builders to create filters: 
@@ -178,7 +182,8 @@ Its useful for definition custom title or initial (default) values.
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.10.0...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.11.0...HEAD
+[0.11.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.8...v0.9.0
 [0.8.8]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.8.7...v0.8.8
