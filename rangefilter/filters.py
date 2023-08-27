@@ -418,10 +418,11 @@ class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter)
         query_params = super()._make_query_filter(request, validated_data)
         date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
         date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
-        date_value_isnull = validated_data.get(self.lookup_kwarg_isnull, None)
+        if self.field.null:
+            date_value_isnull = validated_data.get(self.lookup_kwarg_isnull, None)
 
-        if date_value_isnull is not None and not any([date_value_lte, date_value_gte]):
-            query_params[self.lookup_kwarg_isnull] = date_value_isnull
+            if date_value_isnull is not None and not any([date_value_lte, date_value_gte]):
+                query_params[self.lookup_kwarg_isnull] = date_value_isnull
 
         return query_params
 
