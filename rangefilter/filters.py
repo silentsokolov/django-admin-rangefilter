@@ -344,9 +344,9 @@ class NumericRangeFilter(BaseRangeFilter):
         value_gte = validated_data.get(self.lookup_kwarg_gte, None)
         value_lte = validated_data.get(self.lookup_kwarg_lte, None)
 
-        if value_gte:
+        if value_gte is not None:
             query_params["{0}__gte".format(self.field_path)] = value_gte
-        if value_lte:
+        if value_lte is not None:
             query_params["{0}__lte".format(self.field_path)] = value_lte
 
         return query_params
