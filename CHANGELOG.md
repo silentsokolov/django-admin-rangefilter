@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.11.2] - 2023-09-10
+### Fix
+- NumericRangeFilter: Fix filter for the value zero (#105) (thx @autoantwort)
+
 ## [0.11.1] - 2023-08-29
 ### Fix
 - Fix DateRangeQuickSelectListFilter (thx @robertpro)
@@ -186,7 +190,8 @@ Its useful for definition custom title or initial (default) values.
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.11.1...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.11.2...HEAD
+[0.11.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.11.1...v0.11.2
 [0.11.1]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.11.0...v0.11.1
 [0.11.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.9.0...v0.10.0
