@@ -1,6 +1,6 @@
 {% load i18n rangefilter_compat %}
 <h3>{{ title }}</h3>
-<style>
+<style nonce="{{ spec.request.csp_nonce }}">
     {% default_css_vars_if_needed %}
     .numericrangefilter .button, .numericrangefilter input[type=submit], .numericrangefilter input[type=button], .numericrangefilter .submit-row input, .numericrangefilter a.button,
     .numericrangefilter .button, .numericrangefilter input[type=reset] {
@@ -31,22 +31,10 @@ Force load jsi18n, issues #5
 https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templates/admin/change_list.html#L7
 {% endcomment %}
 
+{% comment %}
+CSP sometime work incorrectly
+{% endcomment %}
 <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-<script>
-    function filter_apply(event, qs_name){
-        event.preventDefault();
-        const $form = django.jQuery(event.target).closest('form');
-        const query_string = $form.find('input#'+qs_name).val();
-        const form_data = $form.serialize();
-        const amp = query_string === "?" ? "" : "&";  // avoid leading ?& combination
-        window.location = window.location.pathname + query_string + amp + form_data;
-    }
-    function filter_reset(event, qs_name){
-        const $form = django.jQuery(event.target).closest('form');
-        const query_string = $form.find('input#' + qs_name).val();
-        window.location = window.location.pathname + query_string;
-    }
-</script>
 <div class="numericrangefilter">
     <form method="GET" action="." id="{{ choices.0.system_name }}-form">
         {{ spec.form.as_p }}
@@ -54,8 +42,11 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
         <div class="controls">
-            <input type="submit" class="button" value="{% trans "Search" %}" onclick="filter_apply(event, '{{ choices.0.system_name }}-query-string')">
-            <input type="reset" class="button" value="{% trans "Reset" %}" onclick="filter_reset(event, '{{ choices.0.system_name }}-query-string')">
+            <input type="submit" class="button" value="{% trans "Search" %}">
+            <input type="reset" class="button" value="{% trans "Reset" %}">
         </div>
     </form>
 </div>
+
+{% comment %} JS not requiring template variables refactored as an iife {% endcomment %}
+<script type="text/javascript" src="{% static 'rangefilter/iife.js' %}"></script>

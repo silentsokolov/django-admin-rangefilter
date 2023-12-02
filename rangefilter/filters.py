@@ -285,6 +285,9 @@ class DateTimeRangeFilter(DateRangeFilter):
 
 class NumericRangeFilter(BaseRangeFilter):
     def get_template(self):
+        if csp and getattr(settings, "ADMIN_RANGEFILTER_NONCE_ENABLED", True):
+            return "rangefilter/numeric_filter_csp.html"
+
         return "rangefilter/numeric_filter.html"
 
     template = property(get_template)
