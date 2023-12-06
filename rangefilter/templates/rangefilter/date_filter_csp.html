@@ -1,5 +1,4 @@
 {% load i18n rangefilter_compat %}
-<h3>{{ title }}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
 <style nonce="{{ spec.request.csp_nonce }}">
     {% default_css_vars_if_needed %}
@@ -50,6 +49,9 @@
         position: absolute;
         padding-top: 3px;
         padding-left: 4px;
+    }
+    .calendarbox .calendar {
+        display: inline-block;
     }
     @media (min-width: 768px) {
         .calendarbox {
@@ -103,16 +105,10 @@ django.jQuery('document').ready(function () {
 </script>
 {% block quick-select-choices %}{% endblock %}
 <div class="admindatefilter">
-    <form method="GET" action="." id="{{ choices.0.system_name }}-form">
         {{ spec.form.as_p }}
         {% for choice in choices %}
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
-        <div class="controls">
-            <input type="submit" class="button" value="{% trans "Search" %}">
-            <input type="reset" class="button" value="{% trans "Reset" %}">
-        </div>
-    </form>
 </div>
 
 {% comment %} JS not requiring template variables refactored as an iife {% endcomment %}

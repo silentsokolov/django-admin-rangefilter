@@ -61,7 +61,8 @@ class OnceCallMedia(object):
 
 
 class AdminSplitDateTime(BaseAdminSplitDateTime):
-    def format_output(self, rendered_widgets):
+    @staticmethod
+    def format_output(rendered_widgets):
         return format_html(
             '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
             rendered_widgets[0],
@@ -91,6 +92,12 @@ class BaseRangeFilter(admin.filters.FieldListFilter):  # pylint: disable=abstrac
         if hasattr(self, "__from_builder"):
             return self.default_title or self.title
 
+    @staticmethod
+    def get_timezone(_request):
+        return timezone.get_default_timezone()
+
+    @staticmethod
+    def _get_custom_title(request, model_admin, field_path):
         title_method_name = "get_rangefilter_{0}_title".format(field_path)
         title_method = getattr(model_admin, title_method_name, None)
 
@@ -191,7 +198,9 @@ class DateRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.DateField(
                         label="",
-                        widget=AdminDateWidget(attrs={"placeholder": _("From date")}),
+                        widget=AdminDateWidget(
+                            attrs={"placeholder": _("from {}".format(self.title.replace("_", " ")))}
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_gte,
@@ -201,7 +210,9 @@ class DateRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.DateField(
                         label="",
-                        widget=AdminDateWidget(attrs={"placeholder": _("To date")}),
+                        widget=AdminDateWidget(
+                            attrs={"placeholder": _("to {}".format(self.title.replace("_", " ")))}
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_lte,
@@ -247,7 +258,9 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(attrs={"placeholder": _("From date")}),
+                        widget=AdminSplitDateTime(
+                            attrs={"placeholder": _("from {}".format(self.title.replace("_", " ")))}
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_gte,
@@ -257,7 +270,9 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(attrs={"placeholder": _("To date")}),
+                        widget=AdminSplitDateTime(
+                            attrs={"placeholder": _("to {}".format(self.title.replace("_", " ")))}
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_lte,
@@ -305,7 +320,9 @@ class NumericRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.FloatField(
                         label="",
-                        widget=forms.NumberInput(attrs={"placeholder": _("From")}),
+                        widget=forms.NumberInput(
+                            attrs={"placeholder": _("from {}".format(self.title.replace("_", " ")))}
+                        ),
                         required=False,
                         localize=True,
                         initial=self.default_lte,
@@ -315,7 +332,9 @@ class NumericRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.FloatField(
                         label="",
-                        widget=forms.NumberInput(attrs={"placeholder": _("To")}),
+                        widget=forms.NumberInput(
+                            attrs={"placeholder": _("to {}".format(self.title.replace("_", " ")))}
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_lte,

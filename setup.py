@@ -35,11 +35,11 @@ def get_package_data(package):
 
 
 setup(
-    name="django-admin-rangefilter",
+    name="django-jazzmin-admin-rangefilter",
     version=get_version("rangefilter"),
-    url="https://github.com/silentsokolov/django-admin-rangefilter",
+    url="https://github.com/EricOuma/django-jazzmin-admin-rangefilter",
     license="MIT",
-    description="django-admin-rangefilter app, add the filter by a custom date range on the admin UI.",
+    description="django-jazzmin-admin-rangefilter app, add the filter by a custom date range on the Django Jazzmin admin UI.",
     long_description_content_type="text/x-rst",
     long_description=open(join(dirname(__file__), "README.rst"), encoding="utf-8").read(),
     author="Dmitriy Sokolov",

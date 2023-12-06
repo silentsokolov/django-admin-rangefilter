@@ -1,5 +1,4 @@
 {% load i18n rangefilter_compat %}
-<h3>{{ title }}</h3>
 <style>
     {% default_css_vars_if_needed %}
     .numericrangefilter .button, .numericrangefilter input[type=submit], .numericrangefilter input[type=button], .numericrangefilter .submit-row input, .numericrangefilter a.button,
@@ -48,14 +47,8 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
     }
 </script>
 <div class="numericrangefilter">
-    <form method="GET" action="." id="{{ choices.0.system_name }}-form">
         {{ spec.form.as_p }}
         {% for choice in choices %}
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
-        <div class="controls">
-            <input type="submit" class="button" value="{% trans "Search" %}" onclick="filter_apply(event, '{{ choices.0.system_name }}-query-string')">
-            <input type="reset" class="button" value="{% trans "Reset" %}" onclick="filter_reset(event, '{{ choices.0.system_name }}-query-string')">
-        </div>
-    </form>
 </div>
