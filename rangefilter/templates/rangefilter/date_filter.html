@@ -1,7 +1,7 @@
 {% load i18n rangefilter_compat %}
 <h3>{{ title }}</h3>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}">
-<style>
+<style nonce="{{ spec.request.csp_nonce }}">
     {% default_css_vars_if_needed %}
     .admindatefilter .button, .admindatefilter input[type=submit], .admindatefilter input[type=button], .admindatefilter .submit-row input, .admindatefilter a.button,
     .admindatefilter .button, .admindatefilter input[type=reset] {
@@ -69,23 +69,23 @@ Force load jsi18n, issues #5
 https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templates/admin/change_list.html#L7
 {% endcomment %}
 <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+<script type="text/javascript" nonce="{{ spec.request.csp_nonce }}">
+    django.jQuery('document').ready(function () {
+        django.jQuery('.admindatefilter #{{ choices.0.system_name }}-form input[type="submit"]').click(function(event) {
+            event.preventDefault();
+            var form = django.jQuery(this).closest('div.admindatefilter').find('form');
+            var query_string = django.jQuery('input#{{ choices.0.system_name }}-query-string').val();
+            var form_data = form.serialize();
+            var amp = query_string === "?" ? "" : "&";  // avoid leading ?& combination
+            window.location = window.location.pathname + query_string + amp + form_data;
+        });
 
-<script>
-    function datefilter_apply(event, qs_name){
-        event.preventDefault();
-        const $form = django.jQuery(event.target).closest('form');
-        const query_string = $form.find('input#'+qs_name).val();
-        const form_data = $form.serialize();
-        const amp = query_string === "?" ? "" : "&";  // avoid leading ?& combination
-        window.location = window.location.pathname + query_string + amp + form_data;
-    }
-    function datefilter_reset(event, qs_name){
-        const $form = django.jQuery(event.target).closest('form');
-        const query_string = $form.find('input#' + qs_name).val();
-        window.location = window.location.pathname + query_string;
-    }
-</script>
-<script>
+        django.jQuery('.admindatefilter #{{ choices.0.system_name }}-form input[type="reset"]').click(function() {
+            var form = django.jQuery(this).closest('div.admindatefilter').find('form');
+            var query_string = form.find('input#{{ choices.0.system_name }}-query-string').val();
+            window.location = window.location.pathname + query_string;
+        });
+    });
     {% comment %}
     // Code below makes sure that the DateTimeShortcuts.js is loaded exactly once
     // regardless the presence of AdminDateWidget
@@ -114,18 +114,32 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
     // Django 2.1
     //  https://github.com/silentsokolov/django-admin-rangefilter/issues/21
     {% endcomment %}
+    function embedScript(url) {
+        return new Promise(function pr(resolve, reject) {
+            var newScript = document.createElement("script");
+            newScript.type = "text/javascript";
+            newScript.src = url;
+            newScript.onload = resolve;
+            if ("{{ spec.request.csp_nonce }}" !== "") {
+                newScript.setAttribute("nonce", "{{ spec.request.csp_nonce }}");
+            }
+            document.head.appendChild(newScript);
+        });
+    }
+
     django.jQuery('document').ready(function () {
         if (!('DateTimeShortcuts' in window)) {
-            django.jQuery.when(
-                {% for m in spec.form.js %}
-                    django.jQuery.getScript('{{m}}'),
-                {% endfor %}
-                django.jQuery.Deferred(function( deferred ){
-                    django.jQuery( deferred.resolve );
-                })
-            ).done(function(){
+            var promiseList = [];
+
+            {% for m in spec.form.js %}
+                promiseList.push(embedScript("{{ m }}"));
+            {% endfor %}
+
+            Promise.all(promiseList).then(function() {
                 django.jQuery('.datetimeshortcuts').remove();
-                DateTimeShortcuts.init();
+                if ('DateTimeShortcuts' in window) {
+                    window.DateTimeShortcuts.init();
+                }
             });
         }
     });
@@ -138,8 +152,8 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
             <input type="hidden" id="{{ choice.system_name }}-query-string" value="{{ choice.query_string }}">
         {% endfor %}
         <div class="controls">
-            <input type="submit" class="button" value="{% trans "Search" %}" onclick="datefilter_apply(event, '{{ choices.0.system_name }}-query-string')">
-            <input type="reset" class="button" value="{% trans "Reset" %}" onclick="datefilter_reset(event, '{{ choices.0.system_name }}-query-string')">
+            <input type="submit" class="button" value="{% trans "Search" %}">
+            <input type="reset" class="button" value="{% trans "Reset" %}">
         </div>
     </form>
 </div>

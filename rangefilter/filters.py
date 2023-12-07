@@ -177,9 +177,6 @@ class DateRangeFilter(BaseRangeFilter):
         if django.VERSION[:2] <= (1, 8):
             return "rangefilter/date_filter_1_8.html"
 
-        if csp and getattr(settings, "ADMIN_RANGEFILTER_NONCE_ENABLED", True):
-            return "rangefilter/date_filter_csp.html"
-
         return "rangefilter/date_filter.html"
 
     template = property(get_template)
@@ -285,9 +282,6 @@ class DateTimeRangeFilter(DateRangeFilter):
 
 class NumericRangeFilter(BaseRangeFilter):
     def get_template(self):
-        if csp and getattr(settings, "ADMIN_RANGEFILTER_NONCE_ENABLED", True):
-            return "rangefilter/numeric_filter_csp.html"
-
         return "rangefilter/numeric_filter.html"
 
     template = property(get_template)
