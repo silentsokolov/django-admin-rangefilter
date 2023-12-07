@@ -11,11 +11,6 @@ try:
 except ImportError:
     pytz = None
 
-try:
-    import csp
-except ImportError:
-    csp = None
-
 from collections import OrderedDict
 
 from django import forms
