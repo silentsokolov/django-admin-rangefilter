@@ -132,6 +132,9 @@ class DateRangeFilter(BaseRangeFilter):
     def expected_parameters(self):
         return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
 
+    def get_facet_counts(self, pk_attname, filtered_qs):
+        return {}
+
     def get_template(self):
         if django.VERSION[:2] <= (1, 8):
             return "rangefilter/date_filter_1_8.html"
@@ -297,6 +300,9 @@ class NumericRangeFilter(BaseRangeFilter):
 
     def expected_parameters(self):
         return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
+
+    def get_facet_counts(self, pk_attname, filtered_qs):
+        return {}
 
     def get_template(self):
         return "rangefilter/numeric_filter.html"

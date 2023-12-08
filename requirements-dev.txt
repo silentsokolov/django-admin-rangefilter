@@ -1,5 +1,5 @@
-Django==4.1.13
-black==22.3.0
-isort==5.10.1
-pylint==2.14.4
-yamllint==1.26.3
+Django==5.*
+black
+isort
+pylint
+yamllint
