@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-
 import datetime
 
 import django
@@ -106,9 +104,51 @@ class BaseRangeFilter(admin.filters.FieldListFilter):  # pylint: disable=abstrac
 
         return default_method(request)
 
+    def get_form(self, _request):
+        raise NotImplementedError()
+
 
 class DateRangeFilter(BaseRangeFilter):
     _request_key = "DJANGO_RANGEFILTER_ADMIN_JS_LIST"
+
+    def choices(self, changelist):
+        yield {
+            # slugify converts any non-unicode characters to empty characters
+            # but system_name is required, if title converts to empty string use id
+            # https://github.com/silentsokolov/django-admin-rangefilter/issues/18
+            "system_name": force_str(
+                slugify(self.title) if slugify(self.title) else id(self.title)
+            ),
+            "query_string": changelist.get_query_string({}, remove=self.expected_parameters()),
+        }
+
+    def queryset(self, request, queryset):
+        if self.form.is_valid():
+            validated_data = dict(self.form.cleaned_data.items())
+            if validated_data:
+                return queryset.filter(**self._make_query_filter(request, validated_data))
+        return queryset
+
+    def expected_parameters(self):
+        return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
+
+    def get_template(self):
+        if django.VERSION[:2] <= (1, 8):
+            return "rangefilter/date_filter_1_8.html"
+
+        return "rangefilter/date_filter.html"
+
+    template = property(get_template)
+
+    def get_form(self, _request):
+        form_class = self._get_form_class()
+
+        if django.VERSION[:2] >= (5, 0):
+            for name, value in self.used_parameters.items():
+                if isinstance(value, list):
+                    self.used_parameters[name] = value[-1]
+
+        return form_class(self.used_parameters or None)
 
     def get_timezone(self, _request):
         return timezone.get_default_timezone()
@@ -125,23 +165,6 @@ class DateRangeFilter(BaseRangeFilter):
             else:
                 value = value.replace(tzinfo=tzname)
         return value
-
-    def choices(self, changelist):
-        yield {
-            # slugify converts any non-unicode characters to empty characters
-            # but system_name is required, if title converts to empty string use id
-            # https://github.com/silentsokolov/django-admin-rangefilter/issues/18
-            "system_name": force_str(
-                slugify(self.title) if slugify(self.title) else id(self.title)
-            ),
-            "query_string": changelist.get_query_string({}, remove=self._get_expected_fields()),
-        }
-
-    def _get_expected_fields(self):
-        return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
-
-    def expected_parameters(self):
-        return self._get_expected_fields()
 
     def _make_query_filter(self, request, validated_data):
         query_params = {}
@@ -160,21 +183,6 @@ class DateRangeFilter(BaseRangeFilter):
             )
 
         return query_params
-
-    def queryset(self, request, queryset):
-        if self.form.is_valid():
-            validated_data = dict(self.form.cleaned_data.items())
-            if validated_data:
-                return queryset.filter(**self._make_query_filter(request, validated_data))
-        return queryset
-
-    def get_template(self):
-        if django.VERSION[:2] <= (1, 8):
-            return "rangefilter/date_filter_1_8.html"
-
-        return "rangefilter/date_filter.html"
-
-    template = property(get_template)
 
     def _get_form_fields(self):
         return OrderedDict(
@@ -218,13 +226,9 @@ class DateRangeFilter(BaseRangeFilter):
 
         return form_class
 
-    def get_form(self, _request):
-        form_class = self._get_form_class()
-        return form_class(self.used_parameters or None)
-
 
 class DateTimeRangeFilter(DateRangeFilter):
-    def _get_expected_fields(self):
+    def expected_parameters(self):
         expected_fields = []
         for field in [self.lookup_kwarg_gte, self.lookup_kwarg_lte]:
             for i in range(2):
@@ -276,16 +280,38 @@ class DateTimeRangeFilter(DateRangeFilter):
 
 
 class NumericRangeFilter(BaseRangeFilter):
+    def choices(self, changelist):
+        yield {
+            "system_name": force_str(
+                slugify(self.title) if slugify(self.title) else id(self.title)
+            ),
+            "query_string": changelist.get_query_string({}, remove=self.expected_parameters()),
+        }
+
+    def queryset(self, request, queryset):
+        if self.form.is_valid():
+            validated_data = dict(self.form.cleaned_data.items())
+            if validated_data:
+                return queryset.filter(**self._make_query_filter(request, validated_data))
+        return queryset
+
+    def expected_parameters(self):
+        return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
+
     def get_template(self):
         return "rangefilter/numeric_filter.html"
 
     template = property(get_template)
 
-    def _get_expected_fields(self):
-        return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
+    def get_form(self, _request):
+        form_class = self._get_form_class()
 
-    def expected_parameters(self):
-        return self._get_expected_fields()
+        if django.VERSION[:2] >= (5, 0):
+            for name, value in self.used_parameters.items():
+                if isinstance(value, list):
+                    self.used_parameters[name] = value[-1]
+
+        return form_class(self.used_parameters or None)
 
     def _get_form_fields(self):
         return OrderedDict(
@@ -320,17 +346,6 @@ class NumericRangeFilter(BaseRangeFilter):
 
         return form_class
 
-    def get_form(self, _request):
-        form_class = self._get_form_class()
-        return form_class(self.used_parameters or None)
-
-    def queryset(self, request, queryset):
-        if self.form.is_valid():
-            validated_data = dict(self.form.cleaned_data.items())
-            if validated_data:
-                return queryset.filter(**self._make_query_filter(request, validated_data))
-        return queryset
-
     def _make_query_filter(self, _request, validated_data):
         query_params = {}
         value_gte = validated_data.get(self.lookup_kwarg_gte, None)
@@ -343,13 +358,48 @@ class NumericRangeFilter(BaseRangeFilter):
 
         return query_params
 
-    def choices(self, changelist):
-        yield {
-            "system_name": force_str(
-                slugify(self.title) if slugify(self.title) else id(self.title)
-            ),
-            "query_string": changelist.get_query_string({}, remove=self._get_expected_fields()),
-        }
+
+class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter):
+    def expected_parameters(self):
+        params = [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
+        if self.field.null:
+            params.append(self.lookup_kwarg_isnull)
+        return params
+
+    def get_template(self):
+        return "rangefilter/date_range_quick_select_list_filter.html"
+
+    def _make_query_filter(self, request, validated_data):
+        query_params = super()._make_query_filter(request, validated_data)
+        date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
+        date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
+        if self.field.null:
+            date_value_isnull = validated_data.get(self.lookup_kwarg_isnull, None)
+
+            if date_value_isnull is not None and not any([date_value_lte, date_value_gte]):
+                query_params[self.lookup_kwarg_isnull] = date_value_isnull
+
+        return query_params
+
+    def _get_form_fields(self):
+        fields = super()._get_form_fields()
+        if self.field.null:
+            fields.update(
+                OrderedDict(
+                    (
+                        (
+                            self.lookup_kwarg_isnull,
+                            forms.BooleanField(
+                                label="",
+                                localize=True,
+                                required=False,
+                                widget=forms.HiddenInput,
+                            ),
+                        ),
+                    )
+                )
+            )
+        return fields
 
 
 def DateRangeFilterBuilder(title=None, default_start=None, default_end=None):
@@ -395,48 +445,6 @@ def NumericRangeFilterBuilder(title=None, default_start=None, default_end=None):
     )
 
     return filter_cls
-
-
-class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter):
-    template = "rangefilter/date_range_quick_select_list_filter.html"
-
-    def expected_parameters(self):
-        params = [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
-        if self.field.null:
-            params.append(self.lookup_kwarg_isnull)
-        return params
-
-    def _make_query_filter(self, request, validated_data):
-        query_params = super()._make_query_filter(request, validated_data)
-        date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
-        date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
-        if self.field.null:
-            date_value_isnull = validated_data.get(self.lookup_kwarg_isnull, None)
-
-            if date_value_isnull is not None and not any([date_value_lte, date_value_gte]):
-                query_params[self.lookup_kwarg_isnull] = date_value_isnull
-
-        return query_params
-
-    def _get_form_fields(self):
-        fields = super()._get_form_fields()
-        if self.field.null:
-            fields.update(
-                OrderedDict(
-                    (
-                        (
-                            self.lookup_kwarg_isnull,
-                            forms.BooleanField(
-                                label="",
-                                localize=True,
-                                required=False,
-                                widget=forms.HiddenInput,
-                            ),
-                        ),
-                    )
-                )
-            )
-        return fields
 
 
 def DateRangeQuickSelectListFilterBuilder(title=None, default_start=None, default_end=None):

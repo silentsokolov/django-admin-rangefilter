@@ -15,8 +15,8 @@ A Django app that adds a filter by date range and numeric range to the admin UI.
 Requirements
 ------------
 
-* Python 2.7+ or Python 3.6+
-* Django 1.8+
+* Python 3.6+
+* Django 1.11+
 
 
 Installation
