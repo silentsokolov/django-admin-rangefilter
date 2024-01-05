@@ -3,6 +3,7 @@
 import datetime
 
 import django
+import json
 
 try:
     import pytz
@@ -55,6 +56,9 @@ class OnceCallMedia(object):
 
 class AdminSplitDateTime(BaseAdminSplitDateTime):
     def format_output(self, rendered_widgets):
+        print("------------------- jds -----------")
+        # looking for 'vDateField' and 'vTimeField' in rendered_widgets which comes from BaseAdminDateWidget and BaseAdminTimeWidget
+        print(json.dumps(rendered_widgets))
         return format_html(
             '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
             rendered_widgets[0],
@@ -246,11 +250,7 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(
-                            attrs={"placeholder": _("From date")},
-                            date_attrs={"placeholder": _("From date")},
-                            time_attrs={"placeholder": _("From time")},
-                        ),
+                        widget=AdminSplitDateTime(attrs={"placeholder": _("From date")}),
                         localize=True,
                         required=False,
                         initial=self.default_gte,
@@ -260,11 +260,7 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(
-                            attrs={"placeholder": _("To date")},
-                            date_attrs={"placeholder": _("To date")},
-                            time_attrs={"placeholder": _("To time")},
-                        ),
+                        widget=AdminSplitDateTime(attrs={"placeholder": _("To date")}),
                         localize=True,
                         required=False,
                         initial=self.default_lte,
