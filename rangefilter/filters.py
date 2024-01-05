@@ -16,7 +16,10 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminDateWidget
-from django.contrib.admin.widgets import AdminSplitDateTime as BaseAdminSplitDateTime
+from django.contrib.admin.widgets import BaseAdminDateWidget
+from django.contrib.admin.widgets import BaseAdminTimeWidget
+
+# AdminSplitDateTime as BaseAdminSplitDateTime
 from django.template.defaultfilters import slugify
 from django.templatetags.static import StaticNode
 from django.utils import timezone
@@ -54,18 +57,46 @@ class OnceCallMedia(object):
     _js = property(get_js)
 
 
-class AdminSplitDateTime(BaseAdminSplitDateTime):
-    print("-------------- jds ---------------- 2")
+# class AdminSplitDateTime(BaseAdminSplitDateTime):
+#     print("-------------- jds ---------------- 2")
 
-    def format_output(self, rendered_widgets):
-        print("------------------- jds ----------- 3")
-        # looking for 'vDateField' and 'vTimeField' in rendered_widgets which comes from BaseAdminDateWidget and BaseAdminTimeWidget
-        print(json.dumps(rendered_widgets, indent=4))
-        return format_html(
-            '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
-            rendered_widgets[0],
-            rendered_widgets[1],
+#     def format_output(self, rendered_widgets):
+#         print("------------------- jds ----------- 3")
+#         # looking for 'vDateField' and 'vTimeField' in rendered_widgets which comes from BaseAdminDateWidget and BaseAdminTimeWidget
+#         print(json.dumps(rendered_widgets, indent=4))
+#         return format_html(
+#             '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
+#             rendered_widgets[0],
+#             rendered_widgets[1],
+#         )
+
+
+class AdminSplitDateTime(forms.SplitDateTimeWidget):
+    """
+    contrib/admin/widgets.py:AdminSplitDateTime should accept date_attrs and time_attrs
+    """
+
+    template_name = "admin/widgets/split_datetime.html"
+
+    def __init__(
+        self,
+        attrs=None,
+        date_attrs=None,
+        time_attrs=None,
+    ):
+        widgets = (
+            BaseAdminDateWidget(attrs=attrs if date_attrs is None else date_attrs),
+            BaseAdminTimeWidget(attrs=attrs if time_attrs is None else time_attrs),
         )
+        # Note that we're calling MultiWidget, not SplitDateTimeWidget, because
+        # we want to define widgets.
+        forms.MultiWidget.__init__(self, widgets, attrs)
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["date_label"] = _("Date:")
+        context["time_label"] = _("Time:")
+        return context
 
 
 class BaseRangeFilter(admin.filters.FieldListFilter):  # pylint: disable=abstract-method
@@ -193,23 +224,14 @@ class DateRangeFilter(BaseRangeFilter):
 
         return query_params
 
-    def _make_widget(self, to_from):
-        widget = AdminDateWidget(attrs={"placeholder": _("{} date".format(to_from))})
-        widget.date_attrs = {"placeholder": _("{} date".format(to_from))}
-        widget.time_attrs = {"placeholder": _("{} time".format(to_from))}
-        return widget
-
     def _get_form_fields(self):
-        widget1 = self._make_widget(_("From"))
-        widget2 = self._make_widget(_("To"))
-
         return OrderedDict(
             (
                 (
                     self.lookup_kwarg_gte,
                     forms.DateField(
                         label="",
-                        widget=widget1,
+                        widget=AdminDateWidget(attrs={"placeholder": _("From date")}),
                         localize=True,
                         required=False,
                         initial=self.default_gte,
@@ -219,7 +241,7 @@ class DateRangeFilter(BaseRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.DateField(
                         label="",
-                        widget=widget2,
+                        widget=AdminDateWidget(attrs={"placeholder": _("To date")}),
                         localize=True,
                         required=False,
                         initial=self.default_lte,
@@ -278,8 +300,8 @@ class DateTimeRangeFilter(DateRangeFilter):
                         label="",
                         widget=AdminSplitDateTime(
                             attrs={"placeholder": _("To date")},
-                            date_attrs={"placeholder": _("From date")},
-                            time_attrs={"placeholder": _("From time")},
+                            date_attrs={"placeholder": _("To date")},
+                            time_attrs={"placeholder": _("To time")},
                         ),
                         localize=True,
                         required=False,
