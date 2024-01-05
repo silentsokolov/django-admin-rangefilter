@@ -14,7 +14,7 @@ from collections import OrderedDict
 from django import forms
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.admin.widgets import AdminDateWidget, BaseAdminDateWidget, BaseAdminTimeWidget
+from django.contrib.admin.widgets import AdminDateWidget
 from django.template.defaultfilters import slugify
 from django.templatetags.static import StaticNode
 from django.utils import timezone
@@ -25,6 +25,16 @@ if django.VERSION >= (2, 0, 0):
     from django.utils.translation import gettext_lazy as _
 else:
     from django.utils.translation import ugettext_lazy as _  # pylint: disable=E0611
+
+if django.VERSION >= (4, 2, 0):
+    from django.contrib.admin.widgets import (
+        BaseAdminDateWidget,
+        BaseAdminTimeWidget,
+    )
+else:
+    # from django.contrib.admin.widgets import AdminSplitDateTime as BaseAdminSplitDateTime
+    from django.contrib.admin.widgets import AdminDateWidget as BaseAdminDateWidget
+    from django.contrib.admin.widgets import AdminTimeWidget as BaseAdminTimeWidget
 
 
 class OnceCallMedia(object):
