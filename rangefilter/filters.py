@@ -16,7 +16,10 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminDateWidget
-from django.contrib.admin.widgets import AdminSplitDateTime as BaseAdminSplitDateTime
+from django.contrib.admin.widgets import (
+    BaseAdminDateWidget,
+    BaseAdminTimeWidget,
+)  # AdminSplitDateTime as BaseAdminSplitDateTime
 from django.template.defaultfilters import slugify
 from django.templatetags.static import StaticNode
 from django.utils import timezone
@@ -54,28 +57,53 @@ class OnceCallMedia(object):
     _js = property(get_js)
 
 
-class AdminSplitDateTime(BaseAdminSplitDateTime):
-    print("-------------- jds ---------------- 2")
+# class AdminSplitDateTime(BaseAdminSplitDateTime):
+#     print("-------------- jds ---------------- 2")
 
-    def format_output(self, rendered_widgets):
-        print("------------------- jds ----------- 3")
-        # looking for 'vDateField' and 'vTimeField' in rendered_widgets which comes from BaseAdminDateWidget and BaseAdminTimeWidget
-        print(json.dumps(rendered_widgets, indent=4))
-        return format_html(
-            '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
-            rendered_widgets[0],
-            rendered_widgets[1],
-        )
+#     def format_output(self, rendered_widgets):
+#         print("------------------- jds ----------- 3")
+#         # looking for 'vDateField' and 'vTimeField' in rendered_widgets which comes from BaseAdminDateWidget and BaseAdminTimeWidget
+#         print(json.dumps(rendered_widgets, indent=4))
+#         return format_html(
+#             '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
+#             rendered_widgets[0],
+#             rendered_widgets[1],
+#         )
 
-    # def __init__(
-    #     self,
-    #     attrs=None,
-    #     date_format=None,
-    #     time_format=None,
-    #     date_attrs=None,
-    #     time_attrs=None,
-    # ):
-    #     super().__init__(attrs, date_format, time_format, date_attrs, time_attrs)
+#     # def __init__(
+#     #     self,
+#     #     attrs=None,
+#     #     date_format=None,
+#     #     time_format=None,
+#     #     date_attrs=None,
+#     #     time_attrs=None,
+#     # ):
+#     #     super().__init__(attrs, date_format, time_format, date_attrs, time_attrs)
+
+
+class AdminSplitDateTime(forms.SplitDateTimeWidget):
+    """
+    A SplitDateTime Widget that has some admin-specific styling.
+    """
+
+    template_name = "admin/widgets/split_datetime.html"
+
+    def __init__(
+        self,
+        attrs=None,
+        date_attrs=None,
+        time_attrs=None,
+    ):
+        widgets = [BaseAdminDateWidget, BaseAdminTimeWidget]
+        # Note that we're calling MultiWidget, not SplitDateTimeWidget, because
+        # we want to define widgets.
+        forms.MultiWidget.__init__(self, widgets, attrs)
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["date_label"] = _("Date:")
+        context["time_label"] = _("Time:")
+        return context
 
 
 class BaseRangeFilter(admin.filters.FieldListFilter):  # pylint: disable=abstract-method
@@ -265,8 +293,8 @@ class DateTimeRangeFilter(DateRangeFilter):
                         label="",
                         widget=AdminSplitDateTime(
                             attrs={"placeholder": _("From date")},
-                            # date_attrs={"placeholder": _("From date")},
-                            # time_attrs={"placeholder": _("From time")},
+                            date_attrs={"placeholder": _("From date")},
+                            time_attrs={"placeholder": _("From time")},
                         ),
                         localize=True,
                         required=False,
@@ -279,8 +307,8 @@ class DateTimeRangeFilter(DateRangeFilter):
                         label="",
                         widget=AdminSplitDateTime(
                             attrs={"placeholder": _("To date")},
-                            # date_attrs={"placeholder": _("From date")},
-                            # time_attrs={"placeholder": _("From time")},
+                            date_attrs={"placeholder": _("From date")},
+                            time_attrs={"placeholder": _("From time")},
                         ),
                         localize=True,
                         required=False,
