@@ -84,6 +84,12 @@ class AdminSplitDateTime(forms.SplitDateTimeWidget):
         date_attrs=None,
         time_attrs=None,
     ):
+        print("-------------- jds date attrs check ----------------")
+        dattrs = attrs if date_attrs is None else date_attrs
+        print(json.dumps(dattrs, indent=4))
+        print("-------------- jds time attrs check ----------------")
+        tattrs = attrs if time_attrs is None else time_attrs
+        print(json.dumps(tattrs, indent=4))
         widgets = (
             BaseAdminDateWidget(attrs=attrs if date_attrs is None else date_attrs),
             BaseAdminTimeWidget(attrs=attrs if time_attrs is None else time_attrs),
@@ -285,9 +291,9 @@ class DateTimeRangeFilter(DateRangeFilter):
                     forms.SplitDateTimeField(
                         label="",
                         widget=AdminSplitDateTime(
-                            attrs={"placeholder": _("From date")},
-                            date_attrs={"placeholder": _("From date")},
-                            time_attrs={"placeholder": _("From time")},
+                            attrs={"placeholder": _("From date1")},
+                            date_attrs={"placeholder": _("From date2")},
+                            time_attrs={"placeholder": _("From time3")},
                         ),
                         localize=True,
                         required=False,
@@ -299,9 +305,9 @@ class DateTimeRangeFilter(DateRangeFilter):
                     forms.SplitDateTimeField(
                         label="",
                         widget=AdminSplitDateTime(
-                            attrs={"placeholder": _("To date")},
-                            date_attrs={"placeholder": _("To date")},
-                            time_attrs={"placeholder": _("To time")},
+                            attrs={"placeholder": _("To date1")},
+                            date_attrs={"placeholder": _("To date2")},
+                            time_attrs={"placeholder": _("To time3")},
                         ),
                         localize=True,
                         required=False,
