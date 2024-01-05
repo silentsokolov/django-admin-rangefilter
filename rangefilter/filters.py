@@ -16,8 +16,9 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminDateWidget
-from django.contrib.admin.widgets import BaseAdminDateWidget
-from django.contrib.admin.widgets import BaseAdminTimeWidget
+from django.contrib.admin.widgets import BaseAdminDateWidget, BaseAdminTimeWidget
+
+# from django.contrib.admin.widgets import BaseAdminTimeWidget
 
 # AdminSplitDateTime as BaseAdminSplitDateTime
 from django.template.defaultfilters import slugify
@@ -71,6 +72,22 @@ class OnceCallMedia(object):
 #         )
 
 
+# class BaseAdminTimeWidget(forms.TimeInput):
+#     class Media:
+#         js = [
+#             "admin/js/calendar.js",
+#             "admin/js/admin/DateTimeShortcuts.js",
+#         ]
+
+#     def __init__(
+#         self,
+#         attrs=None,
+#         format=None,
+#     ):
+#         attrs = {"class": "vTimeField", "size": "8", **(attrs or {})}
+#         super().__init__(attrs=attrs, format=format)
+
+
 class AdminSplitDateTime(forms.SplitDateTimeWidget):
     """
     contrib/admin/widgets.py:AdminSplitDateTime should accept date_attrs and time_attrs
@@ -103,6 +120,16 @@ class AdminSplitDateTime(forms.SplitDateTimeWidget):
         context["date_label"] = _("Date:")
         context["time_label"] = _("Time:")
         return context
+
+    def format_output(self, rendered_widgets):
+        print("------------------- jds ----------- 3")
+        # looking for 'vDateField' and 'vTimeField' in rendered_widgets which comes from BaseAdminDateWidget and BaseAdminTimeWidget
+        # print(json.dumps(rendered_widgets, indent=4))
+        return format_html(
+            '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
+            rendered_widgets[0],
+            rendered_widgets[1],
+        )
 
 
 class BaseRangeFilter(admin.filters.FieldListFilter):  # pylint: disable=abstract-method
