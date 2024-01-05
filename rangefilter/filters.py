@@ -86,10 +86,10 @@ class AdminSplitDateTime(forms.SplitDateTimeWidget):
     ):
         print("-------------- jds date attrs check ----------------")
         dattrs = attrs if date_attrs is None else date_attrs
-        print(json.dumps(dattrs, indent=4))
+        print(dattrs)
         print("-------------- jds time attrs check ----------------")
         tattrs = attrs if time_attrs is None else time_attrs
-        print(json.dumps(tattrs, indent=4))
+        print(tattrs)
         widgets = (
             BaseAdminDateWidget(attrs=attrs if date_attrs is None else date_attrs),
             BaseAdminTimeWidget(attrs=attrs if time_attrs is None else time_attrs),
