@@ -113,7 +113,8 @@ class AdminSplitDateTime(forms.SplitDateTimeWidget):
         )
         # Note that we're calling MultiWidget, not SplitDateTimeWidget, because
         # we want to define widgets.
-        forms.MultiWidget.__init__(self, widgets, attrs)
+        # forms.MultiWidget.__init__(self, widgets, attrs)
+        forms.MultiWidget.__init__(self, widgets)
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
