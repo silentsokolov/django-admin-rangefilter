@@ -266,7 +266,6 @@ class DateTimeRangeFilter(DateRangeFilter):
         return expected_fields
 
     def _get_form_fields(self):
-        print("-------------- jds ---------------- 1")
         return OrderedDict(
             (
                 (
