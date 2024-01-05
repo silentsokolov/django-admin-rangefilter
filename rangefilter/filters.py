@@ -67,15 +67,15 @@ class AdminSplitDateTime(BaseAdminSplitDateTime):
             rendered_widgets[1],
         )
 
-    def __init__(
-        self,
-        attrs=None,
-        date_format=None,
-        time_format=None,
-        date_attrs=None,
-        time_attrs=None,
-    ):
-        super().__init__(attrs, date_format, time_format, date_attrs, time_attrs)
+    # def __init__(
+    #     self,
+    #     attrs=None,
+    #     date_format=None,
+    #     time_format=None,
+    #     date_attrs=None,
+    #     time_attrs=None,
+    # ):
+    #     super().__init__(attrs, date_format, time_format, date_attrs, time_attrs)
 
 
 class BaseRangeFilter(admin.filters.FieldListFilter):  # pylint: disable=abstract-method
@@ -265,8 +265,8 @@ class DateTimeRangeFilter(DateRangeFilter):
                         label="",
                         widget=AdminSplitDateTime(
                             attrs={"placeholder": _("From date")},
-                            date_attrs={"placeholder": _("From date")},
-                            time_attrs={"placeholder": _("From time")},
+                            # date_attrs={"placeholder": _("From date")},
+                            # time_attrs={"placeholder": _("From time")},
                         ),
                         localize=True,
                         required=False,
@@ -279,8 +279,8 @@ class DateTimeRangeFilter(DateRangeFilter):
                         label="",
                         widget=AdminSplitDateTime(
                             attrs={"placeholder": _("To date")},
-                            date_attrs={"placeholder": _("From date")},
-                            time_attrs={"placeholder": _("From time")},
+                            # date_attrs={"placeholder": _("From date")},
+                            # time_attrs={"placeholder": _("From time")},
                         ),
                         localize=True,
                         required=False,
