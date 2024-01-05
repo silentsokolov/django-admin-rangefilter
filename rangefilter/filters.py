@@ -246,7 +246,11 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(attrs={"placeholder": _("From date")}),
+                        widget=AdminSplitDateTime(
+                            attrs={"placeholder": _("From date")},
+                            date_attrs={"placeholder": _("From date")},
+                            time_attrs={"placeholder": _("From time")},
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_gte,
@@ -256,7 +260,11 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(attrs={"placeholder": _("To date")}),
+                        widget=AdminSplitDateTime(
+                            attrs={"placeholder": _("To date")},
+                            date_attrs={"placeholder": _("To date")},
+                            time_attrs={"placeholder": _("To time")},
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_lte,
