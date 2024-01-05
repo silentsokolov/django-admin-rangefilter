@@ -257,6 +257,8 @@ class DateTimeRangeFilter(DateRangeFilter):
                         localize=True,
                         required=False,
                         initial=self.default_gte,
+                        date_attrs={"placeholder": _("From date")},
+                        time_attrs={"placeholder": _("From time")},
                     ),
                 ),
                 (
@@ -267,6 +269,8 @@ class DateTimeRangeFilter(DateRangeFilter):
                         localize=True,
                         required=False,
                         initial=self.default_lte,
+                        date_attrs={"placeholder": _("From date")},
+                        time_attrs={"placeholder": _("From time")},
                     ),
                 ),
             )
