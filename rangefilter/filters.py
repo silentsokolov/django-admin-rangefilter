@@ -55,10 +55,12 @@ class OnceCallMedia(object):
 
 
 class AdminSplitDateTime(BaseAdminSplitDateTime):
+    print("-------------- jds ---------------- 2")
+
     def format_output(self, rendered_widgets):
-        print("------------------- jds -----------")
+        print("------------------- jds ----------- 3")
         # looking for 'vDateField' and 'vTimeField' in rendered_widgets which comes from BaseAdminDateWidget and BaseAdminTimeWidget
-        print(json.dumps(rendered_widgets))
+        print(json.dumps(rendered_widgets, indent=4))
         return format_html(
             '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
             rendered_widgets[0],
@@ -244,6 +246,7 @@ class DateTimeRangeFilter(DateRangeFilter):
         return expected_fields
 
     def _get_form_fields(self):
+        print("-------------- jds ---------------- 1")
         return OrderedDict(
             (
                 (
