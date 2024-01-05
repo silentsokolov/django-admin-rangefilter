@@ -26,8 +26,11 @@ else:
     from django.utils.translation import ugettext_lazy as _  # pylint: disable=E0611
 
 if django.VERSION >= (4, 2, 0):
-    from django.contrib.admin.widgets import AdminDateWidget
-    from django.contrib.admin.widgets import BaseAdminDateWidget, BaseAdminTimeWidget
+    from django.contrib.admin.widgets import (
+        AdminDateWidget,
+        BaseAdminDateWidget,
+        BaseAdminTimeWidget,
+    )
 else:
     from django.contrib.admin.widgets import AdminDateWidget as BaseAdminDateWidget
     from django.contrib.admin.widgets import AdminTimeWidget as BaseAdminTimeWidget
