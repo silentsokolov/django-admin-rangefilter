@@ -154,7 +154,7 @@ class DateRangeFilter(BaseRangeFilter):
         return form_class(self.used_parameters or None)
 
     def get_timezone(self, _request):
-        return timezone.get_default_timezone()
+        return timezone.get_current_timezone()
 
     @staticmethod
     def make_dt_aware(value, tzname):
