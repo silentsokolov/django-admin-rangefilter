@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.12.1] - 2024-02-12
+### Added
+- Use current timezone instead of default #114
+
+### Fix
+- DateTimeRangeFilter: upper time bound includes microseconds #115
+
 ## [0.12.0] - 2023-12-09
 ### Added
 - Compatibility Django 5
@@ -198,7 +205,8 @@ Its useful for definition custom title or initial (default) values.
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.12.0...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.12.1...HEAD
+[0.12.1]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.0...v0.12.1
 [0.12.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.11.2...v0.12.0
 [0.11.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.11.1...v0.11.2
 [0.11.1]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.11.0...v0.11.1
