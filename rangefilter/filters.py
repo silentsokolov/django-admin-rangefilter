@@ -14,8 +14,6 @@ from collections import OrderedDict
 from django import forms
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.admin.widgets import AdminDateWidget
-from django.contrib.admin.widgets import AdminSplitDateTime as BaseAdminSplitDateTime
 from django.template.defaultfilters import slugify
 from django.templatetags.static import StaticNode
 from django.utils import timezone
@@ -26,6 +24,16 @@ if django.VERSION >= (2, 0, 0):
     from django.utils.translation import gettext_lazy as _
 else:
     from django.utils.translation import ugettext_lazy as _  # pylint: disable=E0611
+
+if django.VERSION >= (4, 2, 0):
+    from django.contrib.admin.widgets import (
+        AdminDateWidget,
+        BaseAdminDateWidget,
+        BaseAdminTimeWidget,
+    )
+else:
+    from django.contrib.admin.widgets import AdminDateWidget as BaseAdminDateWidget
+    from django.contrib.admin.widgets import AdminTimeWidget as BaseAdminTimeWidget
 
 
 class OnceCallMedia(object):
@@ -53,7 +61,34 @@ class OnceCallMedia(object):
     _js = property(get_js)
 
 
-class AdminSplitDateTime(BaseAdminSplitDateTime):
+class AdminSplitDateTime(forms.SplitDateTimeWidget):
+    """
+    contrib/admin/widgets.py:AdminSplitDateTime should accept date_attrs and time_attrs
+    and pass them down to the subwidgets.
+    """
+
+    template_name = "admin/widgets/split_datetime.html"
+
+    def __init__(
+        self,
+        attrs=None,
+        date_attrs=None,
+        time_attrs=None,
+    ):  # pylint: disable=W0231
+        widgets = (
+            BaseAdminDateWidget(attrs=attrs if date_attrs is None else date_attrs),
+            BaseAdminTimeWidget(attrs=attrs if time_attrs is None else time_attrs),
+        )
+        # Note that we're calling MultiWidget, not SplitDateTimeWidget, because
+        # we want to define widgets, so not pass in the attr's they are already setup.
+        forms.MultiWidget.__init__(self, widgets)  # pylint: disable=W0233
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["date_label"] = _("Date:")
+        context["time_label"] = _("Time:")
+        return context
+
     def format_output(self, rendered_widgets):
         return format_html(
             '<p class="datetime">{}</p><p class="datetime rangetime">{}</p>',
@@ -246,7 +281,10 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_gte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(attrs={"placeholder": _("From date")}),
+                        widget=AdminSplitDateTime(
+                            date_attrs={"placeholder": _("From date")},
+                            time_attrs={"placeholder": _("From time")},
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_gte,
@@ -256,7 +294,10 @@ class DateTimeRangeFilter(DateRangeFilter):
                     self.lookup_kwarg_lte,
                     forms.SplitDateTimeField(
                         label="",
-                        widget=AdminSplitDateTime(attrs={"placeholder": _("To date")}),
+                        widget=AdminSplitDateTime(
+                            date_attrs={"placeholder": _("To date")},
+                            time_attrs={"placeholder": _("To time")},
+                        ),
                         localize=True,
                         required=False,
                         initial=self.default_lte,
