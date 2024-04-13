@@ -27,7 +27,7 @@ if django.VERSION >= (2, 0, 0):
 else:
     from django.utils.translation import ugettext_lazy as _  # pylint: disable=E0611
 
-USE_END_MICROSECOND = getattr(settings, "RANGEFILTERS_USE_FILGER_END_MICROSECOND", False)
+USE_END_MICROSECOND = getattr(settings, "RANGEFILTERS_USE_FILTER_END_MICROSECOND", False)
 
 
 class OnceCallMedia(object):
