@@ -278,7 +278,7 @@ class DateTimeRangeFilter(DateRangeFilter):
             )
         if date_value_lte:
             end_dt = self.make_dt_aware(date_value_lte, self.get_timezone(request))
-            if not USE_END_MICROSECOND:
+            if USE_END_MICROSECOND:
                 end_dt = end_dt.replace(microsecond=999999)
 
             query_params["{0}__lte".format(self.field_path)] = end_dt
