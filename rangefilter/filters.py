@@ -27,6 +27,8 @@ if django.VERSION >= (2, 0, 0):
 else:
     from django.utils.translation import ugettext_lazy as _  # pylint: disable=E0611
 
+USE_END_MICROSECOND = getattr(settings, "RANGEFILTERS_USE_FILGER_END_MICROSECOND", True)
+
 
 class OnceCallMedia(object):
     _is_rendered = False
@@ -275,9 +277,11 @@ class DateTimeRangeFilter(DateRangeFilter):
                 date_value_gte, self.get_timezone(request)
             )
         if date_value_lte:
-            query_params["{0}__lte".format(self.field_path)] = self.make_dt_aware(
-                date_value_lte, self.get_timezone(request)
-            ).replace(microsecond=999999)
+            end_dt = self.make_dt_aware(date_value_lte, self.get_timezone(request))
+            if not USE_END_MICROSECOND:
+                end_dt = end_dt.replace(microsecond=999999)
+
+            query_params["{0}__lte".format(self.field_path)] = end_dt
 
         return query_params
 

@@ -34,3 +34,24 @@ disable=[
   'too-many-arguments',
   'duplicate-code',
 ]
+
+[tool.ruff]
+exclude = [
+  ".git", 
+  ".eggs",
+  ".mypy_cache",
+  ".ruff_cache",
+  ".venv",
+  "venv",
+  "dist",
+  "_build",
+  "build",
+  ".dagster_home",
+]
+
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.format]
+indent-style = "space"
+docstring-code-format = true
