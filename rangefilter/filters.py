@@ -379,6 +379,8 @@ class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter)
     def get_template(self):
         return "rangefilter/date_range_quick_select_list_filter.html"
 
+    template = property(get_template)
+
     def _make_query_filter(self, request, validated_data):
         query_params = super()._make_query_filter(request, validated_data)
         date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
