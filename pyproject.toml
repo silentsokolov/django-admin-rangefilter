@@ -37,16 +37,15 @@ disable=[
 
 [tool.ruff]
 exclude = [
-  ".git", 
-  ".eggs",
-  ".mypy_cache",
-  ".ruff_cache",
-  ".venv",
-  "venv",
-  "dist",
-  "_build",
-  "build",
-  ".dagster_home",
+  '.git', 
+  '.eggs',
+  '.mypy_cache',
+  '.ruff_cache',
+  '.venv',
+  'venv',
+  'dist',
+  '_build',
+  'build',
 ]
 
 line-length = 100

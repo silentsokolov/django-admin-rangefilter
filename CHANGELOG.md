@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.12.5] - 2024-05-18
+### Fix
+- Fix quick select template property #118
+
 ## [0.12.4] - 2024-04-13
 ### Fix
 - Typo
@@ -217,7 +221,8 @@ Its useful for definition custom title or initial (default) values.
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.12.4...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.12.5...HEAD
+[0.12.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.4...v0.12.5
 [0.12.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.3...v0.12.4
 [0.12.3]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.2...v0.12.3
 [0.12.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.1...v0.12.2
