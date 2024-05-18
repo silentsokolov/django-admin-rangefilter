@@ -1,6 +1,5 @@
 {% load i18n rangefilter_compat %}
-<details data-filter-title="{{ title }}" open>
-<summary>{% blocktranslate with filter_title=title %} By {{ filter_title }} {% endblocktranslate %}</summary>
+<h3>{{ title }}</h3>
 <style nonce="{{ spec.request.csp_nonce }}">
     {% default_css_vars_if_needed %}
     .numericrangefilter .button, .numericrangefilter input[type=submit], .numericrangefilter input[type=button], .numericrangefilter .submit-row input, .numericrangefilter a.button,
@@ -13,12 +12,9 @@
         cursor: pointer;
     }
     .numericrangefilter {
-        margin: 5px 0;
-        padding: 0 15px 15px;
-        border-bottom: 1px solid var(--hairline-color);
-    }
-    .numericrangefilter:last-child {
-        border-bottom: none;
+        padding-left: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border-color);
     }
     .numericrangefilter p {
         padding-left: 0px;
@@ -66,4 +62,3 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
         </div>
     </form>
 </div>
-</details>

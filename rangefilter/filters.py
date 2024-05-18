@@ -141,6 +141,9 @@ class DateRangeFilter(BaseRangeFilter):
         if django.VERSION[:2] <= (1, 8):
             return "rangefilter/date_filter_1_8.html"
 
+        if django.VERSION[:2] <= (4, 0):
+            return "rangefilter/date_filter_4_0.html"
+
         return "rangefilter/date_filter.html"
 
     template = property(get_template)
@@ -309,6 +312,9 @@ class NumericRangeFilter(BaseRangeFilter):
         return {}
 
     def get_template(self):
+        if django.VERSION[:2] <= (4, 0):
+            return "rangefilter/numeric_filter_4_0.html"
+
         return "rangefilter/numeric_filter.html"
 
     template = property(get_template)
