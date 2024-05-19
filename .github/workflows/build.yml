@@ -82,6 +82,11 @@ jobs:
             django-version: "5.0.*"
             coverage: true
 
+          - python-version: "3.12"
+            django-version: "4.2.*"
+          - python-version: "3.12"
+            django-version: "5.0.*"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
