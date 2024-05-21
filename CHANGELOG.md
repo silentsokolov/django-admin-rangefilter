@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+## [0.13.0] - 2024-05-21
+### Added
+- Compatibility Django 5
+- Add support for collapsable filter (Django >= 4.1) (#120). Change the default range template
+
 ## [0.12.5] - 2024-05-18
 ### Fix
 - Fix quick select template property #118
@@ -221,8 +226,9 @@ Its useful for definition custom title or initial (default) values.
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.12.5...HEAD
-[0.12.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.4...v0.12.5
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.13.0...HEAD
+[0.13.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.5...v0.13.0
+[0.12.5]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.4...v0.12.5
 [0.12.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.3...v0.12.4
 [0.12.3]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.2...v0.12.3
 [0.12.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.1...v0.12.2
