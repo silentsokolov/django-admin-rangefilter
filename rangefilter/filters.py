@@ -339,7 +339,7 @@ class NumericRangeFilter(BaseRangeFilter):
                         widget=forms.NumberInput(attrs={"placeholder": _("From")}),
                         required=False,
                         localize=True,
-                        initial=self.default_lte,
+                        initial=self.default_gte,
                     ),
                 ),
                 (
