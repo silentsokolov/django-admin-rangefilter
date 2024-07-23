@@ -3,7 +3,7 @@
 import django
 
 __author__ = "Dmitriy Sokolov"
-__version__ = "0.13.0"
+__version__ = "0.13.1"
 
 if django.VERSION < (3, 2):
     default_app_config = "rangefilter.apps.RangeFilterConfig"

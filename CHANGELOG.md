@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.13.1] - 2024-07-23
+### Fix
+- Fix initial value in NumericRangeFilter form field (#124) (thx @gretapataki)
+
 ## [0.13.0] - 2024-05-21
 ### Added
 - Compatibility Django 5
@@ -226,7 +230,8 @@ Its useful for definition custom title or initial (default) values.
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.13.0...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/0.13.1...HEAD
+[0.13.1]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.5...v0.13.0
 [0.12.5]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.4...v0.12.5
 [0.12.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.12.3...v0.12.4
