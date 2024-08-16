@@ -127,7 +127,7 @@ https://github.com/django/django/blob/stable/1.10.x/django/contrib/admin/templat
         });
     }
 
-    django.jQuery('document').ready(function () {
+    django.jQuery(window).on('load', function () {
         if (!('DateTimeShortcuts' in window)) {
             var promiseList = [];
 
