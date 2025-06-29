@@ -376,6 +376,59 @@ class NumericRangeFilter(BaseRangeFilter):
 
 
 class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter):
+    def __init__(self, field, request, params, model, model_admin, field_path):
+        super().__init__(field, request, params, model, model_admin, field_path)
+
+        now = timezone.now()
+        if timezone.is_aware(now):
+            now = timezone.localtime(now)
+
+        today = now.date()
+        tomorrow = today + datetime.timedelta(days=1)
+        if today.month == 12:
+            next_month = today.replace(year=today.year + 1, month=1, day=1)
+        else:
+            next_month = today.replace(month=today.month + 1, day=1)
+        next_year = today.replace(year=today.year + 1, month=1, day=1)
+
+        self.links = (
+            (_("Any date"), {}),
+            (
+                _("Today"),
+                {
+                    self.lookup_kwarg_gte: today.date(),
+                    self.lookup_kwarg_lte: tomorrow.date(),
+                },
+            ),
+            (
+                _("Past 7 days"),
+                {
+                    self.lookup_kwarg_gte: (today - datetime.timedelta(days=7)).date(),
+                    self.lookup_kwarg_lte: tomorrow.date(),
+                },
+            ),
+            (
+                _("This month"),
+                {
+                    self.lookup_kwarg_gte: today.replace(day=1).date(),
+                    self.lookup_kwarg_lte: next_month.date(),
+                },
+            ),
+            (
+                _("This year"),
+                {
+                    self.lookup_kwarg_gte: today.replace(month=1, day=1).date(),
+                    self.lookup_kwarg_lte: next_year.date(),
+                },
+            ),
+        )
+        if field.null:
+            self.lookup_kwarg_isnull = "%s__isnull" % field_path
+            self.links += (
+                (_("No date"), {self.field_generic + "isnull": True}),
+                (_("Has date"), {self.field_generic + "isnull": False}),
+            )
+
     def expected_parameters(self):
         params = [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
         if self.field.null:
