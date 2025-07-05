@@ -383,7 +383,7 @@ class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter)
         if timezone.is_aware(now):
             now = timezone.localtime(now)
 
-        today = now.date()
+        today = now
         tomorrow = today + datetime.timedelta(days=1)
         if today.month == 12:
             next_month = today.replace(year=today.year + 1, month=1, day=1)
