@@ -384,12 +384,14 @@ class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter)
             now = timezone.localtime(now)
 
         today = now
-        tomorrow = today + datetime.timedelta(days=1)
         if today.month == 12:
             next_month = today.replace(year=today.year + 1, month=1, day=1)
+            next_month = next_month - datetime.timedelta(days=1)
         else:
             next_month = today.replace(month=today.month + 1, day=1)
+            next_month = next_month - datetime.timedelta(days=1)
         next_year = today.replace(year=today.year + 1, month=1, day=1)
+        next_year = next_year - datetime.timedelta(days=1)
 
         self.links = (
             (_("Any date"), {}),
@@ -397,14 +399,14 @@ class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter)
                 _("Today"),
                 {
                     self.lookup_kwarg_gte: today.date(),
-                    self.lookup_kwarg_lte: tomorrow.date(),
+                    self.lookup_kwarg_lte: today.date(),
                 },
             ),
             (
                 _("Past 7 days"),
                 {
                     self.lookup_kwarg_gte: (today - datetime.timedelta(days=7)).date(),
-                    self.lookup_kwarg_lte: tomorrow.date(),
+                    self.lookup_kwarg_lte: today.date(),
                 },
             ),
             (
