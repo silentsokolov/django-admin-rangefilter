@@ -1,4 +1,4 @@
-Django==5.*
+Django==6
 black
 isort
 pylint

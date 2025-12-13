@@ -1,5 +1,5 @@
 ---
-name: "build"
+name: "Build"
 
 on: # yamllint disable-line rule:truthy
   pull_request:
@@ -67,6 +67,8 @@ jobs:
             django-version: "5.1.*"
           - python-version: "3.12"
             django-version: "5.2.*"
+          - python-version: "3.12"
+            django-version: "6.0.*"
             coverage: true
 
     steps:

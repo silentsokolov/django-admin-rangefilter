@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.13.5] - 2025-11-13
+### Fix
+- Compatibility Django 6
+
 ## [0.13.4] - 2025-07-05
 ### Fix
 - DateRangeQuickSelectListFilterBuilder uses lte instead of lt for end date, causing off-by-one error #133
@@ -242,7 +246,8 @@ Its useful for definition custom title or initial (default) values.
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.4...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.5...HEAD
+[0.13.5]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.4...v0.13.5
 [0.13.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.3...v0.13.4
 [0.13.3]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.2...v0.13.3
 [0.13.2]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.1...v0.13.2

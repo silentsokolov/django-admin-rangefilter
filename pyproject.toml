@@ -5,16 +5,16 @@ exclude = '(\.eggs|\.git|\.mypy_cache|\.venv|venv|env|_build|build|build|dist|eg
 
 [tool.isort]
 line_length = 100
-profile = "black"
+profile = 'black'
 use_parentheses = true
 skip = '.eggs/,.mypy_cache/,.venv/,venv/,env/,eggs/'
 
 [tool.pylint]
 [tool.pylint.master]
-py-version = 3.9
+py-version = 3.12
 
 [tool.pylint.messages-control]
-disable=[
+disable = [
   'C',
   'R',
 
@@ -37,7 +37,7 @@ disable=[
 
 [tool.ruff]
 exclude = [
-  '.git', 
+  '.git',
   '.eggs',
   '.mypy_cache',
   '.ruff_cache',
@@ -49,8 +49,8 @@ exclude = [
 ]
 
 line-length = 100
-target-version = "py311"
+target-version = 'py312'
 
 [tool.ruff.format]
-indent-style = "space"
+indent-style = 'space'
 docstring-code-format = true

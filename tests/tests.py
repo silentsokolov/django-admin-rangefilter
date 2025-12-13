@@ -60,6 +60,7 @@ def select_by(dictlist):
 
 
 class DateFuncTestCase(TestCase):
+    @skipIf(pytz is None, "install pytz")
     def test_make_dt_aware_without_pytz(self):
         with override_settings(USE_TZ=False):
             now = datetime.datetime.now()
