@@ -16,6 +16,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.admin.widgets import AdminSplitDateTime as BaseAdminSplitDateTime
+from django.contrib.admin.widgets import AdminTimeWidget
 from django.template.defaultfilters import slugify
 from django.templatetags.static import StaticNode
 from django.utils import timezone
@@ -533,3 +534,85 @@ def DateRangeQuickSelectListFilterBuilder(title=None, default_start=None, defaul
     )
 
     return filter_cls
+
+class TimeRangeFilter(BaseRangeFilter):
+    def choices(self, changelist):
+        yield {
+            "system_name": force_str(
+                slugify(self.title) if slugify(self.title) else id(self.title)
+            ),
+            "query_string": changelist.get_query_string({}, remove=self.expected_parameters()),
+        }
+
+    def queryset(self, request, queryset):
+        if self.form.is_valid():
+            validated_data = dict(self.form.cleaned_data.items())
+            if validated_data:
+                return queryset.filter(**self._make_query_filter(request, validated_data))
+        return queryset
+
+    def expected_parameters(self):
+        return [self.lookup_kwarg_gte, self.lookup_kwarg_lte]
+
+    def get_facet_counts(self, pk_attname, filtered_qs):
+        return {}
+
+    def get_template(self):
+        return "rangefilter/time_filter.html"
+
+    template = property(get_template)
+
+    def get_form(self, _request):
+        form_class = self._get_form_class()
+
+        if django.VERSION[:2] >= (5, 0):
+            for name, value in self.used_parameters.items():
+                if isinstance(value, list):
+                    self.used_parameters[name] = value[-1]
+
+        return form_class(self.used_parameters or None)
+
+    def _get_form_fields(self):
+        return OrderedDict(
+            (
+                (
+                    self.lookup_kwarg_gte,
+                    forms.TimeField(
+                        label="",
+                        widget=AdminTimeWidget(attrs={"placeholder": _("From time")}),
+                        localize=True,
+                        required=False,
+                        initial=self.default_gte,
+                    ),
+                ),
+                (
+                    self.lookup_kwarg_lte,
+                    forms.TimeField(
+                        label="",
+                        widget=AdminTimeWidget(attrs={"placeholder": _("To time")}),
+                        localize=True,
+                        required=False,
+                        initial=self.default_lte,
+                    ),
+                ),
+            )
+        )
+
+    def _get_form_class(self):
+        fields = self._get_form_fields()
+
+        form_class = type(str("TimeRangeForm"), (forms.BaseForm,), {"base_fields": fields})
+
+        return form_class
+
+    def _make_query_filter(self, _request, validated_data):
+        query_params = {}
+        time_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
+        time_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
+
+        if time_value_gte is not None:
+            query_params["{0}__time__gte".format(self.field_path)] = time_value_gte
+        if time_value_lte is not None:
+            query_params["{0}__time__lte".format(self.field_path)] = time_value_lte
+
+        return query_params

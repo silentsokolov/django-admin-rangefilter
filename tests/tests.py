@@ -24,6 +24,7 @@ from rangefilter.filters import (
     DateTimeRangeFilter,
     NumericRangeFilter,
     OnceCallMedia,
+    TimeRangeFilter,  # Added import for TimeRangeFilter
 )
 from rangefilter.templatetags.rangefilter_compat import static
 
@@ -52,6 +53,11 @@ class RangeModelDTimeAdmin(ModelAdmin):
 
 class RangeModelFloatAdmin(ModelAdmin):
     list_filter = (("float_value", NumericRangeFilter),)
+    ordering = ("-id",)
+
+
+class RangeModelTimeAdmin(ModelAdmin):  # New admin class for TimeRangeFilter
+    list_filter = (("created_at", TimeRangeFilter),)
     ordering = ("-id",)
 
 
@@ -568,3 +574,95 @@ class OnceCallMediaTestCase(TestCase):
         self.assertNotEqual(self.media(), [])
         self.assertTrue(self.media._is_rendered)  # pylint: disable=protected-access
         self.assertEqual(self.media(), [])
+
+# New test cases for TimeRangeFilter
+class TimeRangeFilterTestCase(TestCase):
+    def setUp(self):
+        self.now = timezone.now()
+        self.midnight = datetime.time(0, 0, 0)
+        self.noon = datetime.time(12, 0, 0)
+        self.evening = datetime.time(18, 0, 0)
+
+        self.morning_event = RangeModelDT.objects.create(created_at=self.now.replace(hour=9, minute=0))
+        self.afternoon_event = RangeModelDT.objects.create(created_at=self.now.replace(hour=15, minute=0))
+        self.evening_event = RangeModelDT.objects.create(created_at=self.now.replace(hour=20, minute=0))
+
+        self.username = "testuser"
+        self.email = "testuser@example.com"
+        self.password = "secret"
+        self.user = User.objects.create_user(self.username, self.email, self.password)
+
+    def get_changelist(self, request, model, modeladmin):
+        if getattr(modeladmin, "get_changelist_instance", None):
+            return modeladmin.get_changelist_instance(request)
+
+        return ChangeList(
+            request,
+            model,
+            modeladmin.list_display,
+            modeladmin.list_display_links,
+            modeladmin.list_filter,
+            modeladmin.date_hierarchy,
+            modeladmin.search_fields,
+            modeladmin.list_select_related,
+            modeladmin.list_per_page,
+            modeladmin.list_max_show_all,
+            modeladmin.list_editable,
+            modeladmin,
+        )
+
+    def test_timefilter(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelTimeAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.morning_event, self.afternoon_event, self.evening_event])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+    def test_timefilter_filtered_morning(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelTimeAdmin(RangeModelDT, site)
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte": self.midnight,
+                "created_at__range__lte": self.noon,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.morning_event])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+    def test_timefilter_filtered_evening(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelTimeAdmin(RangeModelDT, site)
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte": self.evening,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.evening_event])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
