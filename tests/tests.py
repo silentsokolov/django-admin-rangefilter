@@ -21,7 +21,10 @@ from django.utils.encoding import force_str
 
 from rangefilter.filters import (
     DateRangeFilter,
+    DateRangeQuickSelectListFilter,
     DateTimeRangeFilter,
+    DateTimeRangeQuickSelectListFilter,
+    DateTimeRangeQuickSelectListFilterBuilder,
     NumericRangeFilter,
     OnceCallMedia,
 )
@@ -52,6 +55,21 @@ class RangeModelDTimeAdmin(ModelAdmin):
 
 class RangeModelFloatAdmin(ModelAdmin):
     list_filter = (("float_value", NumericRangeFilter),)
+    ordering = ("-id",)
+
+
+class RangeModelDQuickSelectAdmin(ModelAdmin):
+    list_filter = (("created_at", DateRangeQuickSelectListFilter),)
+    ordering = ("-id",)
+
+
+class RangeModelDTQuickSelectAdmin(ModelAdmin):
+    list_filter = (("created_at", DateTimeRangeQuickSelectListFilter),)
+    ordering = ("-id",)
+
+
+class RangeModelDTQuickSelectBuilderAdmin(ModelAdmin):
+    list_filter = (("created_at", DateTimeRangeQuickSelectListFilterBuilder(title="foo bar")),)
     ordering = ("-id",)
 
 
@@ -568,3 +586,569 @@ class OnceCallMediaTestCase(TestCase):
         self.assertNotEqual(self.media(), [])
         self.assertTrue(self.media._is_rendered)  # pylint: disable=protected-access
         self.assertEqual(self.media(), [])
+
+
+class DateRangeQuickSelectListFilterTestCase(TestCase):
+    def setUp(self):
+        self.today = datetime.date.today()
+        self.tomorrow = self.today + datetime.timedelta(days=1)
+        self.one_week_ago = self.today - datetime.timedelta(days=7)
+        self.month_start = self.today.replace(day=1)
+        self.year_start = self.today.replace(month=1, day=1)
+
+        self.django_book = RangeModelDT.objects.create(created_at=timezone.now())
+        self.djangonaut_book = RangeModelDT.objects.create(
+            created_at=timezone.now() - datetime.timedelta(days=7)
+        )
+
+        self.django_book_date = RangeModelD.objects.create(created_at=timezone.now())
+        self.djangonaut_book_date = RangeModelD.objects.create(
+            created_at=timezone.now() - datetime.timedelta(days=7)
+        )
+
+        self.username = "foo"
+        self.email = "bar@foo.com"
+        self.password = "top_secret"
+        self.user = User.objects.create_user(self.username, self.email, self.password)
+
+    def get_changelist(self, request, model, modeladmin):
+        if getattr(modeladmin, "get_changelist_instance", None):
+            return modeladmin.get_changelist_instance(request)
+
+        return ChangeList(
+            request,
+            model,
+            modeladmin.list_display,
+            modeladmin.list_display_links,
+            modeladmin.list_filter,
+            modeladmin.date_hierarchy,
+            modeladmin.search_fields,
+            modeladmin.list_select_related,
+            modeladmin.list_per_page,
+            modeladmin.list_max_show_all,
+            modeladmin.list_editable,
+            modeladmin,
+        )
+
+    def test_datefilter(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+    def test_datefilter_filtered(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte": self.today,
+                "created_at__range__lte": self.tomorrow,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+        choice = select_by(filterspec.choices(changelist))
+        self.assertEqual(choice["query_string"], "?")
+        self.assertEqual(choice["system_name"], "created-at")
+
+    def test_datefilter_with_default(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDQuickSelectAdmin(RangeModelDT, site)
+        modeladmin.get_rangefilter_created_at_default = lambda func: [  # pylint: disable=W0201
+            self.today,
+            self.tomorrow,
+        ]
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+        self.assertEqual(filterspec.default_gte, self.today)
+        self.assertEqual(filterspec.default_lte, self.tomorrow)
+
+    def test_datefilter_filtered_with_one_params(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/", {"created_at__range__gte": self.today})
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+        choice = select_by(filterspec.choices(changelist))
+        self.assertEqual(choice["query_string"], "?")
+        self.assertEqual(choice["system_name"], "created-at")
+
+    def test_datefilter_filtered_datefield(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDQuickSelectAdmin(RangeModelD, site)
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte": self.today,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelD, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.django_book_date])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+        choice = select_by(filterspec.choices(changelist))
+        self.assertEqual(choice["query_string"], "?")
+        self.assertEqual(choice["system_name"], "created-at")
+
+    def test_datetimefilter_quick_select_today(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        filterspec = changelist.get_filters(request)[0][0]
+
+        choices = list(filterspec.choices(changelist))
+        today_choice = choices[2]
+        self.assertEqual(today_choice["display"], "Today")
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte": self.today,
+                "created_at__range__lte": self.today,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+    def test_datetimefilter_quick_select_past_7_days(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        filterspec = changelist.get_filters(request)[0][0]
+
+        choices = list(filterspec.choices(changelist))
+        past_7_choice = choices[3]
+        self.assertEqual(past_7_choice["display"], "Past 7 days")
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte": self.one_week_ago,
+                "created_at__range__lte": self.today,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+    def test_datetimefilter_quick_select_this_month(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        filterspec = changelist.get_filters(request)[0][0]
+
+        choices = list(filterspec.choices(changelist))
+        this_month_choice = choices[4]
+        self.assertEqual(this_month_choice["display"], "This month")
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte": self.month_start,
+                "created_at__range__lte": self.today,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+    def test_datetimefilter_quick_select_this_year(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        filterspec = changelist.get_filters(request)[0][0]
+
+        choices = list(filterspec.choices(changelist))
+        this_year_choice = choices[5]
+        self.assertEqual(this_year_choice["display"], "This year")
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte": self.year_start,
+                "created_at__range__lte": self.today,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+
+class DateTimeRangeQuickSelectListFilterTestCase(TestCase):
+    def setUp(self):
+        self.today = datetime.date.today()
+        self.max_time = datetime.datetime.combine(timezone.now(), datetime.time.max).time()
+        self.min_time = datetime.datetime.combine(timezone.now(), datetime.time.min).time()
+        self.tomorrow = self.today + datetime.timedelta(days=1)
+        self.one_week_ago = self.today - datetime.timedelta(days=7)
+        self.month_start = self.today.replace(day=1)
+        self.year_start = self.today.replace(month=1, day=1)
+
+        self.django_book = RangeModelDT.objects.create(created_at=timezone.now())
+        self.djangonaut_book = RangeModelDT.objects.create(
+            created_at=timezone.now() - datetime.timedelta(days=7)
+        )
+
+        self.django_book_date = RangeModelD.objects.create(created_at=timezone.now())
+        self.djangonaut_book_date = RangeModelD.objects.create(
+            created_at=timezone.now() - datetime.timedelta(days=7)
+        )
+
+        self.username = "foo"
+        self.email = "bar@foo.com"
+        self.password = "top_secret"
+        self.user = User.objects.create_user(self.username, self.email, self.password)
+
+    def get_changelist(self, request, model, modeladmin):
+        if getattr(modeladmin, "get_changelist_instance", None):
+            return modeladmin.get_changelist_instance(request)
+
+        return ChangeList(
+            request,
+            model,
+            modeladmin.list_display,
+            modeladmin.list_display_links,
+            modeladmin.list_filter,
+            modeladmin.date_hierarchy,
+            modeladmin.search_fields,
+            modeladmin.list_select_related,
+            modeladmin.list_per_page,
+            modeladmin.list_max_show_all,
+            modeladmin.list_editable,
+            modeladmin,
+        )
+
+    def test_datetimefilter(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDTQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+    def test_datetimefilter_filtered(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDTQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte_0": self.today,
+                "created_at__range__gte_1": self.min_time,
+                "created_at__range__lte_0": self.tomorrow,
+                "created_at__range__lte_1": self.max_time,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+        choice = select_by(filterspec.choices(changelist))
+        self.assertEqual(choice["query_string"], "?")
+        self.assertEqual(choice["system_name"], "created-at")
+
+    def test_datetimefilter_with_default(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDTQuickSelectAdmin(RangeModelDT, site)
+        modeladmin.get_rangefilter_created_at_default = lambda r: [  # pylint: disable=W0201
+            self.today,
+            self.tomorrow,
+        ]
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+        self.assertEqual(filterspec.default_gte, self.today)
+        self.assertEqual(filterspec.default_lte, self.tomorrow)
+
+    def test_datetimefilter_filtered_with_one_params(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDTQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte_0": self.today,
+                "created_at__range__gte_1": self.min_time,
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+        choice = select_by(filterspec.choices(changelist))
+        self.assertEqual(choice["query_string"], "?")
+        self.assertEqual(choice["system_name"], "created-at")
+
+    def test_datetimefilter_custom_title(self):
+        request_factory = RequestFactory()
+        custom_title = "foo bar"
+        modeladmin = RangeModelDTQuickSelectAdmin(RangeModelDT, site)
+        modeladmin.get_rangefilter_created_at_title = (  # pylint: disable=W0201
+            lambda r, f: custom_title
+        )
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), custom_title)
+
+    def test_datetimefilter_custom_title__builder(self):
+        request_factory = RequestFactory()
+        custom_title = "foo bar"
+        modeladmin = RangeModelDTQuickSelectBuilderAdmin(RangeModelDT, site)
+        modeladmin.get_rangefilter_created_at_title = (  # pylint: disable=W0201
+            lambda r, f: custom_title
+        )
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), custom_title)
+
+    def test_datetimefilter_quick_select_today(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDTQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        filterspec = changelist.get_filters(request)[0][0]
+
+        choices = list(filterspec.choices(changelist))
+        today_choice = choices[2]
+        self.assertEqual(today_choice["display"], "Today")
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte_0": self.today,
+                "created_at__range__gte_1": "00:00:00",
+                "created_at__range__lte_0": self.today,
+                "created_at__range__lte_1": "23:59:59.999999",
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+    def test_datetimefilter_quick_select_past_7_days(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDTQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        filterspec = changelist.get_filters(request)[0][0]
+
+        choices = list(filterspec.choices(changelist))
+        past_7_choice = choices[3]
+        self.assertEqual(past_7_choice["display"], "Past 7 days")
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte_0": self.one_week_ago,
+                "created_at__range__gte_1": "00:00:00",
+                "created_at__range__lte_0": self.today,
+                "created_at__range__lte_1": "23:59:59.999999",
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+    def test_datetimefilter_quick_select_this_month(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDTQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        filterspec = changelist.get_filters(request)[0][0]
+
+        choices = list(filterspec.choices(changelist))
+        this_month_choice = choices[4]
+        self.assertEqual(this_month_choice["display"], "This month")
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte_0": self.month_start,
+                "created_at__range__gte_1": "00:00:00",
+                "created_at__range__lte_0": self.today,
+                "created_at__range__lte_1": "23:59:59.999999",
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")
+
+    def test_datetimefilter_quick_select_this_year(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDTQuickSelectAdmin(RangeModelDT, site)
+
+        request = request_factory.get("/")
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        filterspec = changelist.get_filters(request)[0][0]
+
+        choices = list(filterspec.choices(changelist))
+        this_year_choice = choices[5]
+        self.assertEqual(this_year_choice["display"], "This year")
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte_0": self.year_start,
+                "created_at__range__gte_1": "00:00:00",
+                "created_at__range__lte_0": self.today,
+                "created_at__range__lte_1": "23:59:59.999999",
+            },
+        )
+        request.user = self.user
+
+        changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+        queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        filterspec = changelist.get_filters(request)[0][0]
+        self.assertEqual(force_str(filterspec.title), "created at")

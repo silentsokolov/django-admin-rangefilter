@@ -381,6 +381,15 @@ class BaseRangeQuickSelectListFilter(admin.DateFieldListFilter):
 
     template = property(get_template)
 
+    def choices(self, changelist):
+        yield {
+            "system_name": force_str(
+                slugify(self.title) if slugify(self.title) else id(self.title)
+            ),
+            "query_string": changelist.get_query_string({}, remove=self.expected_parameters()),
+        }
+        yield from admin.DateFieldListFilter.choices(self, changelist)
+
     def _make_query_filter(self, request, validated_data):
         query_params = super()._make_query_filter(request, validated_data)
         date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
@@ -555,76 +564,28 @@ class DateTimeRangeQuickSelectListFilter(BaseRangeQuickSelectListFilter, DateTim
         return expected_fields
 
 
-def DateRangeFilterBuilder(title=None, default_start=None, default_end=None):
-    filter_cls = type(
-        str("DateRangeFilter"),
-        (DateRangeFilter,),
-        {
-            "__from_builder": True,
-            "default_title": title,
-            "default_start": default_start,
-            "default_end": default_end,
-        },
-    )
+def _create_filter_builder(filter_class, class_name):
+    def builder(title=None, default_start=None, default_end=None):
+        return type(
+            str(class_name),
+            (filter_class,),
+            {
+                "__from_builder": True,
+                "default_title": title,
+                "default_start": default_start,
+                "default_end": default_end,
+            },
+        )
 
-    return filter_cls
-
-
-def DateTimeRangeFilterBuilder(title=None, default_start=None, default_end=None):
-    filter_cls = type(
-        str("DateTimeRangeFilter"),
-        (DateTimeRangeFilter,),
-        {
-            "__from_builder": True,
-            "default_title": title,
-            "default_start": default_start,
-            "default_end": default_end,
-        },
-    )
-
-    return filter_cls
+    return builder
 
 
-def NumericRangeFilterBuilder(title=None, default_start=None, default_end=None):
-    filter_cls = type(
-        str("NumericRangeFilter"),
-        (NumericRangeFilter,),
-        {
-            "__from_builder": True,
-            "default_title": title,
-            "default_start": default_start,
-            "default_end": default_end,
-        },
-    )
-
-    return filter_cls
-
-
-def DateRangeQuickSelectListFilterBuilder(title=None, default_start=None, default_end=None):
-    filter_cls = type(
-        str("DateRangeQuickSelectListFilter"),
-        (DateRangeQuickSelectListFilter,),
-        {
-            "__from_builder": True,
-            "default_title": title,
-            "default_start": default_start,
-            "default_end": default_end,
-        },
-    )
-
-    return filter_cls
-
-
-def DateTimeRangeQuickSelectListFilterBuilder(title=None, default_start=None, default_end=None):
-    filter_cls = type(
-        str("DateTimeRangeQuickSelectListFilter"),
-        (DateTimeRangeQuickSelectListFilter,),
-        {
-            "__from_builder": True,
-            "default_title": title,
-            "default_start": default_start,
-            "default_end": default_end,
-        },
-    )
-
-    return filter_cls
+DateRangeFilterBuilder = _create_filter_builder(DateRangeFilter, "DateRangeFilter")
+DateTimeRangeFilterBuilder = _create_filter_builder(DateTimeRangeFilter, "DateTimeRangeFilter")
+NumericRangeFilterBuilder = _create_filter_builder(NumericRangeFilter, "NumericRangeFilter")
+DateRangeQuickSelectListFilterBuilder = _create_filter_builder(
+    DateRangeQuickSelectListFilter, "DateRangeQuickSelectListFilter"
+)
+DateTimeRangeQuickSelectListFilterBuilder = _create_filter_builder(
+    DateTimeRangeQuickSelectListFilter, "DateTimeRangeQuickSelectListFilter"
+)
