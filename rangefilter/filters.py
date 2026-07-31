@@ -375,7 +375,46 @@ class NumericRangeFilter(BaseRangeFilter):
         return query_params
 
 
-class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter):
+class BaseRangeQuickSelectListFilter(admin.DateFieldListFilter):
+    def get_template(self):
+        return "rangefilter/date_range_quick_select_list_filter.html"
+
+    template = property(get_template)
+
+    def _make_query_filter(self, request, validated_data):
+        query_params = super()._make_query_filter(request, validated_data)
+        date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
+        date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
+        if self.field.null:
+            date_value_isnull = validated_data.get(self.lookup_kwarg_isnull, None)
+
+            if date_value_isnull is not None and not any([date_value_lte, date_value_gte]):
+                query_params[self.lookup_kwarg_isnull] = date_value_isnull
+
+        return query_params
+
+    def _get_form_fields(self):
+        fields = super()._get_form_fields()
+        if self.field.null:
+            fields.update(
+                OrderedDict(
+                    (
+                        (
+                            self.lookup_kwarg_isnull,
+                            forms.BooleanField(
+                                label="",
+                                localize=True,
+                                required=False,
+                                widget=forms.HiddenInput,
+                            ),
+                        ),
+                    )
+                )
+            )
+        return fields
+
+
+class DateRangeQuickSelectListFilter(BaseRangeQuickSelectListFilter, DateRangeFilter):
     def __init__(self, field, request, params, model, model_admin, field_path):
         super().__init__(field, request, params, model, model_admin, field_path)
 
@@ -437,45 +476,8 @@ class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter)
             params.append(self.lookup_kwarg_isnull)
         return params
 
-    def get_template(self):
-        return "rangefilter/date_range_quick_select_list_filter.html"
 
-    template = property(get_template)
-
-    def _make_query_filter(self, request, validated_data):
-        query_params = super()._make_query_filter(request, validated_data)
-        date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
-        date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
-        if self.field.null:
-            date_value_isnull = validated_data.get(self.lookup_kwarg_isnull, None)
-
-            if date_value_isnull is not None and not any([date_value_lte, date_value_gte]):
-                query_params[self.lookup_kwarg_isnull] = date_value_isnull
-
-        return query_params
-
-    def _get_form_fields(self):
-        fields = super()._get_form_fields()
-        if self.field.null:
-            fields.update(
-                OrderedDict(
-                    (
-                        (
-                            self.lookup_kwarg_isnull,
-                            forms.BooleanField(
-                                label="",
-                                localize=True,
-                                required=False,
-                                widget=forms.HiddenInput,
-                            ),
-                        ),
-                    )
-                )
-            )
-        return fields
-
-
-class DateTimeRangeQuickSelectListFilter(admin.DateFieldListFilter, DateTimeRangeFilter):
+class DateTimeRangeQuickSelectListFilter(BaseRangeQuickSelectListFilter, DateTimeRangeFilter):
     def __init__(self, field, request, params, model, model_admin, field_path):
         super().__init__(field, request, params, model, model_admin, field_path)
         self.lookup_kwarg_gte_time = "{0}__range__gte_1".format(field_path)
@@ -551,43 +553,6 @@ class DateTimeRangeQuickSelectListFilter(admin.DateFieldListFilter, DateTimeRang
             expected_fields.append(self.lookup_kwarg_isnull)
 
         return expected_fields
-
-    def get_template(self):
-        return "rangefilter/date_range_quick_select_list_filter.html"
-
-    template = property(get_template)
-
-    def _make_query_filter(self, request, validated_data):
-        query_params = super()._make_query_filter(request, validated_data)
-        date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
-        date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
-        if self.field.null:
-            date_value_isnull = validated_data.get(self.lookup_kwarg_isnull, None)
-
-            if date_value_isnull is not None and not any([date_value_lte, date_value_gte]):
-                query_params[self.lookup_kwarg_isnull] = date_value_isnull
-
-        return query_params
-
-    def _get_form_fields(self):
-        fields = super()._get_form_fields()
-        if self.field.null:
-            fields.update(
-                OrderedDict(
-                    (
-                        (
-                            self.lookup_kwarg_isnull,
-                            forms.BooleanField(
-                                label="",
-                                localize=True,
-                                required=False,
-                                widget=forms.HiddenInput,
-                            ),
-                        ),
-                    )
-                )
-            )
-        return fields
 
 
 def DateRangeFilterBuilder(title=None, default_start=None, default_end=None):
