@@ -820,7 +820,12 @@ class DateRangeQuickSelectListFilterTestCase(TestCase):
         changelist = self.get_changelist(request, RangeModelDT, modeladmin)
         queryset = changelist.get_queryset(request)
 
-        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        expected = (
+            [self.djangonaut_book, self.django_book]
+            if self.one_week_ago.month == self.today.month
+            else [self.django_book]
+        )
+        self.assertEqual(list(queryset), expected)
         filterspec = changelist.get_filters(request)[0][0]
         self.assertEqual(force_str(filterspec.title), "created at")
 
@@ -1117,7 +1122,12 @@ class DateTimeRangeQuickSelectListFilterTestCase(TestCase):
         changelist = self.get_changelist(request, RangeModelDT, modeladmin)
         queryset = changelist.get_queryset(request)
 
-        self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
+        expected = (
+            [self.djangonaut_book, self.django_book]
+            if self.one_week_ago.month == self.today.month
+            else [self.django_book]
+        )
+        self.assertEqual(list(queryset), expected)
         filterspec = changelist.get_filters(request)[0][0]
         self.assertEqual(force_str(filterspec.title), "created at")
 

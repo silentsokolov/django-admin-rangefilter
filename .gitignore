@@ -89,3 +89,6 @@ ENV/
 
 # Translate
 .tx
+
+# virtualenv
+.venv/
