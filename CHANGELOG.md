@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+## [0.14.0] - 2026-08-01
+### Added
+- Add DateTimeRangeQuickSelectListFilter (#136)
+- Add testing for Python 3.13 (#134)
+
+### Fix
+- Fix flaky `test_datetimefilter_quick_select_this_month` tests failing on 1st–7th of each month
+
 ## [0.13.5] - 2025-11-13
 ### Fix
 - Compatibility Django 6
@@ -246,7 +254,8 @@ Its useful for definition custom title or initial (default) values.
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.5...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.5...v0.14.0
 [0.13.5]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.4...v0.13.5
 [0.13.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.3...v0.13.4
 [0.13.3]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.2...v0.13.3
