@@ -375,7 +375,55 @@ class NumericRangeFilter(BaseRangeFilter):
         return query_params
 
 
-class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter):
+class BaseRangeQuickSelectListFilter(admin.DateFieldListFilter):
+    def get_template(self):
+        return "rangefilter/date_range_quick_select_list_filter.html"
+
+    template = property(get_template)
+
+    def choices(self, changelist):
+        yield {
+            "system_name": force_str(
+                slugify(self.title) if slugify(self.title) else id(self.title)
+            ),
+            "query_string": changelist.get_query_string({}, remove=self.expected_parameters()),
+        }
+        yield from admin.DateFieldListFilter.choices(self, changelist)
+
+    def _make_query_filter(self, request, validated_data):
+        query_params = super()._make_query_filter(request, validated_data)
+        date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
+        date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
+        if self.field.null:
+            date_value_isnull = validated_data.get(self.lookup_kwarg_isnull, None)
+
+            if date_value_isnull is not None and not any([date_value_lte, date_value_gte]):
+                query_params[self.lookup_kwarg_isnull] = date_value_isnull
+
+        return query_params
+
+    def _get_form_fields(self):
+        fields = super()._get_form_fields()
+        if self.field.null:
+            fields.update(
+                OrderedDict(
+                    (
+                        (
+                            self.lookup_kwarg_isnull,
+                            forms.BooleanField(
+                                label="",
+                                localize=True,
+                                required=False,
+                                widget=forms.HiddenInput,
+                            ),
+                        ),
+                    )
+                )
+            )
+        return fields
+
+
+class DateRangeQuickSelectListFilter(BaseRangeQuickSelectListFilter, DateRangeFilter):
     def __init__(self, field, request, params, model, model_admin, field_path):
         super().__init__(field, request, params, model, model_admin, field_path)
 
@@ -437,99 +485,107 @@ class DateRangeQuickSelectListFilter(admin.DateFieldListFilter, DateRangeFilter)
             params.append(self.lookup_kwarg_isnull)
         return params
 
-    def get_template(self):
-        return "rangefilter/date_range_quick_select_list_filter.html"
 
-    template = property(get_template)
+class DateTimeRangeQuickSelectListFilter(BaseRangeQuickSelectListFilter, DateTimeRangeFilter):
+    def __init__(self, field, request, params, model, model_admin, field_path):
+        super().__init__(field, request, params, model, model_admin, field_path)
+        self.lookup_kwarg_gte_time = "{0}__range__gte_1".format(field_path)
+        self.lookup_kwarg_lte_time = "{0}__range__lte_1".format(field_path)
 
-    def _make_query_filter(self, request, validated_data):
-        query_params = super()._make_query_filter(request, validated_data)
-        date_value_gte = validated_data.get(self.lookup_kwarg_gte, None)
-        date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
-        if self.field.null:
-            date_value_isnull = validated_data.get(self.lookup_kwarg_isnull, None)
+        now = timezone.now()
+        if timezone.is_aware(now):
+            now = timezone.localtime(now)
 
-            if date_value_isnull is not None and not any([date_value_lte, date_value_gte]):
-                query_params[self.lookup_kwarg_isnull] = date_value_isnull
+        today = now
+        if today.month == 12:
+            next_month = today.replace(year=today.year + 1, month=1, day=1)
+            next_month = next_month - datetime.timedelta(days=1)
+        else:
+            next_month = today.replace(month=today.month + 1, day=1)
+            next_month = next_month - datetime.timedelta(days=1)
+        next_year = today.replace(year=today.year + 1, month=1, day=1)
+        next_year = next_year - datetime.timedelta(days=1)
 
-        return query_params
-
-    def _get_form_fields(self):
-        fields = super()._get_form_fields()
-        if self.field.null:
-            fields.update(
-                OrderedDict(
-                    (
-                        (
-                            self.lookup_kwarg_isnull,
-                            forms.BooleanField(
-                                label="",
-                                localize=True,
-                                required=False,
-                                widget=forms.HiddenInput,
-                            ),
-                        ),
-                    )
-                )
+        self.links = (
+            (_("Any date"), {}),
+            (
+                _("Today"),
+                {
+                    self.lookup_kwarg_gte + "_0": today.date(),
+                    self.lookup_kwarg_gte_time: "00:00:00",
+                    self.lookup_kwarg_lte + "_0": today.date(),
+                    self.lookup_kwarg_lte_time: "23:59:59.999999",
+                },
+            ),
+            (
+                _("Past 7 days"),
+                {
+                    self.lookup_kwarg_gte + "_0": (today - datetime.timedelta(days=7)).date(),
+                    self.lookup_kwarg_gte_time: "00:00:00",
+                    self.lookup_kwarg_lte + "_0": today.date(),
+                    self.lookup_kwarg_lte_time: "23:59:59.999999",
+                },
+            ),
+            (
+                _("This month"),
+                {
+                    self.lookup_kwarg_gte + "_0": today.replace(day=1).date(),
+                    self.lookup_kwarg_gte_time: "00:00:00",
+                    self.lookup_kwarg_lte + "_0": next_month.date(),
+                    self.lookup_kwarg_lte_time: "23:59:59.999999",
+                },
+            ),
+            (
+                _("This year"),
+                {
+                    self.lookup_kwarg_gte + "_0": today.replace(month=1, day=1).date(),
+                    self.lookup_kwarg_gte_time: "00:00:00",
+                    self.lookup_kwarg_lte + "_0": next_year.date(),
+                    self.lookup_kwarg_lte_time: "23:59:59.999999",
+                },
+            ),
+        )
+        if field.null:
+            self.lookup_kwarg_isnull = "%s__isnull" % field_path
+            self.links += (
+                (_("No date"), {self.field_generic + "isnull": True}),
+                (_("Has date"), {self.field_generic + "isnull": False}),
             )
-        return fields
+
+    def expected_parameters(self):
+        expected_fields = []
+        for field in [self.lookup_kwarg_gte, self.lookup_kwarg_lte]:
+            for i in range(2):
+                expected_fields.append("{}_{}".format(field, i))
+
+        if self.field.null:
+            expected_fields.append(self.lookup_kwarg_isnull)
+
+        return expected_fields
 
 
-def DateRangeFilterBuilder(title=None, default_start=None, default_end=None):
-    filter_cls = type(
-        str("DateRangeFilter"),
-        (DateRangeFilter,),
-        {
-            "__from_builder": True,
-            "default_title": title,
-            "default_start": default_start,
-            "default_end": default_end,
-        },
-    )
+def _create_filter_builder(filter_class, class_name):
+    def builder(title=None, default_start=None, default_end=None):
+        return type(
+            str(class_name),
+            (filter_class,),
+            {
+                "__from_builder": True,
+                "default_title": title,
+                "default_start": default_start,
+                "default_end": default_end,
+            },
+        )
 
-    return filter_cls
-
-
-def DateTimeRangeFilterBuilder(title=None, default_start=None, default_end=None):
-    filter_cls = type(
-        str("DateTimeRangeFilter"),
-        (DateTimeRangeFilter,),
-        {
-            "__from_builder": True,
-            "default_title": title,
-            "default_start": default_start,
-            "default_end": default_end,
-        },
-    )
-
-    return filter_cls
+    return builder
 
 
-def NumericRangeFilterBuilder(title=None, default_start=None, default_end=None):
-    filter_cls = type(
-        str("NumericRangeFilter"),
-        (NumericRangeFilter,),
-        {
-            "__from_builder": True,
-            "default_title": title,
-            "default_start": default_start,
-            "default_end": default_end,
-        },
-    )
-
-    return filter_cls
-
-
-def DateRangeQuickSelectListFilterBuilder(title=None, default_start=None, default_end=None):
-    filter_cls = type(
-        str("DateRangeQuickSelectListFilter"),
-        (DateRangeQuickSelectListFilter,),
-        {
-            "__from_builder": True,
-            "default_title": title,
-            "default_start": default_start,
-            "default_end": default_end,
-        },
-    )
-
-    return filter_cls
+DateRangeFilterBuilder = _create_filter_builder(DateRangeFilter, "DateRangeFilter")
+DateTimeRangeFilterBuilder = _create_filter_builder(DateTimeRangeFilter, "DateTimeRangeFilter")
+NumericRangeFilterBuilder = _create_filter_builder(NumericRangeFilter, "NumericRangeFilter")
+DateRangeQuickSelectListFilterBuilder = _create_filter_builder(
+    DateRangeQuickSelectListFilter, "DateRangeQuickSelectListFilter"
+)
+DateTimeRangeQuickSelectListFilterBuilder = _create_filter_builder(
+    DateTimeRangeQuickSelectListFilter, "DateTimeRangeQuickSelectListFilter"
+)
