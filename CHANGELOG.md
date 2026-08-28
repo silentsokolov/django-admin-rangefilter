@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.15.0] - 2026-08-28
+### Fix
+- Fix `FieldError: Unsupported lookup 'range__gte'` when rendering the quick select filters with admin facets enabled (#135)
+
 ## [0.14.0] - 2026-08-01
 ### Added
 - Add DateTimeRangeQuickSelectListFilter (#136)
@@ -254,7 +258,8 @@ Its useful for definition custom title or initial (default) values.
 - Add get_timezone
 - Drop support Django < 1.8
 
-[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.14.0...HEAD
+[Unreleased]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.5...v0.14.0
 [0.13.5]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.4...v0.13.5
 [0.13.4]: https://github.com/silentsokolov/django-admin-rangefilter/compare/v0.13.3...v0.13.4
