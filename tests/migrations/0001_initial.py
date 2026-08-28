@@ -46,6 +46,42 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name="RangeModelDTNull",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(null=True)),
+            ],
+            options={
+                "ordering": ("created_at",),
+            },
+        ),
+        migrations.CreateModel(
+            name="RangeModelDNull",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateField(null=True)),
+            ],
+            options={
+                "ordering": ("created_at",),
+            },
+        ),
+        migrations.CreateModel(
             name="RangeModelFloat",
             fields=[
                 (

@@ -7,7 +7,7 @@ try:
 except ImportError:
     pytz = None
 
-from unittest import skipIf
+from unittest import skipIf, skipUnless
 
 import django
 from django.contrib.admin import ModelAdmin, site
@@ -30,7 +30,13 @@ from rangefilter.filters import (
 )
 from rangefilter.templatetags.rangefilter_compat import static
 
-from .models import RangeModelD, RangeModelDT, RangeModelFloat
+from .models import (
+    RangeModelD,
+    RangeModelDNull,
+    RangeModelDT,
+    RangeModelDTNull,
+    RangeModelFloat,
+)
 
 
 class RangeModelDTAdmin(ModelAdmin):
@@ -70,6 +76,16 @@ class RangeModelDTQuickSelectAdmin(ModelAdmin):
 
 class RangeModelDTQuickSelectBuilderAdmin(ModelAdmin):
     list_filter = (("created_at", DateTimeRangeQuickSelectListFilterBuilder(title="foo bar")),)
+    ordering = ("-id",)
+
+
+class RangeModelDNullQuickSelectAdmin(ModelAdmin):
+    list_filter = (("created_at", DateRangeQuickSelectListFilter),)
+    ordering = ("-id",)
+
+
+class RangeModelDTNullQuickSelectAdmin(ModelAdmin):
+    list_filter = (("created_at", DateTimeRangeQuickSelectListFilter),)
     ordering = ("-id",)
 
 
@@ -1162,3 +1178,81 @@ class DateTimeRangeQuickSelectListFilterTestCase(TestCase):
         self.assertEqual(list(queryset), [self.djangonaut_book, self.django_book])
         filterspec = changelist.get_filters(request)[0][0]
         self.assertEqual(force_str(filterspec.title), "created at")
+
+
+@skipUnless(django.VERSION >= (5, 0), "Admin facets require Django >= 5.0")
+class QuickSelectFacetsTestCase(TestCase):
+    def setUp(self):
+        self.today = datetime.date.today()
+        self.tomorrow = self.today + datetime.timedelta(days=1)
+        self.min_time = datetime.time.min
+        self.max_time = datetime.datetime.combine(timezone.now(), datetime.time.max).time()
+
+        RangeModelDT.objects.create(created_at=timezone.now())
+        RangeModelDT.objects.create(created_at=timezone.now() - datetime.timedelta(days=30))
+
+        RangeModelD.objects.create(created_at=self.today)
+        RangeModelD.objects.create(created_at=self.today - datetime.timedelta(days=30))
+
+        RangeModelDTNull.objects.create(created_at=timezone.now())
+        RangeModelDTNull.objects.create(created_at=None)
+
+        RangeModelDNull.objects.create(created_at=self.today)
+        RangeModelDNull.objects.create(created_at=None)
+
+        self.user = User.objects.create_user("foo", "bar@foo.com", "top_secret")
+
+    def _displays(self, request, modeladmin):
+        request.user = self.user
+        changelist = modeladmin.get_changelist_instance(request)
+        filterspec = changelist.get_filters(request)[0][0]
+        return [
+            choice["display"] for choice in filterspec.choices(changelist) if "display" in choice
+        ]
+
+    def test_date_quick_select_facets_with_active_range(self):
+        request = RequestFactory().get(
+            "/",
+            {
+                "_facets": "",
+                "created_at__range__gte": self.today,
+                "created_at__range__lte": self.tomorrow,
+            },
+        )
+        displays = self._displays(request, RangeModelDQuickSelectAdmin(RangeModelD, site))
+        self.assertIn("Any date (2)", displays)
+        self.assertIn("Today (1)", displays)
+
+    def test_datetime_quick_select_facets_with_active_range(self):
+        request = RequestFactory().get(
+            "/",
+            {
+                "_facets": "",
+                "created_at__range__gte_0": self.today,
+                "created_at__range__gte_1": self.min_time,
+                "created_at__range__lte_0": self.tomorrow,
+                "created_at__range__lte_1": self.max_time,
+            },
+        )
+        displays = self._displays(request, RangeModelDTQuickSelectAdmin(RangeModelDT, site))
+        self.assertIn("Any date (2)", displays)
+        self.assertIn("Today (1)", displays)
+
+    def test_date_quick_select_facets_without_active_range(self):
+        request = RequestFactory().get("/", {"_facets": ""})
+        displays = self._displays(request, RangeModelDQuickSelectAdmin(RangeModelD, site))
+        self.assertIn("Any date (2)", displays)
+
+    def test_date_quick_select_facets_nullable_isnull_links(self):
+        request = RequestFactory().get("/", {"_facets": ""})
+        displays = self._displays(request, RangeModelDNullQuickSelectAdmin(RangeModelDNull, site))
+        self.assertIn("Any date (2)", displays)
+        self.assertIn("No date (1)", displays)
+        self.assertIn("Has date (1)", displays)
+
+    def test_datetime_quick_select_facets_nullable_isnull_links(self):
+        request = RequestFactory().get("/", {"_facets": ""})
+        displays = self._displays(request, RangeModelDTNullQuickSelectAdmin(RangeModelDTNull, site))
+        self.assertIn("Any date (2)", displays)
+        self.assertIn("No date (1)", displays)
+        self.assertIn("Has date (1)", displays)

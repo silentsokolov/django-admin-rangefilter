@@ -17,6 +17,20 @@ class RangeModelD(models.Model):
         ordering = ("created_at",)
 
 
+class RangeModelDTNull(models.Model):
+    created_at = models.DateTimeField(null=True)
+
+    class Meta:
+        ordering = ("created_at",)
+
+
+class RangeModelDNull(models.Model):
+    created_at = models.DateField(null=True)
+
+    class Meta:
+        ordering = ("created_at",)
+
+
 class RangeModelFloat(models.Model):
     float_value = models.FloatField()
 

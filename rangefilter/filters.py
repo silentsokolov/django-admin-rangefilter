@@ -16,6 +16,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.admin.widgets import AdminSplitDateTime as BaseAdminSplitDateTime
+from django.db.models import Count, Q
 from django.template.defaultfilters import slugify
 from django.templatetags.static import StaticNode
 from django.utils import timezone
@@ -389,6 +390,23 @@ class BaseRangeQuickSelectListFilter(admin.DateFieldListFilter):
             "query_string": changelist.get_query_string({}, remove=self.expected_parameters()),
         }
         yield from admin.DateFieldListFilter.choices(self, changelist)
+
+    def get_facet_counts(self, pk_attname, filtered_qs):
+        # The quick-select links use UI parameter keys (e.g. ``field__range__gte``)
+        # that are not valid ORM lookups, so - unlike DateFieldListFilter - they
+        # cannot be fed straight into ``Q(**param_dict)``. Route each link through
+        # the filter form and ``_make_query_filter``, the same translation used by
+        # ``queryset()``, before aggregating facet counts.
+        form_class = self._get_form_class()
+        counts = {}
+        for i, (_, param_dict) in enumerate(self.links):
+            query_filter = {}
+            if param_dict:
+                form = form_class(param_dict)
+                if form.is_valid():
+                    query_filter = self._make_query_filter(self.request, dict(form.cleaned_data))
+            counts["{0}__c".format(i)] = Count(pk_attname, filter=Q(**query_filter))
+        return counts
 
     def _make_query_filter(self, request, validated_data):
         query_params = super()._make_query_filter(request, validated_data)
