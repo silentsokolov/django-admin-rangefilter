@@ -16,7 +16,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.admin.widgets import AdminSplitDateTime as BaseAdminSplitDateTime
-from django.db.models import Count, Q
+from django.db.models import Count, DateField, DateTimeField, Q
 from django.template.defaultfilters import slugify
 from django.templatetags.static import StaticNode
 from django.utils import timezone
@@ -181,17 +181,27 @@ class DateRangeFilter(BaseRangeFilter):
         date_value_lte = validated_data.get(self.lookup_kwarg_lte, None)
 
         if date_value_gte:
-            query_params["{0}__gte".format(self.field_path)] = self.make_dt_aware(
-                datetime.datetime.combine(date_value_gte, datetime.time.min),
-                self.get_timezone(request),
+            query_params["{0}__gte".format(self.field_path)] = self._make_bound(
+                request, date_value_gte, datetime.time.min
             )
         if date_value_lte:
-            query_params["{0}__lte".format(self.field_path)] = self.make_dt_aware(
-                datetime.datetime.combine(date_value_lte, datetime.time.max),
-                self.get_timezone(request),
+            query_params["{0}__lte".format(self.field_path)] = self._make_bound(
+                request, date_value_lte, datetime.time.max
             )
 
         return query_params
+
+    def _make_bound(self, request, date_value, bound_time):
+        # A DateField turns an aware datetime into a date in the default time zone,
+        # which shifts the bound by a day whenever the current time zone differs (#130).
+        # Dates compare correctly as they are.
+        if isinstance(self.field, DateField) and not isinstance(self.field, DateTimeField):
+            return date_value
+
+        return self.make_dt_aware(
+            datetime.datetime.combine(date_value, bound_time),
+            self.get_timezone(request),
+        )
 
     def _get_form_fields(self):
         return OrderedDict(

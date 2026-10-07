@@ -277,6 +277,70 @@ class DateRangeFilterTestCase(TestCase):
         self.assertEqual(choice["query_string"], "?")
         self.assertEqual(choice["system_name"], "created-at")
 
+    def get_datefield_range_in_timezone(self, timezone_name, date_value_gte, date_value_lte):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDAdmin(RangeModelD, site)
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte": date_value_gte,
+                "created_at__range__lte": date_value_lte,
+            },
+        )
+        request.user = self.user
+
+        with timezone.override(timezone_name):
+            changelist = self.get_changelist(request, RangeModelD, modeladmin)
+            return list(changelist.get_queryset(request))
+
+    def test_datefilter_filtered_datefield_behind_utc(self):
+        RangeModelD.objects.create(created_at=datetime.date(2024, 10, 23))
+        filtered_day = RangeModelD.objects.create(created_at=datetime.date(2024, 10, 24))
+        RangeModelD.objects.create(created_at=datetime.date(2024, 10, 25))
+
+        queryset = self.get_datefield_range_in_timezone(
+            "America/New_York", datetime.date(2024, 10, 24), datetime.date(2024, 10, 24)
+        )
+
+        self.assertEqual(queryset, [filtered_day])
+
+    def test_datefilter_filtered_datefield_ahead_of_utc(self):
+        RangeModelD.objects.create(created_at=datetime.date(2024, 10, 23))
+        filtered_day = RangeModelD.objects.create(created_at=datetime.date(2024, 10, 24))
+        RangeModelD.objects.create(created_at=datetime.date(2024, 10, 25))
+
+        queryset = self.get_datefield_range_in_timezone(
+            "Asia/Yekaterinburg", datetime.date(2024, 10, 24), datetime.date(2024, 10, 24)
+        )
+
+        self.assertEqual(queryset, [filtered_day])
+
+    def test_datefilter_filtered_datetimefield_keeps_current_timezone(self):
+        request_factory = RequestFactory()
+        modeladmin = RangeModelDTAdmin(RangeModelDT, site)
+        new_york_late_evening = RangeModelDT.objects.create(
+            created_at=datetime.datetime(2024, 10, 25, 2, 0, tzinfo=datetime.timezone.utc)
+        )
+        RangeModelDT.objects.create(
+            created_at=datetime.datetime(2024, 10, 25, 14, 0, tzinfo=datetime.timezone.utc)
+        )
+
+        request = request_factory.get(
+            "/",
+            {
+                "created_at__range__gte": datetime.date(2024, 10, 24),
+                "created_at__range__lte": datetime.date(2024, 10, 24),
+            },
+        )
+        request.user = self.user
+
+        with timezone.override("America/New_York"):
+            changelist = self.get_changelist(request, RangeModelDT, modeladmin)
+            queryset = changelist.get_queryset(request)
+
+        self.assertEqual(list(queryset), [new_york_late_evening])
+
 
 class NumericRangeFilterTestCase(TestCase):
     def setUp(self):
