@@ -1,4 +1,6 @@
 ## [Unreleased]
+### Fix
+- DateRangeFilter on a DateField no longer shifts the range by a day when the current time zone differs from `TIME_ZONE` (#130)
 
 ## [0.15.0] - 2026-08-28
 ### Fix
